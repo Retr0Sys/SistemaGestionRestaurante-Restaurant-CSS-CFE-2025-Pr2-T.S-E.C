@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class MenuPuntoVenta extends JFrame {
     public JPanel JPMenuPrinc;
@@ -11,6 +12,23 @@ public class MenuPuntoVenta extends JFrame {
     private JLabel lblCSS;
 
     public MenuPuntoVenta() {
+        //Colocamos imagenes a los botones
+        ImageIcon carta = new ImageIcon(new ImageIcon("imagenes/Menu.png").getImage().getScaledInstance( 80, 80, Image.SCALE_SMOOTH));
+        ImageIcon cocina = new ImageIcon(new ImageIcon("imagenes/Cocina.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon factura = new ImageIcon(new ImageIcon("imagenes/Facturas.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon mesa = new ImageIcon(new ImageIcon("imagenes/Mesas.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon resumen = new ImageIcon(new ImageIcon("imagenes/Resumen.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon acerca = new ImageIcon(new ImageIcon("imagenes/Acerca.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+
+        btnCarta.setIcon(carta);
+        btnCocina.setIcon(cocina);
+        btnFact.setIcon(factura);
+        btnMesa.setIcon(mesa);
+        btnResumen.setIcon(resumen);
+        btnAcerca.setIcon(acerca);
+        lblCSS.setFont(new Font("Arial", Font.BOLD, 12));
+
+
 
         btnCarta.addActionListener(e -> {
             // Cerramos la ventana de bienvenida

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class Facturacion extends JFrame {
     public JPanel ventanaFact;         // del .form
@@ -22,6 +23,8 @@ public class Facturacion extends JFrame {
 
     public Facturacion() {
         setTitle("Facturación");
+        lblFact.setFont(new Font("Arial", Font.BOLD, 18));
+
 
 
         // Cargar mesas (ejemplo)

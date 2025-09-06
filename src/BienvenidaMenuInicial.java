@@ -9,9 +9,11 @@ public class BienvenidaMenuInicial extends  JFrame {
     private JLabel lblFoto;
 
     public BienvenidaMenuInicial(){
-        //Seteamos icono para nuestra bienvenida
+        //Seteamos icono para nuestra bienvenida y fuente
         ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
         lblFoto.setIcon(iconoCSS);
+        lblBienvenida.setFont(new Font("Arial", Font.BOLD, 18));
+
         //Agregamos accion al boton ingresar
         BtnIngresar.addActionListener(e -> {
             // Cerramos la ventana de bienvenida

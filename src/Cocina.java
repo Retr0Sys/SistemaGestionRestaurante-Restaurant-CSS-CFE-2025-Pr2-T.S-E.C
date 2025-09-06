@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class Cocina extends JFrame {
     public JPanel ventanaCocina;
@@ -14,6 +15,10 @@ public class Cocina extends JFrame {
 
     public Cocina() {
         setTitle("Gestión de Cocina");
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTitulo.setHorizontalTextPosition(JLabel.CENTER);
+        lblTitulo.setHorizontalAlignment(JLabel.CENTER);
+
 
         cboxEstadoPedido.addItem("Pendiente");
         cboxEstadoPedido.addItem("En preparación");

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class Mesa extends  JFrame {
     public JPanel JPMesasIni;
@@ -36,10 +37,12 @@ public class Mesa extends  JFrame {
     private JRadioButton RDBeliminar;
     private JLabel lblEstadoFin;
     private JButton btnAtras;
-
+    private JLabel lblMesas;
 
 
     public Mesa(){
+        lblMesas.setFont(new Font("Arial", Font.BOLD, 18));
+
         //Botón Atrás
         btnAtras.addActionListener(e -> {
             // Cerramos la ventana de bienvenida

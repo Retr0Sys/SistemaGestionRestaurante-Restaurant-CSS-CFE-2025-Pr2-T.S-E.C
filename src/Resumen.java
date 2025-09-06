@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class Resumen extends JFrame {
     public JPanel ventanaResumen;
@@ -14,7 +15,8 @@ public class Resumen extends JFrame {
     private DefaultTableModel modelo;
 
     public Resumen() {
-        setTitle("Resumen del Restaurante");
+        lblTitulo.setText("Resumen del Restaurante");
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
 
         // modelo de tabla
         String[] columnas = {"Mesa", "Producto", "Cantidad", "Total"};
