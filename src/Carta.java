@@ -6,7 +6,7 @@ public class Carta extends JFrame
 {
     private JPanel ventana;
     private JLabel lblTitulo;
-    private JTable tblTablaCarta;
+    private JTable tblTablaCartaMenu;
 
     public Carta()
     {
@@ -27,14 +27,14 @@ public class Carta extends JFrame
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
         // Ejemplo de filas
-        modelo.addRow(new Object[]{"Pizza Margarita", 350.0, "Pizza", "Disponible"});
+        modelo.addRow(new Object[]{"Pizza Americana", 350.0, "Pizza", "Disponible"});
         modelo.addRow(new Object[]{"Milanesa con papas", 420.0, "Principal", "Agotado"});
         modelo.addRow(new Object[]{"Coca-Cola 500ml", 120.0, "Bebida", "Disponible"});
         modelo.addRow(new Object[]{"Flan casero", 180.0, "Postre", "Disponible"});
 
         // Tabla SIN JScrollPane
-        tblTablaCarta = new JTable(modelo);
-        ventana.add(tblTablaCarta, BorderLayout.CENTER);
+        tblTablaCartaMenu = new JTable(modelo);
+        ventana.add(tblTablaCartaMenu, BorderLayout.CENTER);
 
         add(ventana);
     }
