@@ -20,6 +20,7 @@ public class MenuPuntoVenta extends JFrame {
             Carta menu = new Carta();
             menu.setContentPane(menu.ventanaCarta);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
         });
@@ -34,6 +35,7 @@ public class MenuPuntoVenta extends JFrame {
             Cocina menu = new Cocina();
             menu.setContentPane(menu.ventanaCocina);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
         });
@@ -46,6 +48,7 @@ public class MenuPuntoVenta extends JFrame {
             Facturacion menu = new Facturacion();
             menu.setContentPane(menu.ventanaFact);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
         });
@@ -58,6 +61,7 @@ public class MenuPuntoVenta extends JFrame {
             Mesa menu = new Mesa();
             menu.setContentPane(menu.JPMesasIni);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
         });
@@ -70,17 +74,19 @@ public class MenuPuntoVenta extends JFrame {
             Resumen menu = new Resumen();
             menu.setContentPane(menu.ventanaResumen);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
         });
 
         btnAcerca.addActionListener(e -> {
             // Abrimos la ventana de Acerca de
-            Acerca acercaDe = new Acerca();
-            acercaDe.setContentPane(acercaDe.JPacerca);
-            acercaDe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            acercaDe.pack();
-            acercaDe.setVisible(true);
+            Acerca menu = new Acerca();
+            menu.setContentPane(menu.JPacerca);
+            menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
+            menu.pack();
+            menu.setVisible(true);
         });
 
     }
@@ -90,6 +96,7 @@ public class MenuPuntoVenta extends JFrame {
         JFrame ventana = new JFrame("MenuPrincipal");
         ventana.setContentPane(new MenuPuntoVenta().JPMenuPrinc);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setLocationRelativeTo(null);
         ventana.pack();
         ventana.setVisible(true);
     }

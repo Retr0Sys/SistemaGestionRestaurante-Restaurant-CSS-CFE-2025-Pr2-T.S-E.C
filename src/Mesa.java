@@ -58,6 +58,7 @@ public class Mesa extends  JFrame {
         Mesa mesa = new Mesa();
         mesa.setContentPane(mesa.JPMesasIni);
         mesa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mesa.setLocationRelativeTo(null);
         mesa.pack();
         mesa.setVisible(true);
     }

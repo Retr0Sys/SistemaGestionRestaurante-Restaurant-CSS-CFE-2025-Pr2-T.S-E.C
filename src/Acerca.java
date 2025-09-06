@@ -26,6 +26,7 @@ public class Acerca extends  JFrame {
         Acerca acercaDe = new Acerca();
         acercaDe.setContentPane(acercaDe.JPacerca);
         acercaDe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        acercaDe.setLocationRelativeTo(null);
         acercaDe.pack();
         acercaDe.setVisible(true);
     }

@@ -8,7 +8,23 @@ public class Carta extends JFrame
     private JLabel lblTitulo;
     private JTable tblTablaCartaMenu;
     private JButton btnAtras;
+    private JTabbedPane TBCarta;
+    private JPanel JPCarta;
+    private JPanel JPcambiarCarta;
+    private JLabel lblNombProdAcambiar;
+    private JLabel lblNuevoPrecio;
+    private JLabel lblNuevoCategoria;
+    private JLabel lblNuevoDisp;
+    private JLabel lblCambiarDisp;
+    private JComboBox CBnuevaDisp;
+    private JComboBox CBNuevoNombre;
+    private JTextField txtNuevoPrecio;
+    private JComboBox CBNuevaCat;
+    private JComboBox CBNuevaDisp;
+    private JLabel lblTituloCarta;
 
+
+    //*Imporante* Agregar el TABBEDPANE a el Jpanel principal porque no se ve por pantalla.
     public Carta()
     {
         setTitle("Carta del Restaurante");
@@ -37,6 +53,7 @@ public class Carta extends JFrame
         tblTablaCartaMenu = new JTable(modelo);
         ventanaCarta.add(tblTablaCartaMenu, BorderLayout.CENTER);
 
+
         add(ventanaCarta);
 
         // Botón Atrás
@@ -56,10 +73,14 @@ public class Carta extends JFrame
 
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new Carta().setVisible(true);
+            Carta carta = new Carta();
+            carta.setContentPane(carta.ventanaCarta);
+            carta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            carta.pack();
+            carta.setLocationRelativeTo(null);
+            carta.setVisible(true);
         });
     }
 }

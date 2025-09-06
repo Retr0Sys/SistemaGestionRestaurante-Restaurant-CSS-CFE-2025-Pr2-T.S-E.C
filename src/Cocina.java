@@ -51,6 +51,7 @@ public class Cocina extends JFrame {
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
         });
