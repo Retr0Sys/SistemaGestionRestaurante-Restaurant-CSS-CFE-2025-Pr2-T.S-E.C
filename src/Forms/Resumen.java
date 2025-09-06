@@ -1,3 +1,5 @@
+package Forms;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -19,7 +21,7 @@ public class Resumen extends JFrame {
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
 
         // modelo de tabla
-        String[] columnas = {"Mesa", "Producto", "Cantidad", "Total"};
+        String[] columnas = {"Mesa", "Clases.abstractas.Producto", "Cantidad", "Total"};
         modelo = new DefaultTableModel(columnas, 0);
         tblTabla.setModel(modelo);
 

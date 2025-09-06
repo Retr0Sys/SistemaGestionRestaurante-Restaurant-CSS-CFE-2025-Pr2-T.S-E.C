@@ -1,3 +1,5 @@
+package Forms;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -44,10 +46,10 @@ public class Carta extends JFrame
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
         // Ejemplo de filas
-        modelo.addRow(new Object[]{"Pizza Americana", 350.0, "Principal", "Disponible"});
-        modelo.addRow(new Object[]{"Milanesa con papas", 420.0, "Principal", "Agotado"});
-        modelo.addRow(new Object[]{"Coca-Cola 500ml", 120.0, "Bebida", "Disponible"});
-        modelo.addRow(new Object[]{"Flan casero", 180.0, "Postre", "Disponible"});
+        modelo.addRow(new Object[]{"Pizza Americana", 350.0, "Clases.concret.Comida", "Disponible"});
+        modelo.addRow(new Object[]{"Milanesa con papas", 420.0, "Clases.concret.Comida", "Agotado"});
+        modelo.addRow(new Object[]{"Coca-Cola 500ml", 120.0, "Clases.concret.Bebida", "Disponible"});
+        modelo.addRow(new Object[]{"Flan casero", 180.0, "Clases.concret.Postre", "Disponible"});
 
         // Tabla SIN JScrollPane
         tblTablaCartaMenu = new JTable(modelo);
