@@ -16,7 +16,6 @@ public class Mesas {
     private JTable TBPedidosMesa;
     private JComboBox CBmesa;
     private JComboBox CBSelecEstado;
-    private JComboBox CBEstado;
     private JLabel lblMesero;
     private JComboBox CBMesero;
     private JLabel lblMesa2;
@@ -25,7 +24,6 @@ public class Mesas {
     private JComboBox CBmesa3;
     private JComboBox CBmesa2;
     private JLabel lblOperacion;
-    private JComboBox CBTipOperacion;
     private JTable TBProd2;
     private JLabel lblCantidad;
     private JTextField txtCantidad;
@@ -34,4 +32,7 @@ public class Mesas {
     private JButton BtnEnviar;
     private JLabel lblPedidosMesaPedidos;
     private JLabel lblPedidoMesa;
+    private JRadioButton RDBaniadir;
+    private JRadioButton RDBeliminar;
+    private JLabel lblEstadoFin;
 }
