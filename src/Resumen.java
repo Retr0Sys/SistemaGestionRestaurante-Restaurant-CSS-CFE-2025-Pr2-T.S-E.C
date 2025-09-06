@@ -14,10 +14,6 @@ public class Resumen extends JFrame {
 
     public Resumen() {
         setTitle("Resumen del Restaurante");
-        setContentPane(ventana);
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         // modelo de tabla
         String[] columnas = {"Mesa", "Producto", "Cantidad", "Total"};
@@ -84,6 +80,10 @@ public class Resumen extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Resumen().setVisible(true));
+        Resumen ventana = new Resumen();
+        ventana.setContentPane(ventana.ventana);
+        ventana.setBounds(300,200,500,300);
+        ventana.setVisible(true);
+        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
