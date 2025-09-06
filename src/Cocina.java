@@ -2,12 +2,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Cocina extends JFrame {
-    private JPanel ventana;
+    public JPanel ventanaCocina;
     private JLabel lblTitulo;
     private JTable tblTablaCocina;
     private JComboBox<String> cboxEstadoPedido;
     private JButton btnActualizar;
     private JLabel lblEstadoPedido;
+    private JButton btnAtras;
 
     private DefaultTableModel modelo;
 
@@ -40,11 +41,24 @@ public class Cocina extends JFrame {
                 JOptionPane.showMessageDialog(this, "Seleccione un pedido de la tabla.");
             }
         });
+
+        //Botón Atrás
+        btnAtras.addActionListener(e -> {
+            // Cerramos la ventana de bienvenida
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCocina);
+            topFrame.dispose();
+            // Abrimos la ventana del menú principal
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.pack();
+            menu.setVisible(true);
+        });
     }
 
     public static void main(String[] args) {
         Cocina ventana = new Cocina();
-        ventana.setContentPane(ventana.ventana);
+        ventana.setContentPane(ventana.ventanaCocina);
         ventana.setBounds(300,200,600,400);
         ventana.setVisible(true);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 public class Facturacion extends JFrame {
-    private JPanel ventana;         // del .form
+    public JPanel ventanaFact;         // del .form
     private JComboBox<String> cboxMesa;       // del .form
     private JLabel lblSubtotal;               // del .form
     private JLabel lblSubtotalNumero;         // del .form
@@ -12,6 +12,11 @@ public class Facturacion extends JFrame {
     private JLabel lblTotal;                  // del .form
     private JLabel lblTotalNum;               // del .form
     private JButton btnComprobante;           // del .form
+    private JLabel lblFact;
+    private JLabel lblMesa;
+    private JLabel lblDescuento;
+    private JLabel lblComoarreglamosestoJPG;
+    private JButton btnAtras;
 
     private double subtotal = 1000;  // 🔹 ejemplo de subtotal fijo (se puede cambiar dinámicamente)
 
@@ -60,6 +65,19 @@ public class Facturacion extends JFrame {
                     "Factura generada",
                     JOptionPane.INFORMATION_MESSAGE);
         });
+
+        //Botón Atrás
+        btnAtras.addActionListener(e -> {
+            // Cerramos la ventana de bienvenida
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaFact);
+            topFrame.dispose();
+            // Abrimos la ventana del menú principal
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.pack();
+            menu.setVisible(true);
+        });
     }
     // Metodo para caluclar total segun propina
     private void actualizarTotal() {
@@ -77,7 +95,7 @@ public class Facturacion extends JFrame {
 
     public static void main(String[] args) {
         Facturacion ventana = new Facturacion();
-        ventana.setContentPane(ventana.ventana);
+        ventana.setContentPane(ventana.ventanaFact);
         ventana.setBounds(300,200,500,300);
         ventana.setVisible(true);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

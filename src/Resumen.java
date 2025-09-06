@@ -2,13 +2,14 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Resumen extends JFrame {
-    private JPanel ventana;
+    public JPanel ventanaResumen;
     private JLabel lblTitulo;
     private JButton btnVentasDelDia;
     private JButton btnpedidosPorMesa;
     private JComboBox<String> cboxMesa;
     private JButton btnTop3;
     private JTable tblTabla;
+    private JButton btnAtras;
 
     private DefaultTableModel modelo;
 
@@ -39,6 +40,19 @@ public class Resumen extends JFrame {
 
         // boton top 3
         btnTop3.addActionListener(e -> cargarTop3());
+
+        //Botón Atrás
+        btnAtras.addActionListener(e -> {
+            // Cerramos la ventana de bienvenida
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaResumen);
+            topFrame.dispose();
+            // Abrimos la ventana del menú principal
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.pack();
+            menu.setVisible(true);
+        });
     }
 
     // ventas del dia
@@ -81,7 +95,7 @@ public class Resumen extends JFrame {
 
     public static void main(String[] args) {
         Resumen ventana = new Resumen();
-        ventana.setContentPane(ventana.ventana);
+        ventana.setContentPane(ventana.ventanaResumen);
         ventana.setBounds(300,200,500,300);
         ventana.setVisible(true);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

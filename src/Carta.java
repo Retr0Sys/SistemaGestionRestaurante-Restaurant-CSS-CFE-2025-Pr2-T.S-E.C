@@ -4,9 +4,10 @@ import java.awt.*;
 
 public class Carta extends JFrame
 {
-    private JPanel ventana;
+    public JPanel ventanaCarta;
     private JLabel lblTitulo;
     private JTable tblTablaCartaMenu;
+    private JButton btnAtras;
 
     public Carta()
     {
@@ -15,28 +16,44 @@ public class Carta extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        ventana = new JPanel(new BorderLayout());
+        ventanaCarta = new JPanel(new BorderLayout());
 
         // Título
         lblTitulo = new JLabel("Carta del Restaurante", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
-        ventana.add(lblTitulo, BorderLayout.NORTH);
+        ventanaCarta.add(lblTitulo, BorderLayout.NORTH);
 
         // Modelo de la tabla con columnas
         String[] columnas = {"Nombre", "Precio", "Categoría", "Disponibilidad"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
         // Ejemplo de filas
-        modelo.addRow(new Object[]{"Pizza Americana", 350.0, "Pizza", "Disponible"});
+        modelo.addRow(new Object[]{"Pizza Americana", 350.0, "Principal", "Disponible"});
         modelo.addRow(new Object[]{"Milanesa con papas", 420.0, "Principal", "Agotado"});
         modelo.addRow(new Object[]{"Coca-Cola 500ml", 120.0, "Bebida", "Disponible"});
         modelo.addRow(new Object[]{"Flan casero", 180.0, "Postre", "Disponible"});
 
         // Tabla SIN JScrollPane
         tblTablaCartaMenu = new JTable(modelo);
-        ventana.add(tblTablaCartaMenu, BorderLayout.CENTER);
+        ventanaCarta.add(tblTablaCartaMenu, BorderLayout.CENTER);
 
-        add(ventana);
+        add(ventanaCarta);
+
+        // Botón Atrás
+        btnAtras = new JButton("Atrás");
+        ventanaCarta.add(btnAtras, BorderLayout.SOUTH);
+        btnAtras.addActionListener(e -> {
+            // Cerramos la ventana de bienvenida
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCarta);
+            topFrame.dispose();
+            // Abrimos la ventana del menú principal
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.pack();
+            menu.setVisible(true);
+        });
+
     }
 
     public static void main(String[] args)

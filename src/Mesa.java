@@ -1,7 +1,7 @@
 import javax.swing.*;
 
-public class Mesas {
-    private JPanel JPMesasIni;
+public class Mesa extends  JFrame {
+    public JPanel JPMesasIni;
     private JTabbedPane JPPedidos;
     private JPanel JPprincipal;
     private JPanel JPasignar;
@@ -35,4 +35,30 @@ public class Mesas {
     private JRadioButton RDBaniadir;
     private JRadioButton RDBeliminar;
     private JLabel lblEstadoFin;
+    private JButton btnAtras;
+
+
+
+    public Mesa(){
+        //Botón Atrás
+        btnAtras.addActionListener(e -> {
+            // Cerramos la ventana de bienvenida
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMesasIni);
+            topFrame.dispose();
+            // Abrimos la ventana del menú principal
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.pack();
+            menu.setVisible(true);
+        });
+    }
+
+    public static void main(String[] args) {
+        Mesa mesa = new Mesa();
+        mesa.setContentPane(mesa.JPMesasIni);
+        mesa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mesa.pack();
+        mesa.setVisible(true);
+    }
 }
