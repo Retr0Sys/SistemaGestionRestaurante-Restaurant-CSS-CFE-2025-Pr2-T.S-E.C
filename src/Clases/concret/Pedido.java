@@ -26,4 +26,5 @@ public class Pedido {
     public int getCantidad() {
         return cantidad;
     }
+
 }
