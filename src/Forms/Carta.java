@@ -8,7 +8,7 @@ public class Carta extends JFrame
 {
     public JPanel ventanaCarta;
     private JLabel lblTitulo;
-    private JTable tblTablaCartaMenu;
+    JTable tblTablaCartaMenu;
     private JButton btnAtras;
     private JTabbedPane TBCarta;
     private JPanel JPCarta;
