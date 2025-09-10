@@ -1,13 +1,17 @@
 package Clases.concret;
 
-public class Postre {
-    protected String nombre;
-    protected double precio;
-    protected String categoria;
+import Interfaces.CategoriaComida;
 
-    public Postre(String nombre, double precio) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.categoria = "Clases.concret.Postre";
+public class Postre implements CategoriaComida {
+    protected String nombre;
+
+    public Postre() {
+        this.nombre = "Postre";
+    }
+
+    @Override
+    public String getNombre() {
+        return nombre;
     }
 }
+

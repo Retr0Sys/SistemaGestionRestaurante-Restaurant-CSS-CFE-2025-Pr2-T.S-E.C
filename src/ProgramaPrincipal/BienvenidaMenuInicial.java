@@ -1,4 +1,6 @@
-package Forms;
+package ProgramaPrincipal;
+
+import Forms.MenuPuntoVenta;
 
 import javax.swing.*;
 import java.awt.*;

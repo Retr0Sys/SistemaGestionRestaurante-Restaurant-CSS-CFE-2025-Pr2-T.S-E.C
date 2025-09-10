@@ -1,6 +1,6 @@
 package Clases.concret;
 
 public class Factura {
-    protected Mesa mesa;
+    protected mesa mesa;
     protected Pedido pedido;
 }

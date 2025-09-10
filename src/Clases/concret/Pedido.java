@@ -1,14 +1,30 @@
 package Clases.concret;
 
 public class Pedido {
-    protected Mesa mesa;
-    protected LineaPedido pedido;
-    public Pedido(Mesa mesa, int linea) {
-        this.mesa = mesa;
-        this.pedido = newLineaPedido(linea);
+    String nombre;
+    double precio;
+    String categoria;
+    int cantidad;
+
+    public Pedido(String nombre, double precio, String categoria, int cantidad) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.categoria = categoria;
+        this.cantidad = cantidad;
     }
 
-    private LineaPedido newLineaPedido(int linea) {
-        return new LineaPedido(linea);
+    public String getNombre() {
+        return nombre;
     }
+    public double getPrecio() {
+        return precio;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+    public int getCantidad() {
+        return cantidad;
+    }
+
 }
