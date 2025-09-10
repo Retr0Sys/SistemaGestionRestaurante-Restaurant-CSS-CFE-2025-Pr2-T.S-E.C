@@ -17,7 +17,6 @@ public class Acerca extends  JFrame {
             topFrame.dispose();
             // Abrimos la ventana del menú principal
             MenuPuntoVenta menu = new MenuPuntoVenta();
-            menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             menu.pack();
             menu.setVisible(true);

@@ -1,13 +1,16 @@
 package Clases.concret;
 
-public class Bebida {
-    protected String nombre;
-    protected double precio;
-    protected String categoria;
+import Interfaces.CategoriaComida;
 
-    public Bebida(String nombre, double precio) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.categoria = "Clases.concret.Bebida";
+public class Bebida implements CategoriaComida {
+    protected String nombre;
+
+    public Bebida() {
+        this.nombre = "Bebida";
+    }
+
+    @Override
+    public String getNombre() {
+        return nombre;
     }
 }

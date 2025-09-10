@@ -1,5 +1,10 @@
 package Forms;
 
+import Clases.concret.Bebida;
+import Clases.concret.Comida;
+import Clases.concret.Postre;
+import Clases.concret.Principal;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -46,10 +51,17 @@ public class Carta extends JFrame
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
         // Ejemplo de filas
-        modelo.addRow(new Object[]{"Pizza Americana", 350.0, "Clases.concret.Comida", "Disponible"});
-        modelo.addRow(new Object[]{"Milanesa con papas", 420.0, "Clases.concret.Comida", "Agotado"});
-        modelo.addRow(new Object[]{"Coca-Cola 500ml", 120.0, "Clases.concret.Bebida", "Disponible"});
-        modelo.addRow(new Object[]{"Flan casero", 180.0, "Clases.concret.Postre", "Disponible"});
+        Principal principal = new Principal();
+        Bebida bebida = new Bebida();
+        Postre postre = new Postre();
+        Comida comida1 = new Comida("Paella", 200, principal, "Disponible");
+        Comida comida2 = new Comida("Tarta de Queso", 300, postre, "No Disponible");
+        Comida comida3 = new Comida("Coca-Cola", 100, bebida, "Disponible");
+
+        // Agregar filas al modelo
+        modelo.addRow(new Object[]{comida1.getNombre(), comida1.getPrecio(), comida1.getCategoria(), comida1.getDisponibilidad()});
+        modelo.addRow(new Object[]{comida2.getNombre(), comida2.getPrecio(), comida2.getCategoria(), comida2.getDisponibilidad()});
+        modelo.addRow(new Object[]{comida3.getNombre(), comida3.getPrecio(), comida3.getCategoria(), comida3.getDisponibilidad()});
 
         // Tabla SIN JScrollPane
         tblTablaCartaMenu = new JTable(modelo);
