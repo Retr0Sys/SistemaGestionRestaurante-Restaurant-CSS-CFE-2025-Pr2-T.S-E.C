@@ -40,6 +40,15 @@ public class Mesa extends  JFrame {
     private JLabel lblEstadoFin;
     private JButton btnAtras;
     private JLabel lblMesas;
+    private JLabel lblMesa4;
+    private JLabel lblOperacionReserva;
+    private JLabel lblCanitdadPersonas;
+    private JTextField txtCantidadPersonas;
+    private JLabel lblFecha;
+    private JLabel lblCalendario;
+    private JPanel JPReservas;
+    private JRadioButton rbtnAñadir;
+    private JRadioButton rbtnEliminar;
 
 
     public Mesa(){
