@@ -1,7 +1,7 @@
 package Exepciones;
 
 public class MesaNoDisponibleException extends RuntimeException {
-    public MesaNoDisponibleException(String message) {
-        super(message);
+    public MesaNoDisponibleException() {
+        super("Esta mesa no se encuentra disponible.");
     }
 }

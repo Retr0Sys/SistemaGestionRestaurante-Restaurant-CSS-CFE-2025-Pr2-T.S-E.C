@@ -1,7 +1,7 @@
 package Exepciones;
 
 public class StockInsuficienteException extends RuntimeException {
-    public StockInsuficienteException(String message) {
-        super(message);
+    public StockInsuficienteException() {
+        super("Stock insuficiente para completar la operación.");
     }
 }
