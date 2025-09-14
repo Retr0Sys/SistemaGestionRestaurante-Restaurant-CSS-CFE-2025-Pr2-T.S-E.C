@@ -7,14 +7,20 @@ import Clases.concret.Mesa;
 
 public class MesaDAO
 {
+    private static final String SQL_INSERT =
+            "INSERT INTO mesa (idMesa, capacidad, estado) VALUES (?,?,?)";
 
-    private static final String SQL_INSERT ="INSERT INTO mesa (idMesa, capacidad, idEstadoMesa, idPersonal) VALUES (?,?,?,?)";
+    private static final String SQL_SELECT_ALL =
+            "SELECT * FROM mesa";
 
-    private static final String SQL_SELECT_ALL ="SELECT * FROM mesa";
+    private static final String SQL_SELECT_BY_ID =
+            "SELECT * FROM mesa WHERE idMesa=?";
 
-    private static final String SQL_UPDATE = "UPDATE mesa SET capacidad=?, idEstadoMesa=?, idPersonal=? WHERE idMesa=?";
+    private static final String SQL_UPDATE =
+            "UPDATE mesa SET capacidad=?, estado=? WHERE idMesa=?";
 
-    private static final String SQL_DELETE ="DELETE FROM mesa WHERE idMesa=?";
+    private static final String SQL_DELETE =
+            "DELETE FROM mesa WHERE idMesa=?";
 
     public void insertar(Mesa m) throws SQLException
     {
@@ -23,8 +29,7 @@ public class MesaDAO
         {
             ps.setInt(1, m.getIdMesa());
             ps.setInt(2, m.getCapacidad());
-            ps.setInt(3, m.getIdEstadoMesa());
-            ps.setInt(4, m.getIdPersonal());
+            ps.setString(3, m.getEstado());
             ps.executeUpdate();
         }
     }
@@ -34,19 +39,41 @@ public class MesaDAO
         List<Mesa> mesas = new ArrayList<>();
         try (Connection cn = ConexionDB.getConnection();
              Statement st = cn.createStatement();
-             ResultSet rs = st.executeQuery(SQL_SELECT_ALL)) {
+             ResultSet rs = st.executeQuery(SQL_SELECT_ALL))
+        {
             while (rs.next())
             {
                 Mesa m = new Mesa(
                         rs.getInt("idMesa"),
                         rs.getInt("capacidad"),
-                        rs.getInt("idEstadoMesa"),
-                        rs.getInt("idPersonal")
+                        rs.getString("estado")
                 );
                 mesas.add(m);
             }
         }
         return mesas;
+    }
+
+    public Mesa buscarPorId(int idMesa) throws SQLException
+    {
+        Mesa mesa = null;
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_SELECT_BY_ID))
+        {
+            ps.setInt(1, idMesa);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
+                    mesa = new Mesa(
+                            rs.getInt("idMesa"),
+                            rs.getInt("capacidad"),
+                            rs.getString("estado")
+                    );
+                }
+            }
+        }
+        return mesa;
     }
 
     public void actualizar(Mesa m) throws SQLException
@@ -55,9 +82,8 @@ public class MesaDAO
              PreparedStatement ps = cn.prepareStatement(SQL_UPDATE))
         {
             ps.setInt(1, m.getCapacidad());
-            ps.setInt(2, m.getIdEstadoMesa());
-            ps.setInt(3, m.getIdPersonal());
-            ps.setInt(4, m.getIdMesa());
+            ps.setString(2, m.getEstado());
+            ps.setInt(3, m.getIdMesa());
             ps.executeUpdate();
         }
     }
