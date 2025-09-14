@@ -2,19 +2,18 @@ package Clases.concret;
 
 public class Mesa
 {
+    public String JPMesasIni;
     private int idMesa;
     private int capacidad;
-    private int idEstadoMesa; // FK a EstadoMesa
-    private int idPersonal;   // FK a Personal (mesero asignado)
+    private String estado;   // disponible, ocupada, reservada, limpieza...
 
     public Mesa() {}
 
-    public Mesa(int idMesa, int capacidad, int idEstadoMesa, int idPersonal)
+    public Mesa(int idMesa, int capacidad, String estado)
     {
         this.idMesa = idMesa;
         this.capacidad = capacidad;
-        this.idEstadoMesa = idEstadoMesa;
-        this.idPersonal = idPersonal;
+        this.estado = estado;
     }
 
     public int getIdMesa()
@@ -37,24 +36,14 @@ public class Mesa
         this.capacidad = capacidad;
     }
 
-    public int getIdEstadoMesa()
+    public String getEstado()
     {
-        return idEstadoMesa;
+        return estado;
     }
 
-    public void setIdEstadoMesa(int idEstadoMesa)
+    public void setEstado(String estado)
     {
-        this.idEstadoMesa = idEstadoMesa;
-    }
-
-    public int getIdPersonal()
-    {
-        return idPersonal;
-    }
-
-    public void setIdPersonal(int idPersonal)
-    {
-        this.idPersonal = idPersonal;
+        this.estado = estado;
     }
 
     @Override
@@ -63,8 +52,7 @@ public class Mesa
         return "Mesa{" +
                 "idMesa=" + idMesa +
                 ", capacidad=" + capacidad +
-                ", idEstadoMesa=" + idEstadoMesa +
-                ", idPersonal=" + idPersonal +
+                ", estado='" + estado + '\'' +
                 '}';
     }
 }
