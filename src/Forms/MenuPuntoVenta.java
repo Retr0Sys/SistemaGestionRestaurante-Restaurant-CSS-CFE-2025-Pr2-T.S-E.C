@@ -15,19 +15,43 @@ public class MenuPuntoVenta extends JFrame {
 
     public MenuPuntoVenta() {
         //Colocamos imagenes a los botones
-        ImageIcon carta = new ImageIcon(new ImageIcon("imagenes/Menu.png").getImage().getScaledInstance( 80, 80, Image.SCALE_SMOOTH));
-        ImageIcon cocina = new ImageIcon(new ImageIcon("imagenes/Cocina.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-        ImageIcon factura = new ImageIcon(new ImageIcon("imagenes/Facturas.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-        ImageIcon mesa = new ImageIcon(new ImageIcon("imagenes/Mesas.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-        ImageIcon resumen = new ImageIcon(new ImageIcon("imagenes/Resumen.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-        ImageIcon acerca = new ImageIcon(new ImageIcon("imagenes/Acerca.png").getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+        ImageIcon carta = new ImageIcon(new ImageIcon("imagenes/Menu.png").getImage().getScaledInstance( 100, 100, Image.SCALE_SMOOTH));
+        ImageIcon cocina = new ImageIcon(new ImageIcon("imagenes/Cocina.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon factura = new ImageIcon(new ImageIcon("imagenes/Facturas.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon mesa = new ImageIcon(new ImageIcon("imagenes/Mesas.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon resumen = new ImageIcon(new ImageIcon("imagenes/Resumen.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon acerca = new ImageIcon(new ImageIcon("imagenes/Acerca.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
 
         btnCarta.setIcon(carta);
+        btnCarta.setBorderPainted(false);
+        btnCarta.setContentAreaFilled(false);
+        btnCarta.setFocusPainted(false);
+
         btnCocina.setIcon(cocina);
+        btnCocina.setBorderPainted(false);
+        btnCocina.setContentAreaFilled(false);
+        btnCocina.setFocusPainted(false);
+
         btnFact.setIcon(factura);
+        btnFact.setBorderPainted(false);
+        btnFact.setContentAreaFilled(false);
+        btnFact.setFocusPainted(false);
+
         btnMesa.setIcon(mesa);
+        btnMesa.setBorderPainted(false);
+        btnMesa.setContentAreaFilled(false);
+        btnMesa.setFocusPainted(false);
+
         btnResumen.setIcon(resumen);
+        btnResumen.setBorderPainted(false);
+        btnResumen.setContentAreaFilled(false);
+        btnResumen.setFocusPainted(false);
+
         btnAcerca.setIcon(acerca);
+        btnAcerca.setBorderPainted(false);
+        btnAcerca.setContentAreaFilled(false);
+        btnAcerca.setFocusPainted(false);
+
         lblCSS.setFont(new Font("Arial", Font.BOLD, 12));
 
 

@@ -24,9 +24,23 @@ public class Facturacion extends JFrame {
     private double subtotal = 1000;  // 🔹 ejemplo de subtotal fijo (se puede cambiar dinámicamente)
 
     public Facturacion() {
+
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnAtras.setIcon(imagen);
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
+
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnComprobante.setIcon(imagen2);
+        btnComprobante.setBorderPainted(false);
+        btnComprobante.setContentAreaFilled(false);
+        btnComprobante.setFocusPainted(false);
+
+
         setTitle("Facturación");
         lblFact.setFont(new Font("Arial", Font.BOLD, 18));
-
 
 
         // Cargar mesas (ejemplo)

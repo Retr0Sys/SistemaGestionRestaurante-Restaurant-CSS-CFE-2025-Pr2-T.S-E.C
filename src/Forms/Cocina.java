@@ -16,6 +16,21 @@ public class Cocina extends JFrame {
     private DefaultTableModel modelo;
 
     public Cocina() {
+
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnAtras.setIcon(imagen);
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
+
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Actualizar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnActualizar.setIcon(imagen2);
+        btnActualizar.setBorderPainted(false);
+        btnActualizar.setContentAreaFilled(false);
+        btnActualizar.setFocusPainted(false);
+
+
         setTitle("Gestión de Cocina");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitulo.setHorizontalTextPosition(JLabel.CENTER);

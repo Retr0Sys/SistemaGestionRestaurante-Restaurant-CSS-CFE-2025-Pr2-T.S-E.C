@@ -1,6 +1,7 @@
 package Forms;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Acerca extends  JFrame {
     public JPanel JPacerca;
@@ -10,6 +11,13 @@ public class Acerca extends  JFrame {
     private JButton btnAtras;
 
     public Acerca(){
+
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnAtras.setIcon(imagen);
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
         //Botón Atrás
         btnAtras.addActionListener(e -> {
             // Cerramos la ventana de bienvenida

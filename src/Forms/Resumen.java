@@ -17,6 +17,15 @@ public class Resumen extends JFrame {
     private DefaultTableModel modelo;
 
     public Resumen() {
+
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnAtras.setIcon(imagen);
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
+
+
         lblTitulo.setText("Resumen del Restaurante");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
 

@@ -65,6 +65,20 @@ public class FormMesa extends JFrame
 
     public FormMesa()
     {
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnAtras.setIcon(imagen);
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
+
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        cambiarEstadoButton.setIcon(imagen2);
+        cambiarEstadoButton.setBorderPainted(false);
+        cambiarEstadoButton.setContentAreaFilled(false);
+        cambiarEstadoButton.setFocusPainted(false);
+
+
         lblEstado.setFont(new Font("Arial", Font.BOLD, 14));
 
         cargarMesas();

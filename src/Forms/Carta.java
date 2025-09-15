@@ -1,9 +1,6 @@
 package Forms;
 
-import Clases.concret.Bebida;
 import Clases.concret.Comida;
-import Clases.concret.Postre;
-import Clases.concret.Principal;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -34,6 +31,9 @@ public class Carta extends JFrame
     //*Imporante* Agregar el TABBEDPANE a el Jpanel principal porque no se ve por pantalla.
     public Carta()
     {
+
+
+
         setTitle("Carta del Restaurante");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,18 +45,23 @@ public class Carta extends JFrame
         lblTitulo = new JLabel("Carta del Restaurante", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
         ventanaCarta.add(lblTitulo, BorderLayout.NORTH);
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnAtras = new JButton("Atras");
+        btnAtras.setIcon(imagen);
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
+
 
         // Modelo de la tabla con columnas
         String[] columnas = {"Nombre", "Precio", "Categoría", "Disponibilidad"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
         // Ejemplo de filas
-        Principal principal = new Principal();
-        Bebida bebida = new Bebida();
-        Postre postre = new Postre();
-        Comida comida1 = new Comida("Paella", 200, principal, "Disponible");
-        Comida comida2 = new Comida("Tarta de Queso", 300, postre, "No Disponible");
-        Comida comida3 = new Comida("Coca-Cola", 100, bebida, "Disponible");
+        Comida comida1 = new Comida("Paella", 200,"Principal", "Disponible");
+        Comida comida2 = new Comida("Tarta de Queso", 300, "Postre", "No Disponible");
+        Comida comida3 = new Comida("Coca-Cola", 100, "Bebida", "Disponible");
 
         // Agregar filas al modelo
         modelo.addRow(new Object[]{comida1.getNombre(), comida1.getPrecio(), comida1.getCategoria(), comida1.getDisponibilidad()});
