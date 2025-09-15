@@ -12,12 +12,6 @@ public class Acerca extends  JFrame {
 
     public Acerca(){
 
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        btnAtras.setIcon(imagen);
-        btnAtras.setBorderPainted(false);
-        btnAtras.setContentAreaFilled(false);
-        btnAtras.setFocusPainted(false);
-
     }
 
     public static void main(String[] args) {

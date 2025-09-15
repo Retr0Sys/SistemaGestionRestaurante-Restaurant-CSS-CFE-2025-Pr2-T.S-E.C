@@ -78,6 +78,24 @@ public class FormMesa extends JFrame
         cambiarEstadoButton.setContentAreaFilled(false);
         cambiarEstadoButton.setFocusPainted(false);
 
+        ImageIcon imagen3 = new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        BtnAsignar.setIcon(imagen3);
+        BtnAsignar.setBorderPainted(false);
+        BtnAsignar.setContentAreaFilled(false);
+        BtnAsignar.setFocusPainted(false);
+
+        ImageIcon imagen4 = new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        BtnEnviar.setIcon(imagen4);
+        BtnEnviar.setBorderPainted(false);
+        BtnEnviar.setContentAreaFilled(false);
+        BtnEnviar.setFocusPainted(false);
+
+        ImageIcon imagen5 = new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnEnviar.setIcon(imagen5);
+        btnEnviar.setBorderPainted(false);
+        btnEnviar.setContentAreaFilled(false);
+        btnEnviar.setFocusPainted(false);
+
 
         lblEstado.setFont(new Font("Arial", Font.BOLD, 14));
 

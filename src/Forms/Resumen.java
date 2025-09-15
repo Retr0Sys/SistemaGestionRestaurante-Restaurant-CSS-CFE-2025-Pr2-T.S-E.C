@@ -24,6 +24,23 @@ public class Resumen extends JFrame {
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
 
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Top 3.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnTop3.setIcon(imagen2);
+        btnTop3.setBorderPainted(false);
+        btnTop3.setContentAreaFilled(false);
+        btnTop3.setFocusPainted(false);
+
+        ImageIcon imagen3 = new ImageIcon(new ImageIcon("imagenes/Pedidos x mesa.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnpedidosPorMesa.setIcon(imagen3);
+        btnpedidosPorMesa.setBorderPainted(false);
+        btnpedidosPorMesa.setContentAreaFilled(false);
+        btnpedidosPorMesa.setFocusPainted(false);
+
+        ImageIcon imagen4 = new ImageIcon(new ImageIcon("imagenes/Ventas diarias.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        btnVentasDelDia.setIcon(imagen4);
+        btnVentasDelDia.setBorderPainted(false);
+        btnVentasDelDia.setContentAreaFilled(false);
+        btnVentasDelDia.setFocusPainted(false);
 
 
         lblTitulo.setText("Resumen del Restaurante");
