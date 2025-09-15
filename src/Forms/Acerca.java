@@ -18,17 +18,6 @@ public class Acerca extends  JFrame {
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
 
-        //Botón Atrás
-        btnAtras.addActionListener(e -> {
-            // Cerramos la ventana de bienvenida
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPacerca);
-            topFrame.dispose();
-            // Abrimos la ventana del menú principal
-            MenuPuntoVenta menu = new MenuPuntoVenta();
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.pack();
-            menu.setVisible(true);
-        });
     }
 
     public static void main(String[] args) {

@@ -17,7 +17,7 @@ public class BienvenidaMenuInicial extends  JFrame {
         ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
         lblFoto.setIcon(iconoCSS);
         lblBienvenida.setFont(new Font("Arial", Font.BOLD, 18));
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH));
         BtnIngresar.setIcon(imagen);
         BtnIngresar.setBorderPainted(false);
         BtnIngresar.setContentAreaFilled(false);
