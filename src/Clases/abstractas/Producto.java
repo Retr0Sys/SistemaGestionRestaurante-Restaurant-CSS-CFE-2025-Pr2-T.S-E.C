@@ -1,38 +1,51 @@
 package Clases.abstractas;
 
-public abstract class Producto {
+public abstract class Producto
+{
     protected int id;
     protected String nombre;
     protected double precio;
 
-    public Producto(int id, String nombre, double precio) {
+    public Producto(int id, String nombre, double precio)
+    {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
     }
 
-    public double getPrecio() {
+    public double getPrecio()
+    {
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(double precio)
+    {
         this.precio = precio;
     }
 
-    public String getNombre() {
+    public String getNombre()
+    {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    public void setNombre(String nombre)
+    {
         this.nombre = nombre;
     }
-    public int getId() {
+
+    public int getId()
+    {
         return id;
     }
-    public void setId(int id) {
+
+    public void setId(int id)
+    {
         this.id = id;
     }
 
+    // Cada subclase define cómo calcula el impuesto
     public abstract void calcularImpuesto();
-}
 
+    // Cada subclase devuelve su categoría ("comida", "bebida", "postre")
+    public abstract String getCategoria();
+}

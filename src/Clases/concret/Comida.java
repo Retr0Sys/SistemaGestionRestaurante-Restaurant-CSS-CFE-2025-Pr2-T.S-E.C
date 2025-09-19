@@ -1,29 +1,19 @@
 package Clases.concret;
 
+import Clases.abstractas.Producto;
 
-public class Comida {
-    protected String nombre;
-    protected double precio;
-    protected String categoria;
-    protected String disponibilidad;
+public class Comida extends Producto {
 
-    public Comida(String nombre, double precio, String categoria,String disponibilidad) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.categoria = categoria;
-        this.disponibilidad = disponibilidad;
+    public Comida(int id, String nombre, double precio) {
+        super(id, nombre, precio);
     }
 
-    public String getNombre() {
-        return nombre;
+    @Override
+    public void calcularImpuesto() {
+        this.precio = this.precio * 1.10; // 10%
     }
-    public double getPrecio() {
-        return precio;
-    }
+
     public String getCategoria() {
-        return categoria;
-    }
-    public String getDisponibilidad() {
-        return disponibilidad;
+        return "comida";
     }
 }

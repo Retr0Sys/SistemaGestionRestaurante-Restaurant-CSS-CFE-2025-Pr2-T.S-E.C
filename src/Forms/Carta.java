@@ -1,41 +1,33 @@
 package Forms;
 
-import Clases.concret.Comida;
+import Clases.abstractas.Producto;
+import DAO.ProductoDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
+import java.util.List;
 
-public class Carta extends JFrame
-{
+public class Carta extends JFrame {
     public JPanel ventanaCarta;
     private JLabel lblTitulo;
-    JTable tblTablaCartaMenu;
+    private JTable tblTablaCartaMenu;
     private JButton btnAtras;
     private JTabbedPane TBCarta;
     private JPanel JPCarta;
     private JPanel JPcambiarCarta;
     private JLabel lblNombProdAcambiar;
     private JLabel lblNuevoPrecio;
-    private JLabel lblNuevoCategoria;
     private JLabel lblNuevoDisp;
-    private JLabel lblCambiarDisp;
-    private JComboBox CBnuevaDisp;
     private JComboBox CBNuevoNombre;
     private JTextField txtNuevoPrecio;
-    private JComboBox CBNuevaCat;
     private JComboBox CBNuevaDisp;
     private JLabel lblTituloCarta;
 
-
-    //*Imporante* Agregar el TABBEDPANE a el Jpanel principal porque no se ve por pantalla.
-    public Carta()
-    {
-
-
-
+    public Carta() {
         setTitle("Carta del Restaurante");
-        setSize(600, 400);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -45,44 +37,23 @@ public class Carta extends JFrame
         lblTitulo = new JLabel("Carta del Restaurante", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
         ventanaCarta.add(lblTitulo, BorderLayout.NORTH);
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        btnAtras = new JButton("Atras");
-        btnAtras.setIcon(imagen);
-        btnAtras.setBorderPainted(false);
-        btnAtras.setContentAreaFilled(false);
-        btnAtras.setFocusPainted(false);
 
+        // Inicializar TabbedPane y paneles
+        TBCarta = new JTabbedPane();
+        JPCarta = new JPanel(new BorderLayout());
+        JPcambiarCarta = new JPanel();
+        JPcambiarCarta.setLayout(new GridLayout(5, 2, 5, 5)); // Para los campos de cambio
 
-
-        // Modelo de la tabla con columnas
-        String[] columnas = {"Nombre", "Precio", "Categoría", "Disponibilidad"};
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
-
-        // Ejemplo de filas
-        Comida comida1 = new Comida("Paella", 200,"Principal", "Disponible");
-        Comida comida2 = new Comida("Tarta de Queso", 300, "Postre", "No Disponible");
-        Comida comida3 = new Comida("Coca-Cola", 100, "Bebida", "Disponible");
-
-        // Agregar filas al modelo
-        modelo.addRow(new Object[]{comida1.getNombre(), comida1.getPrecio(), comida1.getCategoria(), comida1.getDisponibilidad()});
-        modelo.addRow(new Object[]{comida2.getNombre(), comida2.getPrecio(), comida2.getCategoria(), comida2.getDisponibilidad()});
-        modelo.addRow(new Object[]{comida3.getNombre(), comida3.getPrecio(), comida3.getCategoria(), comida3.getDisponibilidad()});
-
-        // Tabla SIN JScrollPane
-        tblTablaCartaMenu = new JTable(modelo);
-        ventanaCarta.add(tblTablaCartaMenu, BorderLayout.CENTER);
-
-
-        add(ventanaCarta);
+        TBCarta.addTab("Carta", JPCarta);
+        TBCarta.addTab("Cambiar Producto", JPcambiarCarta);
 
         // Botón Atrás
         btnAtras = new JButton("Atrás");
         ventanaCarta.add(btnAtras, BorderLayout.SOUTH);
         btnAtras.addActionListener(e -> {
-            // Cerramos la ventana de bienvenida
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCarta);
             topFrame.dispose();
-            // Abrimos la ventana del menú principal
+
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,6 +61,70 @@ public class Carta extends JFrame
             menu.setVisible(true);
         });
 
+        // Modelo de la tabla con columnas
+        String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+
+        // Cargar datos desde la BD
+        ProductoDAO dao = new ProductoDAO();
+        try {
+            List<Producto> productos = dao.listar();
+            for (Producto p : productos) {
+                String estado = "Disponible";
+                try {
+                    java.lang.reflect.Method m = p.getClass().getMethod("getEstado");
+                    int valor = (int) m.invoke(p);
+                    estado = (valor == 1) ? "Disponible" : "No Disponible";
+                } catch (Exception ex) {
+                    // Por defecto
+                }
+
+                modelo.addRow(new Object[]{
+                        p.getId(),
+                        p.getNombre(),
+                        p.getPrecio(),
+                        p.getClass().getSimpleName(),
+                        estado
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error cargando productos: " + e.getMessage());
+        }
+
+        // Crear la tabla y agregar al panel de la pestaña
+        tblTablaCartaMenu = new JTable(modelo);
+        tblTablaCartaMenu.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tblTablaCartaMenu.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tblTablaCartaMenu.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tblTablaCartaMenu.getColumnModel().getColumn(3).setPreferredWidth(100);
+        tblTablaCartaMenu.getColumnModel().getColumn(4).setPreferredWidth(100);
+        tblTablaCartaMenu.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        JScrollPane scrollPane = new JScrollPane(tblTablaCartaMenu);
+        JPCarta.add(scrollPane, BorderLayout.CENTER);
+
+        // Panel de cambio de producto
+        lblNombProdAcambiar = new JLabel("Producto:");
+        CBNuevoNombre = new JComboBox<>();
+        lblNuevoPrecio = new JLabel("Nuevo Precio:");
+        txtNuevoPrecio = new JTextField();
+        lblNuevoDisp = new JLabel("Disponibilidad:");
+        CBNuevaDisp = new JComboBox<>(new String[]{"Disponible", "No Disponible"});
+
+        JPcambiarCarta.add(lblNombProdAcambiar);
+        JPcambiarCarta.add(CBNuevoNombre);
+        JPcambiarCarta.add(lblNuevoPrecio);
+        JPcambiarCarta.add(txtNuevoPrecio);
+        JPcambiarCarta.add(lblNuevoDisp);
+        JPcambiarCarta.add(CBNuevaDisp);
+
+        // Cargar nombres al comboBox
+        for (int i = 0; i < tblTablaCartaMenu.getRowCount(); i++) {
+            CBNuevoNombre.addItem(tblTablaCartaMenu.getValueAt(i, 1).toString());
+        }
+
+        ventanaCarta.add(TBCarta, BorderLayout.CENTER);
+        add(ventanaCarta);
     }
 
     public static void main(String[] args) {
