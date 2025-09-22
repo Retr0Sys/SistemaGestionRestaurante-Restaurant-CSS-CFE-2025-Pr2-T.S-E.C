@@ -14,6 +14,9 @@ public class ProductoDAO
     private static final String SQL_SELECT_ALL =
             "SELECT * FROM CatalogoProducto";
 
+    private static final String SQL_UPDATE_PRODUCTO =
+            "UPDATE CatalogoProducto SET precio = ?, estado = ? WHERE IdCatalogoProducto = ?";
+
     public List<Producto> listar() throws SQLException
     {
         List<Producto> productos = new ArrayList<>();
@@ -28,20 +31,21 @@ public class ProductoDAO
                 String nombre = rs.getString("nombre");
                 double precio = rs.getDouble("precio");
                 String categoria = rs.getString("categoria");
+                int estado = rs.getInt("estado");
 
                 Producto p = null;
 
                 if ("comida".equalsIgnoreCase(categoria))
                 {
-                    p = new Comida(id, nombre, precio);
+                    p = new Comida(id, nombre, precio, estado);
                 }
                 else if ("bebida".equalsIgnoreCase(categoria))
                 {
-                    p = new Bebida(id, nombre, precio);
+                    p = new Bebida(id, nombre, precio, estado);
                 }
                 else if ("postre".equalsIgnoreCase(categoria))
                 {
-                    p = new Postre(id, nombre, precio);
+                    p = new Postre(id, nombre, precio, estado);
                 }
 
                 if (p != null)
@@ -52,5 +56,18 @@ public class ProductoDAO
         }
 
         return productos;
+    }
+
+    public void actualizarProducto(int idProducto, double nuevoPrecio, int estado) throws SQLException
+    {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_UPDATE_PRODUCTO))
+        {
+            ps.setDouble(1, nuevoPrecio);
+            ps.setInt(2, estado);
+            ps.setInt(3, idProducto);
+
+            ps.executeUpdate();
+        }
     }
 }

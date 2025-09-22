@@ -4,8 +4,8 @@ import Clases.abstractas.Producto;
 
 public class Comida extends Producto {
 
-    public Comida(int id, String nombre, double precio) {
-        super(id, nombre, precio);
+    public Comida(int id, String nombre, double precio, int estado) {
+        super(id, nombre, precio, estado);
     }
 
     @Override

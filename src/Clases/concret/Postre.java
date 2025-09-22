@@ -5,9 +5,9 @@ import Clases.abstractas.Producto;
 public class Postre extends Producto
 {
 
-    public Postre(int id, String nombre, double precio)
+    public Postre(int id, String nombre, double precio, int estado)
     {
-        super(id, nombre, precio);
+        super(id, nombre, precio, estado);
     }
 
     @Override

@@ -5,12 +5,14 @@ public abstract class Producto
     protected int id;
     protected String nombre;
     protected double precio;
+    protected int estado;
 
-    public Producto(int id, String nombre, double precio)
+    public Producto(int id, String nombre, double precio, int estado)
     {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
+        this.estado = estado;
     }
 
     public double getPrecio()
