@@ -1,5 +1,7 @@
 package Forms;
 
+import Clases.concret.Mesa;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -108,6 +110,7 @@ public class MenuPuntoVenta extends JFrame {
             menu.setLocationRelativeTo(null);
             menu.pack();
             menu.setVisible(true);
+            //A ver si anda
         });
 
         btnResumen.addActionListener(e -> {
