@@ -8,6 +8,7 @@ import DAO.ProductoDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -47,6 +48,11 @@ public class Carta extends JFrame
         String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado"};
         modelo = new DefaultTableModel(columnas, 0);
         tblTablaCartaMenu.setModel(modelo);
+
+        JScrollPane scroll = new JScrollPane(tblTablaCartaMenu);
+        JPCarta.setLayout(new BorderLayout());
+        JPCarta.add(scroll, BorderLayout.CENTER);
+
 
         // 🔹 Ocultar columna ID
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMinWidth(0);
