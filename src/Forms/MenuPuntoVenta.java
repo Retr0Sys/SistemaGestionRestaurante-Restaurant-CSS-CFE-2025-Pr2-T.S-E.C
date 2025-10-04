@@ -104,13 +104,12 @@ public class MenuPuntoVenta extends JFrame {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMenuPrinc);
             topFrame.dispose();
             // Abrimos la ventana del menú principal
-            FormMesa menu = new FormMesa();
-            menu.setContentPane(menu.JPMesasIni);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
-            //A ver si anda
+            Mesita mesi = new Mesita();
+            mesi.setContentPane(mesi.panelMesita);
+            mesi.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mesi.setLocationRelativeTo(null);
+            mesi.pack();
+            mesi.setVisible(true);
         });
 
         btnResumen.addActionListener(e -> {
