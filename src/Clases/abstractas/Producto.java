@@ -45,6 +45,17 @@ public abstract class Producto
         this.id = id;
     }
 
+    // Getter y setter para estado
+    public int getEstado()
+    {
+        return estado;
+    }
+
+    public void setEstado(int estado)
+    {
+        this.estado = estado;
+    }
+
     // Cada subclase define cómo calcula el impuesto
     public abstract void calcularImpuesto();
 

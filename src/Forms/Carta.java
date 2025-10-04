@@ -1,6 +1,9 @@
 package Forms;
 
 import Clases.abstractas.Producto;
+import Clases.concret.Comida;
+import Clases.concret.Bebida;
+import Clases.concret.Postre;
 import DAO.ProductoDAO;
 
 import javax.swing.*;
@@ -20,11 +23,18 @@ public class Carta extends JFrame
     private JLabel lblNombProdAcambiar;
     private JLabel lblNuevoPrecio;
     private JLabel lblNuevoDisp;
-    private JComboBox CBNuevoNombre;
-    private JTextField txtNuevoPrecio;
-    private JComboBox CBNuevaDisp;
+    private JComboBox CBProducto;
+    private JTextField txtPrecio;
+    private JComboBox CBDisponibilidad;
     private JLabel lblTituloCarta;
     private JButton btnModificar;
+    private JPanel JPCrear;
+    private JTextField txtNuevoProducto;
+    private JTextField txtNuevoPrecio;
+    private JComboBox CBcategoria;
+    private JButton btnCrear;
+
+    private DefaultTableModel modelo;
 
     public Carta()
     {
@@ -33,86 +43,61 @@ public class Carta extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Modelo de la tabla con columnas
+        // Modelo de la tabla
         String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado"};
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
-
-        // Cargar datos desde la BD
-        ProductoDAO dao = new ProductoDAO();
-        try
-        {
-            List<Producto> productos = dao.listar();
-            for (Producto p : productos)
-            {
-                String estado = "Disponible";
-                try
-                {
-                    java.lang.reflect.Method m = p.getClass().getMethod("getEstado");
-                    int valor = (int) m.invoke(p);
-                    estado = (valor == 1) ? "Disponible" : "No Disponible";
-                }
-                catch (Exception ex)
-                {
-                    // por defecto
-                }
-
-                modelo.addRow(new Object[]{
-                        p.getId(),
-                        p.getNombre(),
-                        p.getPrecio(),
-                        p.getClass().getSimpleName(),
-                        estado
-                });
-            }
-        }
-        catch (SQLException e)
-        {
-            JOptionPane.showMessageDialog(this, "Error cargando productos: " + e.getMessage());
-        }
-
-        // Asignar el modelo a la tabla ya creada en el .form
+        modelo = new DefaultTableModel(columnas, 0);
         tblTablaCartaMenu.setModel(modelo);
-        tblTablaCartaMenu.getColumnModel().getColumn(0).setPreferredWidth(50);
-        tblTablaCartaMenu.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tblTablaCartaMenu.getColumnModel().getColumn(2).setPreferredWidth(80);
-        tblTablaCartaMenu.getColumnModel().getColumn(3).setPreferredWidth(100);
-        tblTablaCartaMenu.getColumnModel().getColumn(4).setPreferredWidth(120);
-        tblTablaCartaMenu.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        // Cargar nombres al comboBox
-        for (int i = 0; i < tblTablaCartaMenu.getRowCount(); i++)
-        {
-            CBNuevoNombre.addItem(tblTablaCartaMenu.getValueAt(i, 1).toString());
-        }
+        // 🔹 Ocultar columna ID
+        tblTablaCartaMenu.getColumnModel().getColumn(0).setMinWidth(0);
+        tblTablaCartaMenu.getColumnModel().getColumn(0).setMaxWidth(0);
+        tblTablaCartaMenu.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        // Cargar productos en tabla y combo
+        cargarProductosDisponibles();
+        cargarComboProductos();
 
         // Cargar estados al combo de disponibilidad
-        CBNuevaDisp.addItem("Disponible");
-        CBNuevaDisp.addItem("No Disponible");
+        CBDisponibilidad.addItem("Disponible");
+        CBDisponibilidad.addItem("No Disponible");
 
-        // Evento al seleccionar producto: precargar precio y estado
-        CBNuevoNombre.addActionListener(e ->
+        // Cargar categorías al combo de creación de producto
+        CBcategoria.addItem("comida");
+        CBcategoria.addItem("bebida");
+        CBcategoria.addItem("postre");
+
+        // Evento al seleccionar producto -> precargar datos desde la BD
+        CBProducto.addActionListener(e ->
         {
-            String nombreSeleccionado = (String) CBNuevoNombre.getSelectedItem();
+            String nombreSeleccionado = (String) CBProducto.getSelectedItem();
             if (nombreSeleccionado != null)
             {
-                for (int i = 0; i < tblTablaCartaMenu.getRowCount(); i++)
+                try
                 {
-                    if (tblTablaCartaMenu.getValueAt(i, 1).toString().equals(nombreSeleccionado))
+                    List<Producto> productos = ProductoDAO.listar();
+                    for (Producto p : productos)
                     {
-                        txtNuevoPrecio.setText(tblTablaCartaMenu.getValueAt(i, 2).toString());
-                        CBNuevaDisp.setSelectedItem(tblTablaCartaMenu.getValueAt(i, 4).toString());
-                        break;
+                        if (p.getNombre().equals(nombreSeleccionado))
+                        {
+                            txtPrecio.setText(String.valueOf(p.getPrecio()));
+                            CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
+                            break;
+                        }
                     }
+                }
+                catch (SQLException ex)
+                {
+                    JOptionPane.showMessageDialog(this, "Error obteniendo producto: " + ex.getMessage());
                 }
             }
         });
 
-        // Acción botón Modificar
+        // Botón Modificar
         btnModificar.addActionListener(e ->
         {
-            String nombreSeleccionado = (String) CBNuevoNombre.getSelectedItem();
-            String nuevoPrecioStr = txtNuevoPrecio.getText();
-            String nuevoEstadoStr = (String) CBNuevaDisp.getSelectedItem();
+            String nombreSeleccionado = (String) CBProducto.getSelectedItem();
+            String nuevoPrecioStr = txtPrecio.getText();
+            String nuevoEstadoStr = (String) CBDisponibilidad.getSelectedItem();
 
             if (nombreSeleccionado == null || nuevoPrecioStr.isEmpty())
             {
@@ -125,37 +110,65 @@ public class Carta extends JFrame
                 double nuevoPrecio = Double.parseDouble(nuevoPrecioStr);
                 int estado = nuevoEstadoStr.equals("Disponible") ? 1 : 0;
 
-                // Buscar ID del producto en la tabla
-                int idProducto = -1;
-                for (int i = 0; i < tblTablaCartaMenu.getRowCount(); i++)
+                Producto productoSeleccionado = null;
+                for (Producto p : ProductoDAO.listar())
                 {
-                    if (tblTablaCartaMenu.getValueAt(i, 1).toString().equals(nombreSeleccionado))
+                    if (p.getNombre().equals(nombreSeleccionado))
                     {
-                        idProducto = (int) tblTablaCartaMenu.getValueAt(i, 0);
+                        productoSeleccionado = p;
                         break;
                     }
                 }
 
-                if (idProducto != -1)
+                if (productoSeleccionado == null)
                 {
-                    dao.actualizarProducto(idProducto, nuevoPrecio, estado);
-                    JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+                    JOptionPane.showMessageDialog(this, "Producto no encontrado en la base de datos.");
+                    return;
+                }
 
-                    // Actualizar la tabla en tiempo real (mostrar texto, no 0/1)
-                    for (int i = 0; i < tblTablaCartaMenu.getRowCount(); i++)
+                int idProducto = productoSeleccionado.getId();
+                ProductoDAO.actualizarProducto(idProducto, nuevoPrecio, estado);
+                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+
+                // Buscar fila en la tabla
+                int filaProducto = -1;
+                for (int i = 0; i < tblTablaCartaMenu.getRowCount(); i++)
+                {
+                    if ((int) tblTablaCartaMenu.getValueAt(i, 0) == idProducto)
                     {
-                        if ((int) tblTablaCartaMenu.getValueAt(i, 0) == idProducto)
-                        {
-                            tblTablaCartaMenu.setValueAt(nuevoPrecio, i, 2);
-                            tblTablaCartaMenu.setValueAt(nuevoEstadoStr, i, 4);
-                            break;
-                        }
+                        filaProducto = i;
+                        break;
+                    }
+                }
+
+                if (estado == 1)
+                {
+                    if (filaProducto != -1)
+                    {
+                        tblTablaCartaMenu.setValueAt(nuevoPrecio, filaProducto, 2);
+                        tblTablaCartaMenu.setValueAt("Disponible", filaProducto, 4);
+                    }
+                    else
+                    {
+                        modelo.addRow(new Object[]
+                                {
+                                        idProducto,
+                                        productoSeleccionado.getNombre(),
+                                        nuevoPrecio,
+                                        productoSeleccionado.getClass().getSimpleName(),
+                                        "Disponible"
+                                });
                     }
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(this, "No se encontró el producto.");
+                    if (filaProducto != -1)
+                    {
+                        modelo.removeRow(filaProducto);
+                    }
                 }
+
+                txtPrecio.setText("");
             }
             catch (NumberFormatException ex)
             {
@@ -167,7 +180,64 @@ public class Carta extends JFrame
             }
         });
 
-        // Acción botón Atrás
+        // Botón Crear
+        btnCrear.addActionListener(e ->
+        {
+            String nombre = txtNuevoProducto.getText().trim();
+            String categoria = (String) CBcategoria.getSelectedItem();
+            String precioStr = txtNuevoPrecio.getText().trim();
+
+            if (nombre.isEmpty() || categoria == null || precioStr.isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "Complete todos los campos para crear el producto.");
+                return;
+            }
+
+            try
+            {
+                double precio = Double.parseDouble(precioStr);
+                Producto nuevoProducto = null;
+
+                switch (categoria.toLowerCase())
+                {
+                    case "comida":
+                        nuevoProducto = new Comida(0, nombre, precio, 1);
+                        break;
+
+                    case "bebida":
+                        nuevoProducto = new Bebida(0, nombre, precio, 1);
+                        break;
+
+                    case "postre":
+                        nuevoProducto = new Postre(0, nombre, precio, 1);
+                        break;
+
+                    default:
+                        JOptionPane.showMessageDialog(this, "Categoría inválida.");
+                        return;
+                }
+
+                ProductoDAO.crearProducto(nuevoProducto);
+                JOptionPane.showMessageDialog(this, "Producto creado correctamente.");
+
+                // Refrescar tabla y combo
+                cargarProductosDisponibles();
+                cargarComboProductos();
+
+                txtNuevoProducto.setText("");
+                txtNuevoPrecio.setText("");
+            }
+            catch (NumberFormatException ex)
+            {
+                JOptionPane.showMessageDialog(this, "Precio inválido.");
+            }
+            catch (SQLException ex)
+            {
+                JOptionPane.showMessageDialog(this, "Error al crear producto: " + ex.getMessage());
+            }
+        });
+
+        // Botón Atrás
         btnAtras.addActionListener(e ->
         {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCarta);
@@ -180,6 +250,53 @@ public class Carta extends JFrame
             menu.setLocationRelativeTo(null);
             menu.setVisible(true);
         });
+    }
+
+    // 🔹 Llena el ComboBox con TODOS los productos (disponibles y no disponibles)
+    private void cargarComboProductos()
+    {
+        CBProducto.removeAllItems();
+
+        try
+        {
+            List<Producto> productos = ProductoDAO.listar();
+
+            for (Producto p : productos)
+            {
+                CBProducto.addItem(p.getNombre());
+            }
+        }
+        catch (SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, "Error cargando productos en combo: " + e.getMessage());
+        }
+    }
+
+    // 🔹 Llena la tabla SOLO con los productos disponibles
+    private void cargarProductosDisponibles()
+    {
+        modelo.setRowCount(0);
+
+        try
+        {
+            List<Producto> productos = ProductoDAO.listarDisponibles();
+
+            for (Producto p : productos)
+            {
+                modelo.addRow(new Object[]
+                        {
+                                p.getId(),
+                                p.getNombre(),
+                                p.getPrecio(),
+                                p.getClass().getSimpleName(),
+                                "Disponible"
+                        });
+            }
+        }
+        catch (SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, "Error cargando productos: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args)
