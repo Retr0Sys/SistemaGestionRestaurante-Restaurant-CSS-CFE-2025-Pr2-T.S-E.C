@@ -66,7 +66,7 @@ public class Carta extends JFrame
         CBcategoria.addItem("bebida");
         CBcategoria.addItem("postre");
 
-        // Evento al seleccionar producto -> precargar datos desde la BD
+        // 🔹 Evento al seleccionar producto desde ComboBox
         CBProducto.addActionListener(e ->
         {
             String nombreSeleccionado = (String) CBProducto.getSelectedItem();
@@ -88,6 +88,40 @@ public class Carta extends JFrame
                 catch (SQLException ex)
                 {
                     JOptionPane.showMessageDialog(this, "Error obteniendo producto: " + ex.getMessage());
+                }
+            }
+        });
+
+        // 🔹 Evento al hacer click en la tabla
+        tblTablaCartaMenu.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                int fila = tblTablaCartaMenu.getSelectedRow();
+                if (fila != -1)
+                {
+                    String nombreSeleccionado = (String) tblTablaCartaMenu.getValueAt(fila, 1); // columna Nombre
+                    CBProducto.setSelectedItem(nombreSeleccionado);
+
+                    // Precargar precio y disponibilidad
+                    try
+                    {
+                        List<Producto> productos = ProductoDAO.listar();
+                        for (Producto p : productos)
+                        {
+                            if (p.getNombre().equals(nombreSeleccionado))
+                            {
+                                txtPrecio.setText(String.valueOf(p.getPrecio()));
+                                CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
+                                break;
+                            }
+                        }
+                    }
+                    catch (SQLException ex)
+                    {
+                        JOptionPane.showMessageDialog(null, "Error cargando datos del producto: " + ex.getMessage());
+                    }
                 }
             }
         });
