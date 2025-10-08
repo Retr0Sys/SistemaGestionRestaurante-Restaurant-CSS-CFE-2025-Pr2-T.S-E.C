@@ -79,6 +79,55 @@ public class FormMesa extends JFrame {
         setLocationRelativeTo(null);
         pack();
 
+        // Estética general
+        Color fondo = new Color(245, 245, 245);
+        Color acento = new Color(255, 159, 101);
+        Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 20);
+        Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
+
+        JPMesasIni.setBackground(fondo);
+        JPMesasIni.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        // Tablas estilizadas
+        TBPedidosMesa.setFont(fuenteGeneral);
+        TBPedidosMesa.setRowHeight(28);
+        TBPedidosMesa.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        TBPedidosMesa.getTableHeader().setBackground(acento);
+        TBPedidosMesa.getTableHeader().setForeground(Color.WHITE);
+
+        TBProductosMesa.setFont(fuenteGeneral);
+        TBProductosMesa.setRowHeight(28);
+        TBProductosMesa.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        TBProductosMesa.getTableHeader().setBackground(acento);
+        TBProductosMesa.getTableHeader().setForeground(Color.WHITE);
+        lblMesas.setFont(fuenteTitulo);
+        lblMesas.setForeground(Color.BLACK);
+
+        // Subtotal visual
+        txtSubtotal.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        txtSubtotal.setForeground(new Color(124, 126, 124));
+        txtSubtotal.setHorizontalAlignment(JTextField.CENTER);
+
+        // Combos estilizados
+        CBmesa.setFont(fuenteGeneral);
+        CBmesa3.setFont(fuenteGeneral);
+        CBSelecEstado.setFont(fuenteGeneral);
+        CBmesa.setBorder(BorderFactory.createLineBorder(acento, 2));
+        CBmesa3.setBorder(BorderFactory.createLineBorder(acento, 2));
+        CBSelecEstado.setBorder(BorderFactory.createLineBorder(acento, 2));
+
+        // Botones con cursor y sombra
+        inicializarIconos();
+        aplicarHover(btnAtras);
+        aplicarHover(cambiarEstadoButton);
+        aplicarHover(BtnAsignar);
+        aplicarHover(BtnEnviar);
+        aplicarHover(btnEnviar);
+        aplicarHover(btnAñadirProd);
+        aplicarHover(btnEliminarProd);
+        aplicarHover(btnAbrirCuenta);
+        aplicarHover(btnCerrarCuenta);
+
         if (TBProductosMesa.getModel() == null || TBProductosMesa.getColumnCount() == 0) {
             TBProductosMesa.setModel(new DefaultTableModel(
                     new Object[]{"ID", "Producto", "Cantidad", "Subtotal"}, 0
@@ -89,9 +138,6 @@ public class FormMesa extends JFrame {
         if (txtSubtotal.getText().isEmpty()) {
             txtSubtotal.setText("0");
         }
-
-        // Inicializar iconos
-        inicializarIconos();
 
         cargarMesas();
         cargarEstados();
@@ -113,38 +159,52 @@ public class FormMesa extends JFrame {
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.pack();
             menu.setVisible(true);
         });
     }
+    private void aplicarHover(JButton boton) {
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton.setBorder(BorderFactory.createEmptyBorder());
+            }
+        });
+    }
+
 
     private void inicializarIconos() {
-        btnAtras.setIcon(new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        btnAtras.setIcon(new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
 
-        cambiarEstadoButton.setIcon(new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        cambiarEstadoButton.setIcon(new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
         cambiarEstadoButton.setBorderPainted(false);
         cambiarEstadoButton.setContentAreaFilled(false);
         cambiarEstadoButton.setFocusPainted(false);
 
-        BtnAsignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        BtnAsignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
         BtnAsignar.setBorderPainted(false);
         BtnAsignar.setContentAreaFilled(false);
         BtnAsignar.setFocusPainted(false);
 
-        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
         BtnEnviar.setBorderPainted(false);
         BtnEnviar.setContentAreaFilled(false);
         BtnEnviar.setFocusPainted(false);
 
-        btnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        btnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
         btnEnviar.setBorderPainted(false);
         btnEnviar.setContentAreaFilled(false);
         btnEnviar.setFocusPainted(false);
 
-        btnAñadirProd.setIcon(new ImageIcon(new ImageIcon("imagenes/Añadir.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        btnAñadirProd.setIcon(new ImageIcon(new ImageIcon("imagenes/Añadir.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
         btnAñadirProd.setBorderPainted(false);
         btnAñadirProd.setContentAreaFilled(false);
         btnAñadirProd.setFocusPainted(false);
@@ -329,13 +389,11 @@ public class FormMesa extends JFrame {
         }
     }
 
-
-
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FormMesa form = new FormMesa();
             form.setVisible(true);
+            form.setExtendedState(JFrame.MAXIMIZED_BOTH);
         });
     }
 }

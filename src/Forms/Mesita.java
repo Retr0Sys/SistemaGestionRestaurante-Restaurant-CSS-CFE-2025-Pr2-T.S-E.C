@@ -8,24 +8,18 @@ import java.awt.event.ActionListener;
 public class Mesita extends JFrame {
     public JPanel panelMesita;
     private JPanel JPDentroScroll;
-    private JButton btnMesa1;
-    private JButton btnMesa2;
-    private JButton btnMesa3;
-    private JButton btnMesa4;
-    private JButton btnMesa5;
-    private JButton btnMesa6;
-    private JButton btnMesa7;
-    private JButton btnMesa8;
-    private JButton btnMesa9;
-    private JButton btnMesa10;
-    private JButton btnMesa11;
-    private JButton btnMesa12;
+    private JButton btnMesa1, btnMesa2, btnMesa3, btnMesa4, btnMesa5, btnMesa6;
+    private JButton btnMesa7, btnMesa8, btnMesa9, btnMesa10, btnMesa11, btnMesa12;
 
-    private JButton[] botonesMesa = new JButton[24];
-    private ImageIcon[] iconosMesa = new ImageIcon[24];
+    private JButton[] botonesMesa = new JButton[12];
+    private ImageIcon[] iconosMesa = new ImageIcon[12];
 
     public Mesita() {
-        // Asignar los botones del formulario al arreglo
+        //  Estética general
+        Color fondo = new Color(245, 245, 245);
+        panelMesita.setBackground(fondo);
+
+        // Asignar botones al arreglo
         botonesMesa[0] = btnMesa1;
         botonesMesa[1] = btnMesa2;
         botonesMesa[2] = btnMesa3;
@@ -39,9 +33,8 @@ public class Mesita extends JFrame {
         botonesMesa[10] = btnMesa11;
         botonesMesa[11] = btnMesa12;
 
-
-        // Cargar íconos y aplicar estilo a cada botón
-        for (int i = 0; i < 12; i++) {
+        // Aplicar estilo e íconos
+        for (int i = 0; i < botonesMesa.length; i++) {
             String ruta = "imagenes/m" + (i + 1) + ".png";
             iconosMesa[i] = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH));
 
@@ -49,203 +42,45 @@ public class Mesita extends JFrame {
             botonesMesa[i].setBorderPainted(false);
             botonesMesa[i].setContentAreaFilled(false);
             botonesMesa[i].setFocusPainted(false);
+            botonesMesa[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
+            botonesMesa[i].setToolTipText("Mesa " + (i + 1));
+
+            // Hover visual
+            final int index = i;
+            botonesMesa[i].addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    botonesMesa[index].setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+                }
+
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    botonesMesa[index].setBorder(BorderFactory.createEmptyBorder());
+                }
+            });
+
+            //  Acción de navegación
+            botonesMesa[i].addActionListener(e -> {
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
+                topFrame.dispose();
+
+                FormMesa menu = new FormMesa();
+                menu.setContentPane(menu.JPMesasIni);
+                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                menu.setLocationRelativeTo(null);
+                menu.pack();
+                menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                menu.setVisible(true);
+            });
         }
-        btnMesa1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-        btnMesa2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-        btnMesa3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-        btnMesa4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-
-        btnMesa5.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-
-        btnMesa6.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-
-        btnMesa7.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-        btnMesa8.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-        btnMesa9.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-        btnMesa10.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-
-        btnMesa11.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-
-        btnMesa12.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Cerramos la ventana de bienvenida
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
-                // Abrimos la ventana del menú principal
-                FormMesa menu = new FormMesa();
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setVisible(true);
-            }
-        });
-
     }
-
-
-
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Mesita");
         frame.setContentPane(new Mesita().panelMesita);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }
+

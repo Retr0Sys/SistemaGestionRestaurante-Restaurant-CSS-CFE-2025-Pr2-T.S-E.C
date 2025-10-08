@@ -16,134 +16,113 @@ public class MenuPuntoVenta extends JFrame {
     private JLabel lblCSS;
 
     public MenuPuntoVenta() {
-        //Colocamos imagenes a los botones
-        ImageIcon carta = new ImageIcon(new ImageIcon("imagenes/Menu.png").getImage().getScaledInstance( 100, 100, Image.SCALE_SMOOTH));
-        ImageIcon cocina = new ImageIcon(new ImageIcon("imagenes/Cocina.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        ImageIcon factura = new ImageIcon(new ImageIcon("imagenes/Facturas.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        ImageIcon mesa = new ImageIcon(new ImageIcon("imagenes/Mesas.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        ImageIcon resumen = new ImageIcon(new ImageIcon("imagenes/Resumen.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        ImageIcon acerca = new ImageIcon(new ImageIcon("imagenes/Acerca.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        // Panel principal
+        JPMenuPrinc = new JPanel();
+        JPMenuPrinc.setBackground(new Color(245, 245, 245));
+        JPMenuPrinc.setLayout(new BoxLayout(JPMenuPrinc, BoxLayout.Y_AXIS));
+        JPMenuPrinc.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
 
-        btnCarta.setIcon(carta);
-        btnCarta.setBorderPainted(false);
-        btnCarta.setContentAreaFilled(false);
-        btnCarta.setFocusPainted(false);
+        // Panel de botones
+        JPanel panelBotones = new JPanel(new GridLayout(2, 3, 30, 30));
+        panelBotones.setOpaque(false);
 
-        btnCocina.setIcon(cocina);
-        btnCocina.setBorderPainted(false);
-        btnCocina.setContentAreaFilled(false);
-        btnCocina.setFocusPainted(false);
+        // Crear botones con estilo
+        btnCarta = crearBoton("imagenes/Menu.png");
+        btnCocina = crearBoton("imagenes/Cocina.png");
+        btnFact = crearBoton("imagenes/Facturas.png");
+        btnMesa = crearBoton("imagenes/Mesas.png");
+        btnResumen = crearBoton("imagenes/Resumen.png");
+        btnAcerca = crearBoton("imagenes/Acerca.png");
 
-        btnFact.setIcon(factura);
-        btnFact.setBorderPainted(false);
-        btnFact.setContentAreaFilled(false);
-        btnFact.setFocusPainted(false);
+        // Agregar botones al panel
+        panelBotones.add(btnCarta);
+        panelBotones.add(btnCocina);
+        panelBotones.add(btnFact);
+        panelBotones.add(btnMesa);
+        panelBotones.add(btnResumen);
+        panelBotones.add(btnAcerca);
 
-        btnMesa.setIcon(mesa);
-        btnMesa.setBorderPainted(false);
-        btnMesa.setContentAreaFilled(false);
-        btnMesa.setFocusPainted(false);
+        // Etiqueta inferior
+        lblCSS = new JLabel("Sistema CSS - Punto de Venta");
+        lblCSS.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblCSS.setForeground(new Color(80, 80, 80));
+        lblCSS.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblCSS.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
-        btnResumen.setIcon(resumen);
-        btnResumen.setBorderPainted(false);
-        btnResumen.setContentAreaFilled(false);
-        btnResumen.setFocusPainted(false);
+        // Acciones
+        btnCarta.addActionListener(e -> abrirVentanaMax(new Carta(), "ventanaCarta"));
+        btnCocina.addActionListener(e -> abrirVentanaMax(new Cocina(), "ventanaCocina"));
+        btnFact.addActionListener(e -> abrirVentanaMax(new Facturacion(), "ventanaFact"));
+        btnMesa.addActionListener(e -> abrirVentanaMax(new Mesita(), "panelMesita"));
+        btnResumen.addActionListener(e -> abrirVentanaMax(new Resumen(), "ventanaResumen"));
+        btnAcerca.addActionListener(e -> abrirVentanaAcerca(new Acerca(), "JPacerca"));
 
-        btnAcerca.setIcon(acerca);
-        btnAcerca.setBorderPainted(false);
-        btnAcerca.setContentAreaFilled(false);
-        btnAcerca.setFocusPainted(false);
+        // Agregar al panel principal
+        JPMenuPrinc.add(panelBotones);
+        JPMenuPrinc.add(lblCSS);
 
-        lblCSS.setFont(new Font("Arial", Font.BOLD, 12));
+        setContentPane(JPMenuPrinc);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setVisible(true);
+    }
 
+    // Método para crear botones con imagen y efectos
+    private JButton crearBoton(String rutaImagen) {
+        JButton boton = new JButton();
+        ImageIcon icono = new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+        boton.setIcon(icono);
+        boton.setContentAreaFilled(false);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Hover: sombra + zoom
+        boton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH)));
+                boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+            }
 
-        btnCarta.addActionListener(e -> {
-            // Cerramos la ventana de bienvenida
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMenuPrinc);
-            topFrame.dispose();
-            // Abrimos la ventana del menú principal
-            Carta menu = new Carta();
-            menu.setContentPane(menu.ventanaCarta);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+                boton.setBorder(BorderFactory.createEmptyBorder());
+            }
         });
 
-
-
-        btnCocina.addActionListener(e -> {
-            // Cerramos la ventana de bienvenida
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMenuPrinc);
-            topFrame.dispose();
-            // Abrimos la ventana del menú principal
-            Cocina menu = new Cocina();
-            menu.setContentPane(menu.ventanaCocina);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
-        });
-
-        btnFact.addActionListener(e -> {
-            // Cerramos la ventana de bienvenida
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMenuPrinc);
-            topFrame.dispose();
-            // Abrimos la ventana del menú principal
-            Facturacion menu = new Facturacion();
-            menu.setContentPane(menu.ventanaFact);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
-        });
-
-        btnMesa.addActionListener(e -> {
-            // Cerramos la ventana de bienvenida
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMenuPrinc);
-            topFrame.dispose();
-            // Abrimos la ventana del menú principal
-            Mesita mesi = new Mesita();
-            mesi.setContentPane(mesi.panelMesita);
-            mesi.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            mesi.setLocationRelativeTo(null);
-            mesi.pack();
-            mesi.setVisible(true);
-        });
-
-        btnResumen.addActionListener(e -> {
-            // Cerramos la ventana de Bienvenida
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMenuPrinc);
-            topFrame.dispose();
-            // Abrimos la ventana del menú principal
-            Resumen menu = new Resumen();
-            menu.setContentPane(menu.ventanaResumen);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
-        });
-
-        btnAcerca.addActionListener(e -> {
-            // Abrimos la ventana de Acerca de
-            Acerca menu = new Acerca();
-            menu.setContentPane(menu.JPacerca);
-            menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
-        });
-
+        return boton;
     }
 
 
-    public static void main(String[] args) {
-        JFrame ventana = new JFrame("MenuPrincipal");
-        ventana.setContentPane(new MenuPuntoVenta().JPMenuPrinc);
+    private void abrirVentanaMax(JFrame ventana, String panelNombre) {
+        dispose();
+        ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setLocationRelativeTo(null);
         ventana.pack();
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setVisible(true);
+    }
+
+    private void abrirVentanaAcerca(JFrame ventana, String panelNombre) {
+        ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
+        ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ventana.setLocationRelativeTo(null);
+        ventana.pack();
+        ventana.setVisible(true);
+    }
+
+    // Utilidad para obtener panel por nombre
+    private Component getPanelPorNombre(JFrame ventana, String nombreCampo) {
+        try {
+            return (Component) ventana.getClass().getDeclaredField(nombreCampo).get(ventana);
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo acceder al panel: " + nombreCampo);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MenuPuntoVenta());
     }
 }

@@ -40,21 +40,71 @@ public class Facturacion extends JFrame {
     private static int contadorFactura = 1;
 
     public Facturacion() {
+        // Estética general
+        Color fondo = new Color(245, 245, 245);
+        Color acento = new Color(255, 159, 101);
+        Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
+        Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
+
+        ventanaFact.setBackground(fondo);
+        ventanaFact.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
         // Configuración de botones
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
+        btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
         btnComprobante.setIcon(imagen2);
         btnComprobante.setBorderPainted(false);
         btnComprobante.setContentAreaFilled(false);
         btnComprobante.setFocusPainted(false);
+        btnComprobante.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        btnComprobante.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnComprobante.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnComprobante.setBorder(BorderFactory.createEmptyBorder());
+            }
+        });
+
+        btnAtras.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAtras.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAtras.setBorder(BorderFactory.createEmptyBorder());
+            }
+        });
+
+        // Título
         setTitle("Facturación");
-        lblFact.setFont(new Font("Arial", Font.BOLD, 18));
+        lblFact.setFont(fuenteTitulo);
+        lblFact.setForeground(acento);
+
+        // Etiquetas
+        lblSubtotal.setFont(fuenteGeneral);
+        lblSubtotalNumero.setFont(fuenteGeneral);
+        lblDescuento.setFont(fuenteGeneral);
+        lblMetPago.setFont(fuenteGeneral);
+        lblTotal.setFont(fuenteGeneral);
+        lblTotalNum.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblTotalNum.setForeground(new Color(124, 126, 124));
+        lblMesa.setFont(fuenteGeneral);
+
+        // Combos
+        cboxMesa.setFont(fuenteGeneral);
+        cboxDescuento.setFont(fuenteGeneral);
+        cboxMetPago.setFont(fuenteGeneral);
+
+        cboxMesa.setBorder(BorderFactory.createLineBorder(acento, 2));
+        cboxDescuento.setBorder(BorderFactory.createLineBorder(acento, 2));
+        cboxMetPago.setBorder(BorderFactory.createLineBorder(acento, 2));
 
         // Cargar mesas desde BD
         cargarMesasDesdeBD();
@@ -454,6 +504,7 @@ public class Facturacion extends JFrame {
         ventana.setContentPane(ventana.ventanaFact);
         ventana.setBounds(300, 200, 500, 300);
         ventana.setVisible(true);
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
