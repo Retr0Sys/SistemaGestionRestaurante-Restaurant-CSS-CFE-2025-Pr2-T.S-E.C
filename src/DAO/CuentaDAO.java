@@ -1,79 +1,141 @@
 package DAO;
 
+import Clases.concret.Cuenta;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import Clases.concret.Cuenta;
 
 public class CuentaDAO
 {
-    // Crear una nueva cuenta con estado abierto (1)
-    public static void abrirCuenta(int idMesa) throws SQLException
+    private static final String SQL_INSERT =
+            "INSERT INTO cuenta (idMesa, estado) VALUES (?, ?)";
+
+    private static final String SQL_SELECT_ABIERTA_COUNT =
+            "SELECT COUNT(*) FROM cuenta WHERE idMesa = ? AND estado = 1";
+
+    private static final String SQL_SELECT_ID_ABIERTA =
+            "SELECT idCuenta FROM cuenta WHERE idMesa = ? AND estado = 1 LIMIT 1";
+
+    private static final String SQL_CERRAR_CUENTA =
+            "UPDATE cuenta SET estado = 0, fechaCierre = NOW() WHERE idMesa = ? AND estado = 1";
+
+    private static final String SQL_SELECT_ABIERTA =
+            "SELECT * FROM cuenta WHERE idMesa = ? AND estado = 1 LIMIT 1";
+
+    private static final String SQL_SELECT_ALL =
+            "SELECT * FROM cuenta ORDER BY fechaApertura DESC";
+
+    // Inserta una nueva cuenta. Si quieres recuperar el id generado, se setea en el objeto Cuenta.
+    public void insertar(Cuenta c) throws SQLException
     {
-        String sql = "INSERT INTO cuenta (idMesa, fechaApertura, estado) VALUES (?, NOW(), 1)";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql))
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS))
         {
-            stmt.setInt(1, idMesa);
-            stmt.executeUpdate();
+            ps.setInt(1, c.getIdMesa());
+            ps.setInt(2, c.getEstado()); // normalmente 1 = abierta
+            ps.executeUpdate();
+
+            try (ResultSet keys = ps.getGeneratedKeys())
+            {
+                if (keys.next())
+                {
+                    c.setIdCuenta(keys.getInt(1));
+                }
+            }
         }
     }
 
-    // Cerrar cuenta (estado cerrado 0 y fechaCierre)
-    public static void cerrarCuenta(int idCuenta) throws SQLException
+    // Devuelve true si la mesa tiene una cuenta con estado = 1 (abierta)
+    public boolean tieneCuentaAbierta(int idMesa) throws SQLException
     {
-        String sql = "UPDATE cuenta SET estado = 0, fechaCierre = NOW() WHERE idCuenta = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql))
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_SELECT_ABIERTA_COUNT))
         {
-            stmt.setInt(1, idCuenta);
-            stmt.executeUpdate();
-        }
-    }
-
-    // Obtener la cuenta abierta de una mesa
-    public static Cuenta obtenerCuentaAbierta(int idMesa) throws SQLException
-    {
-        String sql = "SELECT * FROM cuenta WHERE idMesa = ? AND estado = 1 LIMIT 1";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql))
-        {
-            stmt.setInt(1, idMesa);
-            try (ResultSet rs = stmt.executeQuery())
+            ps.setInt(1, idMesa);
+            try (ResultSet rs = ps.executeQuery())
             {
                 if (rs.next())
                 {
-                    return new Cuenta(
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Devuelve el id de la cuenta abierta para una mesa, o -1 si no existe
+    public int obtenerIdCuentaAbierta(int idMesa) throws SQLException
+    {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_SELECT_ID_ABIERTA))
+        {
+            ps.setInt(1, idMesa);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
+                    return rs.getInt("idCuenta");
+                }
+            }
+        }
+        return -1;
+    }
+
+    // Cierra la cuenta abierta de la mesa (pone estado = 0 y fechaCierre = NOW())
+    public void cerrarCuenta(int idMesa) throws SQLException
+    {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_CERRAR_CUENTA))
+        {
+            ps.setInt(1, idMesa);
+            ps.executeUpdate();
+        }
+    }
+
+    // Devuelve la Cuenta abierta de la mesa (con timestamps), o null si no existe
+    public Cuenta obtenerCuentaAbierta(int idMesa) throws SQLException
+    {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_SELECT_ABIERTA))
+        {
+            ps.setInt(1, idMesa);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
+                    Cuenta c = new Cuenta(
                             rs.getInt("idCuenta"),
                             rs.getInt("idMesa"),
                             rs.getTimestamp("fechaApertura"),
                             rs.getTimestamp("fechaCierre"),
                             rs.getInt("estado")
                     );
+                    return c;
                 }
             }
         }
         return null;
     }
 
-    // Listar todas las cuentas
-    public static List<Cuenta> listar() throws SQLException
+    // Lista todas las cuentas (historial)
+    public List<Cuenta> listar() throws SQLException
     {
         List<Cuenta> lista = new ArrayList<>();
-        String sql = "SELECT * FROM cuenta";
-        try (Connection conn = ConexionDB.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql))
+        try (Connection cn = ConexionDB.getConnection();
+             Statement st = cn.createStatement();
+             ResultSet rs = st.executeQuery(SQL_SELECT_ALL))
         {
             while (rs.next())
             {
-                lista.add(new Cuenta(
+                Cuenta c = new Cuenta(
                         rs.getInt("idCuenta"),
                         rs.getInt("idMesa"),
                         rs.getTimestamp("fechaApertura"),
                         rs.getTimestamp("fechaCierre"),
                         rs.getInt("estado")
-                ));
+                );
+                lista.add(c);
             }
         }
         return lista;

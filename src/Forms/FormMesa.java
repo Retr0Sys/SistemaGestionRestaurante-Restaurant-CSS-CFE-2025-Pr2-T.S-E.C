@@ -1,19 +1,24 @@
 package Forms;
 
+import Clases.abstractas.Producto;
+import Clases.concret.Mesa;
+import Clases.concret.Pedido;
+import Clases.concret.Cuenta;
+import DAO.MesaDAO;
+import DAO.PedidoDAO;
+import DAO.CuentaDAO;
+import DAO.ProductoDAO;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-import DAO.MesaDAO;
-import DAO.PedidoDAO;
-import Clases.concret.Mesa;
-
-public class FormMesa extends JFrame
-{
+public class FormMesa extends JFrame {
     public JPanel JPMesasIni;
-    private JComboBox<Integer> CBmesa;
     private JComboBox<String> CBSelecEstado;
+    private JComboBox<Integer> CBmesa;
     private JLabel lblEstado;
     private JTable TBPedidosMesa;
     private JButton cambiarEstadoButton;
@@ -26,7 +31,7 @@ public class FormMesa extends JFrame
     private JScrollPane ScrollAbajoPri;
     private JLabel lblPedidoMesa;
     private JPanel JPasignar;
-    private JPanel JPpedidos;
+    private JPanel JPpedidosRealizar;
     private JPanel JPReservas;
     private JLabel lblMesas;
     private JLabel lblMesa2;
@@ -36,15 +41,13 @@ public class FormMesa extends JFrame
     private JButton BtnAsignar;
     private JLabel lblMesa3;
     private JLabel lblOperacion;
-    private JTable TBProd2;
+    protected JTable TBProductosMesa;
     private JLabel lblCantidad;
     private JTextField txtCantidad;
     private JLabel lblSubtotal;
-    private JTextField txtSubtotal;
+    JTextField txtSubtotal;
     private JButton BtnEnviar;
     private JLabel lblPedidosMesaPedidos;
-    private JRadioButton RDBaniadir;
-    private JRadioButton RDBeliminar;
     private JComboBox CBmesa3;
     private JLabel lblMesa4;
     private JLabel lblOperacionReserva;
@@ -59,58 +62,52 @@ public class FormMesa extends JFrame
     private JLabel lblEstadoFin;
     private JLabel lblCalendario;
     private JComboBox CBmesa4;
+    private JButton btnAbrirCuenta;
+    private JButton btnCerrarCuenta;
+    private JButton btnEliminarProd;
+    private JButton btnAñadirProd;
+    private JLabel lblCuenta;
+    private JTable TBCuentas;
 
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
+    private CuentaDAO cuentaDAO = new CuentaDAO();
 
-    public FormMesa()
-    {
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        btnAtras.setIcon(imagen);
-        btnAtras.setBorderPainted(false);
-        btnAtras.setContentAreaFilled(false);
-        btnAtras.setFocusPainted(false);
+    public FormMesa() {
+        setContentPane(JPMesasIni);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        pack();
 
+        if (TBProductosMesa.getModel() == null || TBProductosMesa.getColumnCount() == 0) {
+            TBProductosMesa.setModel(new DefaultTableModel(
+                    new Object[]{"ID", "Producto", "Cantidad", "Subtotal"}, 0
+            ));
+        }
 
-        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        cambiarEstadoButton.setIcon(imagen2);
-        cambiarEstadoButton.setBorderPainted(false);
-        cambiarEstadoButton.setContentAreaFilled(false);
-        cambiarEstadoButton.setFocusPainted(false);
+        // Inicializar subtotal
+        if (txtSubtotal.getText().isEmpty()) {
+            txtSubtotal.setText("0");
+        }
 
-        ImageIcon imagen3 = new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        BtnAsignar.setIcon(imagen3);
-        BtnAsignar.setBorderPainted(false);
-        BtnAsignar.setContentAreaFilled(false);
-        BtnAsignar.setFocusPainted(false);
-
-        ImageIcon imagen4 = new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        BtnEnviar.setIcon(imagen4);
-        BtnEnviar.setBorderPainted(false);
-        BtnEnviar.setContentAreaFilled(false);
-        BtnEnviar.setFocusPainted(false);
-
-        ImageIcon imagen5 = new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        btnEnviar.setIcon(imagen5);
-        btnEnviar.setBorderPainted(false);
-        btnEnviar.setContentAreaFilled(false);
-        btnEnviar.setFocusPainted(false);
-
-
-        lblEstado.setFont(new Font("Arial", Font.BOLD, 14));
+        // Inicializar iconos
+        inicializarIconos();
 
         cargarMesas();
         cargarEstados();
 
-        // Evento al seleccionar una mesa
         CBmesa.addActionListener(e -> mostrarDatosMesa());
-
-        // Evento al presionar el botón cambiar estado
         cambiarEstadoButton.addActionListener(e -> cambiarEstadoMesa());
 
-        // Botón atrás
-        btnAtras.addActionListener(e ->
-        {
+        btnAbrirCuenta.addActionListener(e -> abrirCuenta());
+        btnCerrarCuenta.addActionListener(e -> cerrarCuenta());
+
+        btnAñadirProd.addActionListener(e -> abrirDialogoAgregarPedido());
+        btnEliminarProd.addActionListener(e -> eliminarProductoSeleccionado());
+
+        BtnEnviar.addActionListener(e -> enviarPedidos());
+
+        btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMesasIni);
             topFrame.dispose();
             MenuPuntoVenta menu = new MenuPuntoVenta();
@@ -121,92 +118,224 @@ public class FormMesa extends JFrame
         });
     }
 
-    private void cargarMesas()
-    {
-        try
-        {
+    private void inicializarIconos() {
+        btnAtras.setIcon(new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        btnAtras.setBorderPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        btnAtras.setFocusPainted(false);
+
+        cambiarEstadoButton.setIcon(new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        cambiarEstadoButton.setBorderPainted(false);
+        cambiarEstadoButton.setContentAreaFilled(false);
+        cambiarEstadoButton.setFocusPainted(false);
+
+        BtnAsignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        BtnAsignar.setBorderPainted(false);
+        BtnAsignar.setContentAreaFilled(false);
+        BtnAsignar.setFocusPainted(false);
+
+        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        BtnEnviar.setBorderPainted(false);
+        BtnEnviar.setContentAreaFilled(false);
+        BtnEnviar.setFocusPainted(false);
+
+        btnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        btnEnviar.setBorderPainted(false);
+        btnEnviar.setContentAreaFilled(false);
+        btnEnviar.setFocusPainted(false);
+
+        btnAñadirProd.setIcon(new ImageIcon(new ImageIcon("imagenes/Añadir.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        btnAñadirProd.setBorderPainted(false);
+        btnAñadirProd.setContentAreaFilled(false);
+        btnAñadirProd.setFocusPainted(false);
+    }
+
+    private void cargarMesas() {
+        try {
             List<Mesa> mesas = mesaDAO.listar();
-
-            // Limpiamos los ComboBox antes de cargarlos
             CBmesa.removeAllItems();
-            CBmesa2.removeAllItems();
             CBmesa3.removeAllItems();
-            CBmesa4.removeAllItems();
-
-            // Cargar los ids de las mesas en cada ComboBox
-            for (Mesa m : mesas)
-            {
+            for (Mesa m : mesas) {
                 CBmesa.addItem(m.getIdMesa());
-                CBmesa2.addItem(m.getIdMesa());
                 CBmesa3.addItem(m.getIdMesa());
-                CBmesa4.addItem(m.getIdMesa());
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error cargando mesas: " + e.getMessage());
         }
     }
 
-
-    private void cargarEstados()
-    {
-        // Estados fijos cargados directamente en el ComboBox
+    private void cargarEstados() {
         CBSelecEstado.addItem("Disponible");
         CBSelecEstado.addItem("Ocupada");
         CBSelecEstado.addItem("Reservada");
         CBSelecEstado.addItem("Limpieza");
     }
 
-    private void mostrarDatosMesa()
-    {
-        try
-        {
+    private void mostrarDatosMesa() {
+        try {
             int idMesa = (int) CBmesa.getSelectedItem();
             Mesa m = mesaDAO.buscarPorId(idMesa);
-
-            // Mostrar estado actual
-            lblEstadoFin.setText(m.getEstado());
-
-        }
-        catch (SQLException e)
-        {
+            lblEstado.setText(m.getEstado());
+            cargarPedidosMesa(idMesa);
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error mostrando datos: " + e.getMessage());
         }
     }
 
-
-    private void cambiarEstadoMesa()
-    {
-        try
-        {
+    private void cambiarEstadoMesa() {
+        try {
             int idMesa = (int) CBmesa.getSelectedItem();
             String nuevoEstado = (String) CBSelecEstado.getSelectedItem();
-
-            // Actualizar mesa
             Mesa m = mesaDAO.buscarPorId(idMesa);
             m.setEstado(nuevoEstado);
             mesaDAO.actualizar(m);
-
-            // Mostrar el nuevo estado en lblEstadoFin
-            lblEstadoFin.setText(nuevoEstado);
-
+            lblEstado.setText(nuevoEstado);
             JOptionPane.showMessageDialog(this, "Estado actualizado correctamente.");
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error actualizando estado: " + e.getMessage());
         }
     }
 
+    private void abrirCuenta() {
+        try {
+            int idMesa = (int) CBmesa.getSelectedItem();
+            if (cuentaDAO.tieneCuentaAbierta(idMesa)) {
+                JOptionPane.showMessageDialog(this, "La mesa ya tiene una cuenta abierta.");
+                return;
+            }
+            Cuenta nuevaCuenta = new Cuenta(idMesa, 1);
+            cuentaDAO.insertar(nuevaCuenta);
+            JOptionPane.showMessageDialog(this, "Cuenta abierta para la mesa " + idMesa);
+            cargarPedidosMesa(idMesa);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al abrir cuenta: " + e.getMessage());
+        }
+    }
 
-    public static void main(String[] args)
-    {
-        FormMesa form = new FormMesa();
-        form.setContentPane(form.JPMesasIni);
-        form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        form.setLocationRelativeTo(null);
-        form.pack();
-        form.setVisible(true);
+    private void cerrarCuenta() {
+        try {
+            int idMesa = (int) CBmesa.getSelectedItem();
+            if (!cuentaDAO.tieneCuentaAbierta(idMesa)) {
+                JOptionPane.showMessageDialog(this, "No hay cuenta abierta para esta mesa.");
+                return;
+            }
+            cuentaDAO.cerrarCuenta(idMesa);
+            JOptionPane.showMessageDialog(this, "Cuenta cerrada correctamente.");
+            cargarPedidosMesa(idMesa);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cerrar cuenta: " + e.getMessage());
+        }
+    }
+
+    private void cargarPedidosMesa(int idMesa) {
+        try {
+            DefaultTableModel model = new DefaultTableModel(new String[]{"ID Pedido", "Producto", "Cantidad", "Fecha"}, 0);
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+            if (idCuenta == -1) {
+                TBPedidosMesa.setModel(model);
+                return;
+            }
+            List<Pedido> pedidos = pedidoDAO.listarPorCuenta(idCuenta);
+            for (Pedido p : pedidos) {
+                model.addRow(new Object[]{p.getIdPedido(), p.getIdProducto(), p.getCantidad(), p.getFechaHora()});
+            }
+            TBPedidosMesa.setModel(model);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
+        }
+    }
+
+    private void abrirDialogoAgregarPedido() {
+        DialogoAgregarPedido dialog = new DialogoAgregarPedido(this, TBProductosMesa, txtSubtotal);
+        dialog.setVisible(true);
+    }
+
+    private void enviarPedidos() {
+        DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
+        int filas = model.getRowCount();
+
+        if (filas == 0) {
+            JOptionPane.showMessageDialog(this, "No hay productos para enviar.");
+            return;
+        }
+
+        int idMesa = (int) CBmesa3.getSelectedItem();
+        int idCuenta;
+        try {
+            idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+            if (idCuenta == -1) {
+                JOptionPane.showMessageDialog(this, "No hay cuenta abierta para esta mesa.");
+                return;
+            }
+
+            for (int i = 0; i < filas; i++) {
+                Object valorId = model.getValueAt(i, 0);
+                Object valorCantidad = model.getValueAt(i, 2);
+
+                // Validar que los valores existan
+                if (valorId == null || valorCantidad == null) continue;
+
+                int idProducto = Integer.parseInt(valorId.toString());
+                int cantidad = Integer.parseInt(valorCantidad.toString());
+
+                pedidoDAO.agregarPedido(idCuenta, idProducto, cantidad);
+            }
+
+            JOptionPane.showMessageDialog(this, "Pedidos enviados correctamente.");
+
+            // Limpiar tabla y subtotal
+            model.setRowCount(0);
+            txtSubtotal.setText("0");
+
+            // Actualizar tabla de pedidos en FormMesa
+            cargarPedidosMesa(idMesa);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error enviando pedidos: " + e.getMessage());
+        }
+    }
+
+    private void eliminarProductoSeleccionado() {
+        int filaSeleccionada = TBProductosMesa.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
+
+        // Obtener subtotal actual y valor del producto eliminado
+        try {
+            double subtotalActual = Double.parseDouble(txtSubtotal.getText());
+            Object valorSubtotalProd = model.getValueAt(filaSeleccionada, 3);
+
+            double subtotalProd = 0;
+            if (valorSubtotalProd != null && !valorSubtotalProd.toString().isEmpty()) {
+                subtotalProd = Double.parseDouble(valorSubtotalProd.toString());
+            }
+
+            // Actualizar subtotal
+            double nuevoSubtotal = subtotalActual - subtotalProd;
+            if (nuevoSubtotal < 0) nuevoSubtotal = 0;
+
+            txtSubtotal.setText(String.valueOf(nuevoSubtotal));
+
+            // Eliminar fila
+            model.removeRow(filaSeleccionada);
+
+            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error al calcular subtotal: " + e.getMessage());
+        }
+    }
+
+
+
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            FormMesa form = new FormMesa();
+            form.setVisible(true);
+        });
     }
 }

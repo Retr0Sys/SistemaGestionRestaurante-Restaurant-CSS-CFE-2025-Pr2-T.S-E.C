@@ -2,14 +2,16 @@ package Forms;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+import DAO.CuentaDAO;
+import DAO.MesaDAO;
+import DAO.PedidoDAO;
+import DAO.ConexionDB;
+import Clases.concret.Mesa;
+import Clases.concret.Pedido;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -18,14 +20,13 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
-
 public class Facturacion extends JFrame {
     public JPanel ventanaFact;
     private JComboBox<String> cboxMesa;
     private JLabel lblSubtotal;
     private JLabel lblSubtotalNumero;
-    private JLabel lblPropina;
-    private JComboBox<String> cboxPropina;
+    private JLabel lblDescuento;
+    private JComboBox<String> cboxDescuento;
     private JLabel lblMetPago;
     private JComboBox<String> cboxMetPago;
     private JLabel lblTotal;
@@ -33,16 +34,13 @@ public class Facturacion extends JFrame {
     private JButton btnComprobante;
     private JLabel lblFact;
     private JLabel lblMesa;
-    private JLabel lblDescuento;
-    private JLabel lblComoarreglamosestoJPG;
     private JButton btnAtras;
 
-    private double subtotal = 1000;
+    private double subtotal = 0;
     private static int contadorFactura = 1;
 
-
-
     public Facturacion() {
+        // Configuración de botones
         ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
@@ -58,27 +56,37 @@ public class Facturacion extends JFrame {
         setTitle("Facturación");
         lblFact.setFont(new Font("Arial", Font.BOLD, 18));
 
-        cboxMesa.addItem("Mesa 1");
-        cboxMesa.addItem("Mesa 2");
-        cboxMesa.addItem("Mesa 3");
-        cboxMesa.addItem("Mesa 4");
+        // Cargar mesas desde BD
+        cargarMesasDesdeBD();
 
-        cboxPropina.addItem("0%");
-        cboxPropina.addItem("5%");
-        cboxPropina.addItem("10%");
-        cboxPropina.addItem("15%");
+        // Cargar propinas
+        cboxDescuento.addItem("0%");
+        cboxDescuento.addItem("5%");
+        cboxDescuento.addItem("10%");
+        cboxDescuento.addItem("15%");
 
+        // Métodos de pago
         cboxMetPago.addItem("Efectivo");
         cboxMetPago.addItem("Tarjeta de débito");
         cboxMetPago.addItem("Tarjeta de crédito");
         cboxMetPago.addItem("Transferencia");
 
         lblSubtotalNumero.setText("$ " + subtotal);
-        cboxPropina.addActionListener(e -> actualizarTotal());
 
+        // Actualizar total cuando cambia la propina
+        cboxDescuento.addActionListener(e -> actualizarTotal());
+
+        // Cargar pedidos al seleccionar mesa
+        cboxMesa.addActionListener(e -> {
+            if (cboxMesa.getSelectedItem() != null) {
+                cargarPedidosDeMesa();
+            }
+        });
+
+        // Botón generar comprobante
         btnComprobante.addActionListener(e -> {
             String mesa = (String) cboxMesa.getSelectedItem();
-            String propina = (String) cboxPropina.getSelectedItem();
+            String propina = (String) cboxDescuento.getSelectedItem();
             String metodoPago = (String) cboxMetPago.getSelectedItem();
             String total = lblTotalNum.getText();
 
@@ -95,6 +103,7 @@ public class Facturacion extends JFrame {
             crearPDF(mesa, propina, metodoPago, total);
         });
 
+        // Botón atrás
         btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaFact);
             topFrame.dispose();
@@ -107,6 +116,80 @@ public class Facturacion extends JFrame {
         });
     }
 
+    // ====================== Cargar mesas desde BD ======================
+    private void cargarMesasDesdeBD() {
+        try {
+            MesaDAO mesaDAO = new MesaDAO();
+            cboxMesa.removeAllItems();
+            for (Mesa m : mesaDAO.listar()) {
+                cboxMesa.addItem("Mesa " + m.getIdMesa());
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error cargando mesas: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // ====================== Cargar pedidos de la mesa seleccionada ======================
+    private void cargarPedidosDeMesa() {
+        try {
+            String seleccion = (String) cboxMesa.getSelectedItem();
+            if (seleccion == null || seleccion.isEmpty()) return;
+
+            int idMesa = Integer.parseInt(seleccion.replace("Mesa ", "").trim());
+
+            // Buscar cuenta activa de la mesa
+            CuentaDAO cuentaDAO = new CuentaDAO();
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+
+            if (idCuenta == -1) {
+                JOptionPane.showMessageDialog(this, "La mesa no tiene una cuenta activa.");
+                lblSubtotalNumero.setText("$ 0");
+                lblTotalNum.setText("$ 0");
+                subtotal = 0;
+                return;
+            }
+
+            // Listar pedidos de esa cuenta
+            List<Pedido> pedidos = PedidoDAO.listarPorCuenta(idCuenta);
+
+            double nuevoSubtotal = 0;
+            for (Pedido p : pedidos) {
+                double precio = obtenerPrecioProducto(p.getIdProducto()); // p.getIdProducto() = IdCatalogoProducto
+                nuevoSubtotal += precio * p.getCantidad();
+            }
+
+            subtotal = nuevoSubtotal;
+            lblSubtotalNumero.setText("$ " + subtotal);
+            actualizarTotal();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // ====================== Obtener precio del producto ======================
+    private double obtenerPrecioProducto(int idCatalogoProducto) {
+        double precio = 0;
+        try {
+            String sql = "SELECT precio FROM catalogoproducto WHERE IdCatalogoProducto = ?";
+            try (java.sql.Connection con = ConexionDB.getConnection();
+                 java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, idCatalogoProducto);
+                try (java.sql.ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        precio = rs.getDouble("precio");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo precio: " + e.getMessage());
+        }
+        return precio;
+    }
+
+    // ====================== Crear PDF ======================
     private void crearPDF(String mesa, String propina, String metodoPago, String total) {
         try {
             PDDocument documento = new PDDocument();
@@ -119,25 +202,19 @@ public class Facturacion extends JFrame {
             float margenIzq = 50;
             float y = altoPagina - 50;
 
-            // Barras decorativas laterales
+            // Barras laterales y logo
             contenido.setNonStrokingColor(new Color(240, 240, 255));
-            contenido.addRect(20, 0, 10, altoPagina); // izquierda
-            contenido.fill();
-            contenido.addRect(anchoPagina - 30, 0, 10, altoPagina); // derecha
-            contenido.fill();
+            contenido.addRect(20, 0, 10, altoPagina); contenido.fill();
+            contenido.addRect(anchoPagina - 30, 0, 10, altoPagina); contenido.fill();
 
-            // Logo
             PDImageXObject logo = PDImageXObject.createFromFile("imagenes/CSSLogoENPNG.png", documento);
             contenido.drawImage(logo, margenIzq, y - 110, 130, 130);
 
             // Información del local
             float infoX = anchoPagina - 200;
             float infoY = y - 10;
-            String[] info = {
-                    "RestaurantesCSS.SA", "Uruguay - 1020",
-                    "RUT: 22.343542.001-6", "Telf: 47642135",
-                    "Móvil: +59892533006"
-            };
+            String[] info = {"RestaurantesCSS.SA", "Uruguay - 1020",
+                    "RUT: 22.343542.001-6", "Telf: 47642135", "Móvil: +59892533006"};
             contenido.setNonStrokingColor(Color.BLACK);
             contenido.setFont(PDType1Font.HELVETICA, 10);
             for (String linea : info) {
@@ -148,9 +225,9 @@ public class Facturacion extends JFrame {
                 infoY -= 12;
             }
 
-            //  e-Ticket y moneda
+            // e-Ticket
             float ticketY = y - 150;
-            String ticket = "e - Ticket A - " + contadorFactura; // empieza en 1
+            String ticket = "e - Ticket A - " + contadorFactura;
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA_BOLD, 12);
             contenido.newLineAtOffset(margenIzq, ticketY);
@@ -163,7 +240,7 @@ public class Facturacion extends JFrame {
             contenido.showText("moneda: UYU");
             contenido.endText();
 
-            //  Método de pago y fecha
+            // Método de pago y fecha
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA, 10);
             contenido.newLineAtOffset(anchoPagina - 200, ticketY);
@@ -176,7 +253,7 @@ public class Facturacion extends JFrame {
             contenido.showText("Fecha: " + fechaHora);
             contenido.endText();
 
-            //  Línea divisoria debajo de encabezado
+            // Línea divisoria
             y = ticketY - 30;
             contenido.setStrokingColor(new Color(180, 180, 220));
             contenido.setLineWidth(1f);
@@ -185,15 +262,13 @@ public class Facturacion extends JFrame {
             contenido.stroke();
             y -= 30;
 
-            //  Mesa estilizada
+            // Mesa
             String mesaTexto = mesa;
             float mesaTextoWidth = PDType1Font.HELVETICA_BOLD.getStringWidth(mesaTexto) / 1000 * 14;
             float mesaTextoX = (anchoPagina - mesaTextoWidth) / 2;
-
             contenido.setNonStrokingColor(new Color(220, 220, 240));
             contenido.addRect(mesaTextoX - 10, y - 5, mesaTextoWidth + 20, 20);
             contenido.fill();
-
             contenido.setNonStrokingColor(Color.BLACK);
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA_BOLD, 14);
@@ -201,7 +276,7 @@ public class Facturacion extends JFrame {
             contenido.showText(mesaTexto);
             contenido.endText();
 
-            //  Línea divisoria debajo de mesa
+            // Línea divisoria debajo de mesa
             y -= 25;
             contenido.setStrokingColor(new Color(180, 180, 220));
             contenido.setLineWidth(1f);
@@ -210,14 +285,13 @@ public class Facturacion extends JFrame {
             contenido.stroke();
             y -= 25;
 
-            //  Título "Consumo Final"
+            // Título "Consumo Final"
             String titulo = "Consumo Final";
             float tituloWidth = PDType1Font.HELVETICA_BOLD.getStringWidth(titulo) / 1000 * 14;
             float tituloX = (anchoPagina - tituloWidth) / 2;
             contenido.setNonStrokingColor(new Color(180, 180, 220));
             contenido.addRect(tituloX - 10, y - 5, tituloWidth + 20, 20);
             contenido.fill();
-
             contenido.setNonStrokingColor(Color.BLACK);
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA_BOLD, 14);
@@ -225,24 +299,34 @@ public class Facturacion extends JFrame {
             contenido.showText(titulo);
             contenido.endText();
 
-            //  Espacio entre título y tabla
+            // Espacio entre título y tabla
             y -= 40;
 
-            //  Tabla de pedidos
+            // Tabla de pedidos reales
             float rowHeight = 20;
             float[] colWidths = {200, 100, 100};
-            float tableWidth = 0;
-            for (float w : colWidths) tableWidth += w;
+            float tableWidth = colWidths[0] + colWidths[1] + colWidths[2];
             float tableX = (anchoPagina - tableWidth) / 2;
             float tableY = y;
 
-            String[][] datos = {
-                    {"Producto", "Cantidad", "Precio"},
-                    {"Hamburguesa", "2", "$500"},
-                    {"Refresco", "2", "$200"},
-                    {"Postre", "1", "$300"}
-            };
+            // Obtener pedidos de la mesa
+            String seleccionMesa = (String) cboxMesa.getSelectedItem();
+            int idMesa = Integer.parseInt(seleccionMesa.replace("Mesa ", "").trim());
+            CuentaDAO cuentaDAO = new CuentaDAO();
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+            List<Pedido> pedidos = PedidoDAO.listarPorCuenta(idCuenta);
 
+            String[][] datos = new String[pedidos.size() + 1][3];
+            datos[0] = new String[]{"Producto", "Cantidad", "Precio"};
+            for (int i = 0; i < pedidos.size(); i++) {
+                Pedido p = pedidos.get(i);
+                String nombreProd = p.getNombreProducto(); // asegurarse de que Pedido tenga getNombreProducto()
+                int cant = p.getCantidad();
+                double precio = obtenerPrecioProducto(p.getIdProducto());
+                datos[i + 1] = new String[]{nombreProd, String.valueOf(cant), "$" + precio};
+            }
+
+            // Dibujar tabla
             contenido.setStrokingColor(Color.BLACK);
             contenido.setLineWidth(1f);
             for (int i = 0; i < datos.length; i++) {
@@ -270,7 +354,8 @@ public class Facturacion extends JFrame {
 
             // Facturación en dos columnas
             String[] etiquetas = {"Subtotal:", "IVA:", "Propina:", "Total:"};
-            String[] valores = {"$1000", "$220", propina, total};
+            double iva = subtotal * 0.22; // ejemplo 22%
+            String[] valores = {"$" + subtotal, "$" + iva, propina, total};
             for (int i = 0; i < etiquetas.length; i++) {
                 contenido.beginText();
                 contenido.setFont(PDType1Font.HELVETICA, 12);
@@ -286,7 +371,7 @@ public class Facturacion extends JFrame {
                 y -= 18;
             }
 
-            //  Línea divisoria debajo de facturación
+            // Línea divisoria debajo de facturación
             y -= 10;
             contenido.setStrokingColor(new Color(180, 180, 220));
             contenido.setLineWidth(1f);
@@ -295,7 +380,7 @@ public class Facturacion extends JFrame {
             contenido.stroke();
             y -= 30;
 
-            // Bloque legal centrado
+            // ======================= Bloque legal y agradecimiento =======================
             String legal1 = "Documento legal aprobado y en regla por DGI";
             String legal2 = "N° Legal de 1000 a 3500 Vencimiento 31/12/2025";
 
@@ -313,7 +398,6 @@ public class Facturacion extends JFrame {
             contenido.showText(legal2);
             contenido.endText();
 
-            //  Agradecimiento centrado debajo del bloque legal
             String agradecimiento = "Gracias por su preferencia, lo esperamos pronto";
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA_OBLIQUE, 12);
@@ -322,13 +406,12 @@ public class Facturacion extends JFrame {
             contenido.showText(agradecimiento);
             contenido.endText();
 
-            //  QR completamente a la derecha
+            // QR
             PDImageXObject qr = PDImageXObject.createFromFile("imagenes/qr.png", documento);
             float qrSize = 130;
             float qrX = anchoPagina - margenIzq - qrSize;
             contenido.drawImage(qr, qrX, 30, qrSize, qrSize);
 
-            //  Texto "IVA al día" debajo del QR
             String ivaTexto = "IVA al día";
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA_OBLIQUE, 10);
@@ -337,10 +420,8 @@ public class Facturacion extends JFrame {
             contenido.showText(ivaTexto);
             contenido.endText();
 
-
-            // Finalizar y guardar
             contenido.close();
-            documento.save("src/ProgramaPrincipal/Facturas/e-Ticket_A_N°_" + (contadorFactura) + ".pdf");
+            documento.save("src/ProgramaPrincipal/Facturas/e-Ticket_A_N°_" + contadorFactura + ".pdf");
             documento.close();
             contadorFactura++;
 
@@ -349,7 +430,6 @@ public class Facturacion extends JFrame {
         }
     }
 
-    //  Función auxiliar para sumar columnas
     private float sum(float[] arr, int hasta) {
         float total = 0;
         for (int i = 0; i < hasta; i++) total += arr[i];
@@ -357,7 +437,7 @@ public class Facturacion extends JFrame {
     }
 
     private void actualizarTotal() {
-        String seleccion = (String) cboxPropina.getSelectedItem();
+        String seleccion = (String) cboxDescuento.getSelectedItem();
         int porcentaje = 0;
         if (seleccion != null) {
             if (seleccion.equals("5%")) porcentaje = 5;

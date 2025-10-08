@@ -8,8 +8,14 @@ public class Cuenta
     private int idMesa;
     private Timestamp fechaApertura;
     private Timestamp fechaCierre;
-    private int estado; // 1 = abierto, 0 = cerrado
+    private int estado; // 1 = abierta, 0 = cerrada
 
+    // Constructor vacío
+    public Cuenta()
+    {
+    }
+
+    // Constructor con todos los campos
     public Cuenta(int idCuenta, int idMesa, Timestamp fechaApertura, Timestamp fechaCierre, int estado)
     {
         this.idCuenta = idCuenta;
@@ -19,9 +25,21 @@ public class Cuenta
         this.estado = estado;
     }
 
+    // Constructor útil para inserciones (sin id y sin timestamps)
+    public Cuenta(int idMesa, int estado)
+    {
+        this.idMesa = idMesa;
+        this.estado = estado;
+    }
+
     public int getIdCuenta()
     {
         return idCuenta;
+    }
+
+    public void setIdCuenta(int idCuenta)
+    {
+        this.idCuenta = idCuenta;
     }
 
     public int getIdMesa()
@@ -29,14 +47,29 @@ public class Cuenta
         return idMesa;
     }
 
+    public void setIdMesa(int idMesa)
+    {
+        this.idMesa = idMesa;
+    }
+
     public Timestamp getFechaApertura()
     {
         return fechaApertura;
     }
 
+    public void setFechaApertura(Timestamp fechaApertura)
+    {
+        this.fechaApertura = fechaApertura;
+    }
+
     public Timestamp getFechaCierre()
     {
         return fechaCierre;
+    }
+
+    public void setFechaCierre(Timestamp fechaCierre)
+    {
+        this.fechaCierre = fechaCierre;
     }
 
     public int getEstado()
@@ -47,5 +80,17 @@ public class Cuenta
     public void setEstado(int estado)
     {
         this.estado = estado;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Cuenta{" +
+                "idCuenta=" + idCuenta +
+                ", idMesa=" + idMesa +
+                ", fechaApertura=" + fechaApertura +
+                ", fechaCierre=" + fechaCierre +
+                ", estado=" + estado +
+                '}';
     }
 }
