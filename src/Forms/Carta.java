@@ -51,20 +51,25 @@ public class Carta extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        //Modificaciones visuales
-        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", 150, 160);
-        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", 150, 160);
-        btnAtras = crearBotonConEstilo("imagenes/Atras.png", 130, 140);
+        // Estética general
+        Color fondo = new Color(245, 245, 245);
+        Color blanco = new Color(255, 255, 255);
+        Color acento = new Color(255, 159, 101);
+        Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 16);
+        Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 18);
 
-        ventanaCarta.setBackground(new Color(245, 245, 245));
+        ventanaCarta.setBackground(fondo);
         ventanaCarta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPCarta.setBackground(new Color(255, 255, 255));
-        JPcambiarCarta.setBackground(new Color(255, 255, 255));
-        JPCrear.setBackground(new Color(255, 255, 255));
+        JPCarta.setBackground(blanco);
+        JPcambiarCarta.setBackground(blanco);
+        JPCrear.setBackground(blanco);
 
-        Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 16);
-        lblTituloCarta.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        JPcambiarCarta.setBorder(BorderFactory.createTitledBorder("Modificar Producto"));
+        JPCrear.setBorder(BorderFactory.createTitledBorder("Crear Nuevo Producto"));
+
+        lblTituloCarta.setFont(fuenteTitulo);
+        lblTituloCarta.setForeground(acento);
 
         txtPrecio.setFont(fuenteGeneral);
         txtNuevoProducto.setFont(fuenteGeneral);
@@ -73,103 +78,94 @@ public class Carta extends JFrame
         CBDisponibilidad.setFont(fuenteGeneral);
         CBcategoria.setFont(fuenteGeneral);
 
-        JPcambiarCarta.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JPCrear.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        CBProducto.setBorder(BorderFactory.createLineBorder(acento, 2));
+        CBDisponibilidad.setBorder(BorderFactory.createLineBorder(acento, 2));
+        CBcategoria.setBorder(BorderFactory.createLineBorder(acento, 2));
+        txtPrecio.setBorder(BorderFactory.createLineBorder(acento, 1));
+        txtNuevoProducto.setBorder(BorderFactory.createLineBorder(acento, 1));
+        txtNuevoPrecio.setBorder(BorderFactory.createLineBorder(acento, 1));
+
+        // Botones con estilo
+        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", 150, 160);
+        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", 150, 160);
+        btnAtras = crearBotonConEstilo("imagenes/Atras.png", 130, 140);
 
         panelBotonModificar.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panelBotonModificar.setBackground(blanco);
         panelBotonModificar.add(btnModificar);
 
         panelBotonCrear.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panelBotonCrear.setBackground(blanco);
         panelBotonCrear.add(btnCrear);
 
         panelBotonAtras.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panelBotonAtras.setBackground(fondo);
         panelBotonAtras.add(btnAtras);
 
-
-
-
-
-        // Modelo de la tabla
+        // Tabla
         String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado"};
         modelo = new DefaultTableModel(columnas, 0);
         tblTablaCartaMenu.setModel(modelo);
+        tblTablaCartaMenu.setFont(fuenteGeneral);
+        tblTablaCartaMenu.setRowHeight(28);
+        tblTablaCartaMenu.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tblTablaCartaMenu.getTableHeader().setBackground(acento);
+        tblTablaCartaMenu.getTableHeader().setForeground(Color.WHITE);
 
         JScrollPane scroll = new JScrollPane(tblTablaCartaMenu);
+        scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JPCarta.setLayout(new BorderLayout());
         JPCarta.add(scroll, BorderLayout.CENTER);
-
 
         // Ocultar columna ID
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMinWidth(0);
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMaxWidth(0);
         tblTablaCartaMenu.getColumnModel().getColumn(0).setPreferredWidth(0);
 
-        // Cargar productos en tabla y combo
+        //  Cargar datos
         cargarProductosDisponibles();
         cargarComboProductos();
 
-        // Cargar estados al combo de disponibilidad
         CBDisponibilidad.addItem("Disponible");
         CBDisponibilidad.addItem("No Disponible");
 
-        // Cargar categorías al combo de creación de producto
         CBcategoria.addItem("comida");
         CBcategoria.addItem("bebida");
         CBcategoria.addItem("postre");
 
-        // Evento al seleccionar producto desde ComboBox
-        CBProducto.addActionListener(e ->
-        {
+        //  Eventos
+        CBProducto.addActionListener(e -> {
             String nombreSeleccionado = (String) CBProducto.getSelectedItem();
-            if (nombreSeleccionado != null)
-            {
-                try
-                {
-                    List<Producto> productos = ProductoDAO.listar();
-                    for (Producto p : productos)
-                    {
-                        if (p.getNombre().equals(nombreSeleccionado))
-                        {
+            if (nombreSeleccionado != null) {
+                try {
+                    for (Producto p : ProductoDAO.listar()) {
+                        if (p.getNombre().equals(nombreSeleccionado)) {
                             txtPrecio.setText(String.valueOf(p.getPrecio()));
                             CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
                             break;
                         }
                     }
-                }
-                catch (SQLException ex)
-                {
+                } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error obteniendo producto: " + ex.getMessage());
                 }
             }
         });
-        // Evento al hacer click en la tabla
-        tblTablaCartaMenu.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                int fila = tblTablaCartaMenu.getSelectedRow();
-                if (fila != -1)
-                {
-                    String nombreSeleccionado = (String) tblTablaCartaMenu.getValueAt(fila, 1); // columna Nombre
-                    CBProducto.setSelectedItem(nombreSeleccionado);
 
-                    // Precargar precio y disponibilidad
-                    try
-                    {
-                        List<Producto> productos = ProductoDAO.listar();
-                        for (Producto p : productos)
-                        {
-                            if (p.getNombre().equals(nombreSeleccionado))
-                            {
+        tblTablaCartaMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int fila = tblTablaCartaMenu.getSelectedRow();
+                if (fila != -1) {
+                    String nombreSeleccionado = (String) tblTablaCartaMenu.getValueAt(fila, 1);
+                    CBProducto.setSelectedItem(nombreSeleccionado);
+                    try {
+                        for (Producto p : ProductoDAO.listar()) {
+                            if (p.getNombre().equals(nombreSeleccionado)) {
                                 txtPrecio.setText(String.valueOf(p.getPrecio()));
                                 CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
                                 break;
                             }
                         }
-                    }
-                    catch (SQLException ex)
-                    {
+                    } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Error cargando datos del producto: " + ex.getMessage());
                     }
                 }
@@ -328,7 +324,7 @@ public class Carta extends JFrame
         });
     }
 
-    // 🔹 Llena el ComboBox con TODOS los productos (disponibles y no disponibles)
+    //  Llena el ComboBox con TODOS los productos (disponibles y no disponibles)
     private void cargarComboProductos()
     {
         CBProducto.removeAllItems();
