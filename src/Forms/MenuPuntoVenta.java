@@ -2,8 +2,12 @@ package Forms;
 
 import Clases.concret.Mesa;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class MenuPuntoVenta extends JFrame {
     public JPanel JPMenuPrinc;
@@ -50,13 +54,35 @@ public class MenuPuntoVenta extends JFrame {
         lblCSS.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
         // Acciones
-        btnCarta.addActionListener(e -> abrirVentanaMax(new Carta(), "ventanaCarta"));
-        btnCocina.addActionListener(e -> abrirVentanaMax(new Cocina(), "ventanaCocina"));
-        btnFact.addActionListener(e -> abrirVentanaMax(new Facturacion(), "ventanaFact"));
-        btnMesa.addActionListener(e -> abrirVentanaMax(new Mesita(), "panelMesita"));
-        btnResumen.addActionListener(e -> abrirVentanaMax(new Resumen(), "ventanaResumen"));
-        btnAcerca.addActionListener(e -> abrirVentanaAcerca(new Acerca(), "JPacerca"));
+        btnCarta.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            abrirVentanaMax(new Carta(), "ventanaCarta");
+        });
 
+        btnCocina.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            abrirVentanaMax(new Cocina(), "ventanaCocina");
+        });
+
+        btnFact.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            abrirVentanaMax(new Facturacion(), "ventanaFact");
+        });
+
+        btnMesa.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            abrirVentanaMax(new Mesita(), "panelMesita");
+        });
+
+        btnResumen.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            abrirVentanaMax(new Resumen(), "ventanaResumen");
+        });
+
+        btnAcerca.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            abrirVentanaAcerca(new Acerca(), "JPacerca");
+        });
         // Agregar al panel principal
         JPMenuPrinc.add(panelBotones);
         JPMenuPrinc.add(lblCSS);
@@ -109,8 +135,20 @@ public class MenuPuntoVenta extends JFrame {
         ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventana.setLocationRelativeTo(null);
-        ventana.pack();
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setVisible(true);
+    }
+    // Método para reproducir sonido
+    private void reproducirSonido(String ruta) {
+        try {
+            File archivoSonido = new File(ruta);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(archivoSonido);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
+        }
     }
 
     // Utilidad para obtener panel por nombre
