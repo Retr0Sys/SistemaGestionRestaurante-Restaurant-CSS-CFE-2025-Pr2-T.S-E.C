@@ -2,6 +2,7 @@ package Forms;
 
 import Clases.concret.Mesa;
 
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -20,11 +21,22 @@ public class MenuPuntoVenta extends JFrame {
     private JLabel lblCSS;
 
     public MenuPuntoVenta() {
+        // Fondo con imagen
+        JLabel fondo = new JLabel(new ImageIcon("imagenes/madera.jpg"));
+        fondo.setLayout(new BorderLayout());
+
         // Panel principal
         JPMenuPrinc = new JPanel();
-        JPMenuPrinc.setBackground(new Color(245, 245, 245));
+        JPMenuPrinc.setOpaque(false);
         JPMenuPrinc.setLayout(new BoxLayout(JPMenuPrinc, BoxLayout.Y_AXIS));
         JPMenuPrinc.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+
+        // Título superior
+        JLabel lblTitulo = new JLabel("Menú Principal");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblTitulo.setForeground(new Color(60, 60, 60));
+        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 30, 0));
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new GridLayout(2, 3, 30, 30));
@@ -46,14 +58,15 @@ public class MenuPuntoVenta extends JFrame {
         panelBotones.add(btnResumen);
         panelBotones.add(btnAcerca);
 
-        // Etiqueta inferior
+        // Footer con ícono y estilo
         lblCSS = new JLabel("Sistema CSS - Punto de Venta");
-        lblCSS.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblCSS.setFont(new Font("Segoe UI", Font.ITALIC, 14));
         lblCSS.setForeground(new Color(80, 80, 80));
+        lblCSS.setIcon(new ImageIcon("imagenes/iconoCSS.png"));
         lblCSS.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblCSS.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
-        // Acciones
+        // Acciones con sonido
         btnCarta.addActionListener(e -> {
             reproducirSonido("sonido/button_09-190435.wav");
             abrirVentanaMax(new Carta(), "ventanaCarta");
@@ -83,14 +96,30 @@ public class MenuPuntoVenta extends JFrame {
             reproducirSonido("sonido/button_09-190435.wav");
             abrirVentanaAcerca(new Acerca(), "JPacerca");
         });
+
         // Agregar al panel principal
+        JPMenuPrinc.add(lblTitulo);
         JPMenuPrinc.add(panelBotones);
         JPMenuPrinc.add(lblCSS);
 
-        setContentPane(JPMenuPrinc);
+        fondo.add(JPMenuPrinc, BorderLayout.CENTER);
+        setContentPane(fondo);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    // Método para reproducir sonido
+    private void reproducirSonido(String ruta) {
+        try {
+            File archivoSonido = new File(ruta);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(archivoSonido);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
+        }
     }
 
     // Método para crear botones con imagen y efectos
@@ -120,7 +149,6 @@ public class MenuPuntoVenta extends JFrame {
         return boton;
     }
 
-
     private void abrirVentanaMax(JFrame ventana, String panelNombre) {
         dispose();
         ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
@@ -135,23 +163,9 @@ public class MenuPuntoVenta extends JFrame {
         ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventana.setLocationRelativeTo(null);
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setVisible(true);
     }
-    // Método para reproducir sonido
-    private void reproducirSonido(String ruta) {
-        try {
-            File archivoSonido = new File(ruta);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(archivoSonido);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (Exception ex) {
-            System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
-        }
-    }
 
-    // Utilidad para obtener panel por nombre
     private Component getPanelPorNombre(JFrame ventana, String nombreCampo) {
         try {
             return (Component) ventana.getClass().getDeclaredField(nombreCampo).get(ventana);
@@ -161,6 +175,6 @@ public class MenuPuntoVenta extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MenuPuntoVenta());
+        SwingUtilities.invokeLater(MenuPuntoVenta::new);
     }
 }

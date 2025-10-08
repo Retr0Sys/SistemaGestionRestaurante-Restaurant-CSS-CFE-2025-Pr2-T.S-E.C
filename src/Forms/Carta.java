@@ -321,6 +321,7 @@ public class Carta extends JFrame
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.pack();
             menu.setLocationRelativeTo(null);
             menu.setVisible(true);
