@@ -178,14 +178,21 @@ public class Cocina extends JFrame {
         }
     }
 
+    public static void mostrarPantallaCompleta(JFrame ventana) {
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
+        ventana.setUndecorated(true); // Quita bordes y barra de título
+        ventana.setVisible(true); // Muestra la ventana
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Cocina ventana = new Cocina();
             ventana.setContentPane(ventana.ventanaCocina);
             ventana.setBounds(300, 200, 700, 400);
             ventana.setVisible(true);
-            ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mostrarPantallaCompleta(ventana);
+
         });
     }
 }

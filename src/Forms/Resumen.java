@@ -105,6 +105,8 @@ public class Resumen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Resumen");
         setVisible(true);
+        setUndecorated(true);
+        setVisible(true);
     }
 
     private void estilizarBoton(JButton boton, String rutaIcono) {

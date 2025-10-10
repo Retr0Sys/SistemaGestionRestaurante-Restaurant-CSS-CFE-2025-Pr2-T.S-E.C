@@ -72,15 +72,21 @@ public class Mesita extends JFrame {
             });
         }
     }
+    public static void mostrarPantallaCompleta(JFrame ventana) {
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
+        ventana.setUndecorated(true); // Quita bordes y barra de título
+        ventana.setVisible(true); // Muestra la ventana
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Mesita");
         frame.setContentPane(new Mesita().panelMesita);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        mostrarPantallaCompleta(frame);
+
     }
 }
 

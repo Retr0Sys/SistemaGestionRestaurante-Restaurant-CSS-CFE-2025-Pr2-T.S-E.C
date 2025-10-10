@@ -107,6 +107,7 @@ public class DialogoAgregarPedido extends JDialog {
         btnCancelar.addActionListener(e -> dispose());
     }
 
+
     private void cargarProductosDesdeDB() {
         DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Precio"}, 0);
         try {

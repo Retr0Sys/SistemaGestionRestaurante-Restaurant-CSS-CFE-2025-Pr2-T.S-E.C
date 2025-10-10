@@ -499,12 +499,20 @@ public class Facturacion extends JFrame {
         lblTotalNum.setText("$ " + total);
     }
 
+    public static void mostrarPantallaCompleta(JFrame ventana) {
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
+        ventana.setUndecorated(true); // Quita bordes y barra de título
+        ventana.setVisible(true); // Muestra la ventana
+    }
+
+
     public static void main(String[] args) {
         Facturacion ventana = new Facturacion();
         ventana.setContentPane(ventana.ventanaFact);
         ventana.setBounds(300, 200, 500, 300);
         ventana.setVisible(true);
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mostrarPantallaCompleta(ventana);
+
     }
 }

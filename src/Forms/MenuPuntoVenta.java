@@ -107,6 +107,10 @@ public class MenuPuntoVenta extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+        setUndecorated(true); // Quita bordes y barra de título
+        setVisible(true); // Muestra la ventana
+
+
     }
 
     // Método para reproducir sonido

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FormMesa extends JFrame {
     public JPanel JPMesasIni;
-    private JComboBox<String> CBSelecEstado;
+    public  JComboBox<String> CBSelecEstado;
     private JComboBox<Integer> CBmesa;
     private JLabel lblEstado;
     private JTable TBPedidosMesa;
@@ -68,6 +68,7 @@ public class FormMesa extends JFrame {
     private JButton btnAñadirProd;
     private JLabel lblCuenta;
     private JTable TBCuentas;
+    private Mesita vistaMesas;
 
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
@@ -138,6 +139,9 @@ public class FormMesa extends JFrame {
         if (txtSubtotal.getText().isEmpty()) {
             txtSubtotal.setText("0");
         }
+
+        vistaMesas = new Mesita(); // usa el constructor sin parámetros
+        JPMesasIni.add(vistaMesas.panelMesita, BorderLayout.CENTER); // o donde quieras ubicarla
 
         cargarMesas();
         cargarEstados();
@@ -388,12 +392,18 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al calcular subtotal: " + e.getMessage());
         }
     }
+    public static void mostrarPantallaCompleta(JFrame ventana) {
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
+        ventana.setUndecorated(true); // Quita bordes y barra de título
+        ventana.setVisible(true); // Muestra la ventana
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FormMesa form = new FormMesa();
             form.setVisible(true);
-            form.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            mostrarPantallaCompleta(form);
+
         });
     }
 }

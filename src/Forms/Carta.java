@@ -392,6 +392,12 @@ public class Carta extends JFrame
         return boton;
     }
 
+    public static void mostrarPantallaCompleta(JFrame ventana) {
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
+        ventana.setUndecorated(true); // Quita bordes y barra de título
+        ventana.setVisible(true); // Muestra la ventana
+    }
+
 
     public static void main(String[] args)
     {
@@ -401,9 +407,10 @@ public class Carta extends JFrame
             carta.setContentPane(carta.ventanaCarta);
             carta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             carta.pack();
-            carta.setExtendedState(JFrame.MAXIMIZED_BOTH);
             carta.setLocationRelativeTo(null);
             carta.setVisible(true);
+            mostrarPantallaCompleta(carta);
+
         });
     }
 }
