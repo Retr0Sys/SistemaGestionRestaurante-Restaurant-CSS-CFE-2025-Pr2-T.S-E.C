@@ -131,3 +131,8 @@ Este proyecto es el resultado del esfuerzo conjunto del equipo de desarrollo.
 
   * **Ezequiel Costa**
   * **Thiago Sosa(RetroSys)**
+
+<img width="600" height="600" alt="Imagen" src="https://github.com/user-attachments/assets/f2b39efa-dca6-4503-99f5-c5b08e27d426" />
+
+
+
