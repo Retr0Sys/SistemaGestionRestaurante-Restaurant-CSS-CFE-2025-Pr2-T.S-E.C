@@ -52,6 +52,6 @@ Si encuentra algún error o tiene sugerencias para mejorar el sistema, por favor
 
 Desarrollado por: Ezequiel Costa, Thiago Sosa (RetroSys)
 
------------------------------------------------------------------------------------------------
+
 ## Sistema hecho a medida para el restaurante CSS, solamente pudiendo ser utilizado por tales.
 -----------------------------------------------------------------------------------------------
