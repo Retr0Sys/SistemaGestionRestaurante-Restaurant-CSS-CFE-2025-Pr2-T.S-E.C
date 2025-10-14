@@ -1,57 +1,87 @@
-# Sistema de Gestión de Restaurantes CSS (SGR)
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-El Sistema de Gestión de Restaurantes (CSS), desarrollado en Java, es una solución integral diseñada para optimizar 
-las operaciones diarias de un establecimiento de comida. Desde la toma de pedidos hasta la gestión de inventario y facturación, el SGR 
-proporciona una interfaz clara y herramientas robustas para mejorar la eficiencia y el control en el punto de venta.
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 🍽️ Sistema de Gestión de Restaurantes (SGR) | CSS
 
-<img src="https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa" alt="CSSLogo" width="600"/>
+<div align="center">
+  
+  <img src="https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa" alt="Logo de CSS" width="200"/>
+  
+  <p>Una solución integral en Java para optimizar las operaciones del restaurante CSS.</p>
+  
+  <br>
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  ---
+  
+</div>
 
-## Características Principales
-Gestión de Mesas y Meseros: Asignación y seguimiento de mesas, y administración de personal de servicio.
+## ✨ Visión General del Proyecto
 
-Punto de Venta (POS): Interfaz rápida para la selección de productos y gestión de pedidos.
+El **Sistema de Gestión de Restaurantes (SGR)**, desarrollado en **Java**, es una plataforma robusta diseñada a medida para el restaurante **CSS**. Su objetivo es optimizar y automatizar la gestión diaria del establecimiento, abarcando desde la **toma de pedidos** y el **control de cocina** hasta la **facturación detallada** y la generación de informes.
 
-Control de Cocina: Visualización en tiempo real de los pedidos pendientes para preparación.
+> **⚠️ Restricción de Uso:** Este sistema ha sido desarrollado exclusivamente para el restaurante CSS y su uso está limitado a este establecimiento.
 
-Facturación Detallada: Generación y manejo de facturas de manera eficiente.
+---
 
-Informes y Resúmenes: Acceso a datos clave del negocio (pedidos, ventas, etc.) para toma de decisiones.
+## 🚀 Características Principales
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Hemos implementado módulos clave para asegurar un flujo de trabajo eficiente:
 
-## Requisitos del Sistema
-Para la correcta ejecución del sistema, se necesita lo siguiente:
+| Característica | Descripción |
+| :--- | :--- |
+| **Mesas y Meseros** | Asignación, seguimiento del estado de las mesas y administración del personal de servicio. |
+| **Punto de Venta (POS)** | Interfaz rápida e intuitiva para la selección de productos y gestión de pedidos en curso. |
+| **Control de Cocina** | Visualización en tiempo real de los pedidos pendientes, listos para ser preparados. |
+| **Facturación Detallada** | Generación y manejo eficiente de facturas, incluyendo cierres de mesa. |
+| **Informes y Resúmenes** | Acceso a datos clave del negocio (pedidos, ventas, rendimiento) para la toma de decisiones. |
 
-Entorno de Ejecución: Java Development Kit (JDK) 24 o superior.
+---
 
-Entorno de Desarrollo (Opcional): Un IDE compatible con proyectos Java (e.g., NetBeans, IntelliJ IDEA, Eclipse) para la edición o compilación.
+## ⚙️ Requisitos del Sistema
 
-Base de Datos: MaríaDB en HeidiSQL 
+Asegúrese de cumplir con los siguientes requisitos antes de la ejecución:
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### 💻 Entorno de Ejecución
 
-## Cómo Ejecutar
-Asegúrese de tener instalado el JDK 24 y configurado correctamente.
+* **Java:** [Java Development Kit (JDK) 24](https://www.oracle.com/java/technologies/javase/jdk24-downloads.html) o superior.
 
-Abra el proyecto en su Entorno de Desarrollo (IDE).
+### 💾 Base de Datos
 
-Localice el archivo BienvenidaMenuInicial.java.
+* **Motor:** **MariaDB**
+* **Gestión:** Configurado a través de **HeidiSQL** (se requiere que la instancia de MariaDB esté activa y accesible).
 
-Ejecute el archivo BienvenidaMenuInicial.java. Esta es la clase principal que inicializa la interfaz de Inicio de Sesión.
+---
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 👨‍💻 Guía de Ejecución
 
-## Descripción de pantallas
- <img width="463" height="396" alt="image" src="https://github.com/user-attachments/assets/854571ed-b3ac-4c76-954f-6be92a35147c" />
+Siga estos pasos para iniciar la aplicación:
 
-## Contribución y Soporte
-Si encuentra algún error o tiene sugerencias para mejorar el sistema, por favor, abra un Issue en este repositorio de GitHub. Las contribuciones mediante Pull Requests son bienvenidas.
+1.  **Verificación de JDK:** Confirme la instalación y correcta configuración del **JDK 24**.
+2.  **Abrir Proyecto:** Abra la carpeta del proyecto en su IDE preferido (se recomienda NetBeans o IntelliJ IDEA).
+3.  **Clase Principal:** Localice el archivo `BienvenidaMenuInicial.java`.
+4.  **Ejecutar:** Ejecute la clase `BienvenidaMenuInicial.java`.
+-----
 
-Desarrollado por: Ezequiel Costa, Thiago Sosa (RetroSys)
+## 🖥️ Módulos de la Interfaz (Screenshots)
+
+A continuación, una muestra de las interfaces clave del sistema:
+
+\<div align="center"\>
+\<img width="550" alt="Vista del menú principal del SGR con opciones como mesas, cocina y facturación." src="https://github.com/user-attachments/assets/854571ed-b3ac-4c76-954f-6be92a35147c" /\>
+\<p\>\<i\>Ejemplo de la interfaz de usuario.\</i\>\</p\>
+\</div\>
+
+-----
+
+## 🤝 Contribución y Desarrollo
+
+Este proyecto es el resultado del esfuerzo conjunto del equipo de desarrollo.
+
+  * **Reporte de Errores/Sugerencias:** Por favor, abra un **Issue** en este repositorio de GitHub detallando cualquier error encontrado o sugerencia de mejora.
+  * **Aportes de Código:** Las contribuciones mediante **Pull Requests** son bienvenidas para correcciones o nuevas funcionalidades.
+
+### 👥 Equipo de Desarrollo
+
+  * **Ezequiel Costa**
+  * **Thiago Sosa(RetroSys)**
 
 
-## Sistema hecho a medida para el restaurante CSS, solamente pudiendo ser utilizado por tales.
------------------------------------------------------------------------------------------------
+```
+```
