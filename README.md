@@ -3,7 +3,6 @@
 El Sistema de Gestión de Restaurantes (CSS), desarrollado en Java, es una solución integral diseñada para optimizar 
 las operaciones diarias de un establecimiento de comida. Desde la toma de pedidos hasta la gestión de inventario y facturación, el SGR 
 proporciona una interfaz clara y herramientas robustas para mejorar la eficiencia y el control en el punto de venta.
-
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ![CSSLogo](https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa)
