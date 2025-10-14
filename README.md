@@ -61,13 +61,62 @@ Siga estos pasos para iniciar la aplicación:
 
 ## 🖥️ Módulos de la Interfaz (Screenshots)
 
-A continuación, una muestra de las interfaces clave del sistema:
+A continuación, se desglosan las diferentes ventanas claves del sistema:
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/854571ed-b3ac-4c76-954f-6be92a35147c" alt="Vista del menú principal del SGR" width="600" />
   <br>
   <i>Ejemplo de la interfaz de usuario del Menú Principal.</i>
 </p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a6bf0a39-c6e9-45a2-a82f-b9ce2533fc86" alt="Menú de bienvenida inicial" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario del Menú de bienvenida inicial.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e1d57e92-47ac-44ac-ad88-ac079e725b8f" alt="Menú de funcionalidades" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario del Menú de funcionalidades.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0289224c-7503-4741-af9e-c447bf14dd1c" alt="Carta del restaurante" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario de la Carta del restaurante.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e1d32cc7-7c23-4003-9d9e-050e94a6eca3" alt="Cocina" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario de Cocina.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b0c581e8-a966-42f8-8c71-cd02790f6d08" alt="Facturación" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario de Facturación.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f501b1f5-bf73-48ab-b04e-30662ff1eebf" alt="Gestión de mesas" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario de Gestión de mesas.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/dd6f927f-3cdf-46ec-8810-91e3ab425919" alt="Resumen" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario de Resumen.</i>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0a371848-8127-4780-aeca-0007090735ba" alt="Acerca" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario de Acerca.</i>
+</p>
+
 
 -----
 
