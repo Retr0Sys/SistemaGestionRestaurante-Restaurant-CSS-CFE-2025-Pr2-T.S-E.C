@@ -63,10 +63,11 @@ Siga estos pasos para iniciar la aplicación:
 
 A continuación, una muestra de las interfaces clave del sistema:
 
-\<div align="center"\>
-\<img width="550" alt="Vista del menú principal del SGR con opciones como mesas, cocina y facturación." src="https://github.com/user-attachments/assets/854571ed-b3ac-4c76-954f-6be92a35147c" /\>
-\<p\>\<i\>Ejemplo de la interfaz de usuario.\</i\>\</p\>
-\</div\>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/854571ed-b3ac-4c76-954f-6be92a35147c" alt="Vista del menú principal del SGR" width="600" />
+  <br>
+  <i>Ejemplo de la interfaz de usuario del Menú Principal.</i>
+</p>
 
 -----
 
