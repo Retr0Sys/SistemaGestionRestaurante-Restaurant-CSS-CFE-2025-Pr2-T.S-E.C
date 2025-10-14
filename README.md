@@ -5,7 +5,7 @@ las operaciones diarias de un establecimiento de comida. Desde la toma de pedido
 proporciona una interfaz clara y herramientas robustas para mejorar la eficiencia y el control en el punto de venta.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-<img src="https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa" alt="CSSLogo" width="800"/>
+<img src="https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa" alt="CSSLogo" width="600"/>
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
