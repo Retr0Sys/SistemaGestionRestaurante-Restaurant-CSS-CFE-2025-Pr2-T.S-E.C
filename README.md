@@ -2,7 +2,7 @@
 
 <div align="center">
   
-  <img src="https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa" alt="Logo de CSS" width="200"/>
+  <img src="https://github.com/user-attachments/assets/367f5203-b59c-4773-bc67-7dacd7cb48fa" alt="Logo de CSS" width="400"/>
   
   <p>Una solución integral en Java para optimizar las operaciones del restaurante CSS.</p>
   
