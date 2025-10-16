@@ -68,8 +68,6 @@ public class FormMesa extends JFrame {
     private JButton btnAñadirProd;
     private JLabel lblCuenta;
     private JTable TBCuentas;
-    private Mesita vistaMesas;
-
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
     private CuentaDAO cuentaDAO = new CuentaDAO();
@@ -140,8 +138,6 @@ public class FormMesa extends JFrame {
             txtSubtotal.setText("0");
         }
 
-        vistaMesas = new Mesita(); // usa el constructor sin parámetros
-        JPMesasIni.add(vistaMesas.panelMesita, BorderLayout.CENTER); // o donde quieras ubicarla
 
         cargarMesas();
         cargarEstados();
@@ -168,6 +164,40 @@ public class FormMesa extends JFrame {
             menu.setVisible(true);
         });
     }
+    public FormMesa(int idMesaSeleccionada) {
+        this(); // inicializa componentes y carga combos
+
+        try {
+            // Selecciona en los tres ComboBox (si existen)
+            seleccionarMesaEnCombo(CBmesa, idMesaSeleccionada);
+            seleccionarMesaEnCombo(CBmesa3, idMesaSeleccionada);
+            seleccionarMesaEnCombo(CBmesa4, idMesaSeleccionada);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al seleccionar la mesa: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método auxiliar para seleccionar la mesa correspondiente en un JComboBox.
+     */
+    private void seleccionarMesaEnCombo(JComboBox<?> combo, int idMesa) {
+        if (combo == null) return; // evita nullpointer si el combo no está en el form
+
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            Object item = combo.getItemAt(i);
+            String texto = item.toString().toLowerCase();
+
+            // Si los ítems son del tipo "Mesa 1", "Mesa 2", etc.
+            if (texto.contains(String.valueOf(idMesa).toLowerCase())) {
+                combo.setSelectedIndex(i);
+                break;
+            }
+
+        }
+    }
+
+
     private void aplicarHover(JButton boton) {
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.addMouseListener(new java.awt.event.MouseAdapter() {

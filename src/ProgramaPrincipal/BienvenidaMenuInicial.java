@@ -122,7 +122,6 @@ public class BienvenidaMenuInicial extends JFrame {
         JPBienvenida.add(separador);
         JPBienvenida.add(Box.createRigidArea(new Dimension(0, 20)));
         JPBienvenida.add(lblFoto);
-        JPBienvenida.add(Box.createRigidArea(new Dimension(0, 20)));
         JPBienvenida.add(BtnIngresar);
     }
 

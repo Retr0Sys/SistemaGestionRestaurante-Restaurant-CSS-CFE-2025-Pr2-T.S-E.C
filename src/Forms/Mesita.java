@@ -2,8 +2,10 @@ package Forms;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
+import Clases.concret.Mesa;
+import DAO.MesaDAO;
 
 public class Mesita extends JFrame {
     public JPanel panelMesita;
@@ -11,58 +13,52 @@ public class Mesita extends JFrame {
     private JButton btnMesa1, btnMesa2, btnMesa3, btnMesa4, btnMesa5, btnMesa6;
     private JButton btnMesa7, btnMesa8, btnMesa9, btnMesa10, btnMesa11, btnMesa12;
 
-    private JButton[] botonesMesa = new JButton[12];
-    private ImageIcon[] iconosMesa = new ImageIcon[12];
+    private JButton[] botonesMesa;
+    private ImageIcon[] iconosMesa;
+    private MesaDAO mesaDAO = new MesaDAO();
 
     public Mesita() {
-        //  Estética general
-        Color fondo = new Color(245, 245, 245);
-        panelMesita.setBackground(fondo);
+        // Color de fondo
+        panelMesita.setBackground(new Color(245, 245, 245));
 
-        // Asignar botones al arreglo
-        botonesMesa[0] = btnMesa1;
-        botonesMesa[1] = btnMesa2;
-        botonesMesa[2] = btnMesa3;
-        botonesMesa[3] = btnMesa4;
-        botonesMesa[4] = btnMesa5;
-        botonesMesa[5] = btnMesa6;
-        botonesMesa[6] = btnMesa7;
-        botonesMesa[7] = btnMesa8;
-        botonesMesa[8] = btnMesa9;
-        botonesMesa[9] = btnMesa10;
-        botonesMesa[10] = btnMesa11;
-        botonesMesa[11] = btnMesa12;
+        // Vincular botones del .form con el arreglo
+        botonesMesa = new JButton[]{
+                btnMesa1, btnMesa2, btnMesa3, btnMesa4, btnMesa5, btnMesa6,
+                btnMesa7, btnMesa8, btnMesa9, btnMesa10, btnMesa11, btnMesa12
+        };
+        iconosMesa = new ImageIcon[12];
 
-        // Aplicar estilo e íconos
+        // Cargar estado de las mesas desde la BD
+        actualizarEstadosMesas();
+
+        // Aplicar estilos y acciones
         for (int i = 0; i < botonesMesa.length; i++) {
-            String ruta = "imagenes/m" + (i + 1) + ".png";
-            iconosMesa[i] = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH));
-
-            botonesMesa[i].setIcon(iconosMesa[i]);
-            botonesMesa[i].setBorderPainted(false);
-            botonesMesa[i].setContentAreaFilled(false);
-            botonesMesa[i].setFocusPainted(false);
-            botonesMesa[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
-            botonesMesa[i].setToolTipText("Mesa " + (i + 1));
-
-            // Hover visual
             final int index = i;
-            botonesMesa[i].addMouseListener(new java.awt.event.MouseAdapter() {
+            JButton boton = botonesMesa[i];
+            boton.setBorderPainted(false);
+            boton.setContentAreaFilled(false);
+            boton.setFocusPainted(false);
+            boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            // Efecto hover
+            boton.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    botonesMesa[index].setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+                    boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
                 }
 
                 public void mouseExited(java.awt.event.MouseEvent evt) {
-                    botonesMesa[index].setBorder(BorderFactory.createEmptyBorder());
+                    boton.setBorder(BorderFactory.createEmptyBorder());
                 }
             });
 
-            //  Acción de navegación
-            botonesMesa[i].addActionListener(e -> {
+            // Acción: abrir FormMesa con el número de mesa seleccionado
+            boton.addActionListener(e -> {
+                int idMesaSeleccionada = index + 1; // suponiendo que btnMesa1 es la mesa 1, btnMesa2 la 2, etc.
+
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
                 topFrame.dispose();
 
-                FormMesa menu = new FormMesa();
+                FormMesa menu = new FormMesa(idMesaSeleccionada); // 👈 pasamos el número de mesa
                 menu.setContentPane(menu.JPMesasIni);
                 menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 menu.setLocationRelativeTo(null);
@@ -70,23 +66,68 @@ public class Mesita extends JFrame {
                 menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 menu.setVisible(true);
             });
+
+
         }
     }
+
+    /**
+     * Consulta la BD y actualiza los íconos de las mesas según su estado.
+     */
+    private void actualizarEstadosMesas() {
+        try {
+            List<Mesa> mesas = mesaDAO.listar();
+            for (int i = 0; i < botonesMesa.length && i < mesas.size(); i++) {
+                Mesa mesa = mesas.get(i);
+                String ruta = obtenerRutaIcono(mesa.getIdMesa(), mesa.getEstado());
+                iconosMesa[i] = new ImageIcon(new ImageIcon(ruta).getImage()
+                        .getScaledInstance(160, 160, Image.SCALE_SMOOTH));
+                botonesMesa[i].setIcon(iconosMesa[i]);
+                botonesMesa[i].setToolTipText("Mesa " + mesa.getIdMesa() + " - " + mesa.getEstado());
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar las mesas: " + e.getMessage(),
+                    "Error de BD", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+     //Devuelve la ruta del ícono según el estado de la mesa.
+    private String obtenerRutaIcono(int numeroMesa, String estado) {
+        if (estado == null) estado = "Libre";
+        switch (estado.toLowerCase()) {
+            case "ocupada":
+                return "imagenes/mr" + numeroMesa + ".png";
+            case "reservada":
+                return "imagenes/ma" + numeroMesa + ".png";
+            case "limpieza":
+                return "imagenes/mv" + numeroMesa + ".png";
+            case "libre":
+            default:
+                return "imagenes/m" + numeroMesa + ".png";
+        }
+    }
+
+
     public static void mostrarPantallaCompleta(JFrame ventana) {
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
-        ventana.setUndecorated(true); // Quita bordes y barra de título
-        ventana.setVisible(true); // Muestra la ventana
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        ventana.setUndecorated(true);
+        ventana.setVisible(true);
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Mesita");
-        frame.setContentPane(new Mesita().panelMesita);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        mostrarPantallaCompleta(frame);
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Mesita");
 
+            // ⚠️ Debe ir antes de add() o pack()
+            frame.setUndecorated(true);
+
+            Mesita vista = new Mesita();
+            frame.setContentPane(vista.panelMesita);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
     }
-}
 
+}
