@@ -1,0 +1,93 @@
+package DAO;
+
+import Clases.concret.Reserva;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ReservaDAO {
+
+    private static final String SQL_INSERT =
+            "INSERT INTO reserva (idMesa, fecha, hora) VALUES (?, ?, ?)";
+
+    private static final String SQL_SELECT_ALL =
+            "SELECT * FROM reserva";
+
+    private static final String SQL_SELECT_BY_ID =
+            "SELECT * FROM reserva WHERE idReserva=?";
+
+    private static final String SQL_DELETE =
+            "DELETE FROM reserva WHERE idReserva=?";
+
+    /**
+     * Inserta una nueva reserva en la base de datos
+     */
+    public void insertar(Reserva r) throws SQLException {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_INSERT)) {
+
+            ps.setInt(1, r.getIdMesa());
+            ps.setDate(2, r.getFecha());
+            ps.setTime(3, r.getHora());
+            ps.executeUpdate();
+        }
+    }
+
+    /**
+     * Lista todas las reservas
+     */
+    public List<Reserva> listar() throws SQLException {
+        List<Reserva> reservas = new ArrayList<>();
+        try (Connection cn = ConexionDB.getConnection();
+             Statement st = cn.createStatement();
+             ResultSet rs = st.executeQuery(SQL_SELECT_ALL)) {
+
+            while (rs.next()) {
+                Reserva r = new Reserva(
+                        rs.getInt("idReserva"),
+                        rs.getInt("idMesa"),
+                        rs.getDate("fecha"),
+                        rs.getTime("hora")
+                );
+                reservas.add(r);
+            }
+        }
+        return reservas;
+    }
+
+    /**
+     * Busca una reserva por su id
+     */
+    public Reserva buscarPorId(int idReserva) throws SQLException {
+        Reserva reserva = null;
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_SELECT_BY_ID)) {
+
+            ps.setInt(1, idReserva);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    reserva = new Reserva(
+                            rs.getInt("idReserva"),
+                            rs.getInt("idMesa"),
+                            rs.getDate("fecha"),
+                            rs.getTime("hora")
+                    );
+                }
+            }
+        }
+        return reserva;
+    }
+
+    /**
+     * Elimina una reserva por su id
+     */
+    public void eliminar(int idReserva) throws SQLException {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_DELETE)) {
+
+            ps.setInt(1, idReserva);
+            ps.executeUpdate();
+        }
+    }
+}
