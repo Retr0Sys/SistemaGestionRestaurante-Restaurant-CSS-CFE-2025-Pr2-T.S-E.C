@@ -6,18 +6,34 @@ import java.sql.Time;
 public class Reserva {
     private int idReserva;
     private int idMesa;
+    private String nombre;
+    private String apellido;
     private Date fecha;
     private Time hora;
 
+    // Constructor vacío
     public Reserva() {}
 
-    public Reserva(int idReserva, int idMesa, Date fecha, Time hora) {
+    // Constructor completo
+    public Reserva(int idReserva, int idMesa, String nombre, String apellido, Date fecha, Time hora) {
         this.idReserva = idReserva;
         this.idMesa = idMesa;
+        this.nombre = nombre;
+        this.apellido = apellido;
         this.fecha = fecha;
         this.hora = hora;
     }
 
+    // Constructor sin idReserva (para insertar)
+    public Reserva(int idMesa, String nombre, String apellido, Date fecha, Time hora) {
+        this.idMesa = idMesa;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fecha = fecha;
+        this.hora = hora;
+    }
+
+    // Getters y Setters
     public int getIdReserva() {
         return idReserva;
     }
@@ -32,6 +48,22 @@ public class Reserva {
 
     public void setIdMesa(int idMesa) {
         this.idMesa = idMesa;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public Date getFecha() {
@@ -55,6 +87,8 @@ public class Reserva {
         return "Reserva{" +
                 "idReserva=" + idReserva +
                 ", idMesa=" + idMesa +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
                 ", fecha=" + fecha +
                 ", hora=" + hora +
                 '}';

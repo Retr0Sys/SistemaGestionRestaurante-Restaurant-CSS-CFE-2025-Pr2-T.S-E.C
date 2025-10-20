@@ -8,8 +8,9 @@ import java.util.List;
 
 public class ReservaDAO {
 
+    // Sentencias SQL
     private static final String SQL_INSERT =
-            "INSERT INTO reserva (idMesa, fecha, hora) VALUES (?, ?, ?)";
+            "INSERT INTO reserva (idMesa, nombre, apellido, fecha, hora) VALUES (?, ?, ?, ?, ?)";
 
     private static final String SQL_SELECT_ALL =
             "SELECT * FROM reserva";
@@ -20,23 +21,21 @@ public class ReservaDAO {
     private static final String SQL_DELETE =
             "DELETE FROM reserva WHERE idReserva=?";
 
-    /**
-     * Inserta una nueva reserva en la base de datos
-     */
+    // Inserta una nueva reserva
     public void insertar(Reserva r) throws SQLException {
         try (Connection cn = ConexionDB.getConnection();
              PreparedStatement ps = cn.prepareStatement(SQL_INSERT)) {
 
             ps.setInt(1, r.getIdMesa());
-            ps.setDate(2, r.getFecha());
-            ps.setTime(3, r.getHora());
+            ps.setString(2, r.getNombre());
+            ps.setString(3, r.getApellido());
+            ps.setDate(4, r.getFecha());
+            ps.setTime(5, r.getHora());
             ps.executeUpdate();
         }
     }
 
-    /**
-     * Lista todas las reservas
-     */
+    // Lista todas las reservas
     public List<Reserva> listar() throws SQLException {
         List<Reserva> reservas = new ArrayList<>();
         try (Connection cn = ConexionDB.getConnection();
@@ -47,6 +46,8 @@ public class ReservaDAO {
                 Reserva r = new Reserva(
                         rs.getInt("idReserva"),
                         rs.getInt("idMesa"),
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
                         rs.getDate("fecha"),
                         rs.getTime("hora")
                 );
@@ -56,9 +57,7 @@ public class ReservaDAO {
         return reservas;
     }
 
-    /**
-     * Busca una reserva por su id
-     */
+    // Busca una reserva por su ID
     public Reserva buscarPorId(int idReserva) throws SQLException {
         Reserva reserva = null;
         try (Connection cn = ConexionDB.getConnection();
@@ -70,6 +69,8 @@ public class ReservaDAO {
                     reserva = new Reserva(
                             rs.getInt("idReserva"),
                             rs.getInt("idMesa"),
+                            rs.getString("nombre"),
+                            rs.getString("apellido"),
                             rs.getDate("fecha"),
                             rs.getTime("hora")
                     );
@@ -79,9 +80,7 @@ public class ReservaDAO {
         return reserva;
     }
 
-    /**
-     * Elimina una reserva por su id
-     */
+    // Elimina una reserva por su ID
     public void eliminar(int idReserva) throws SQLException {
         try (Connection cn = ConexionDB.getConnection();
              PreparedStatement ps = cn.prepareStatement(SQL_DELETE)) {
