@@ -46,7 +46,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../Descargas/mysql-connector-j-9.4.0/mysql-connector-j-9.4.0.jar!/" />
+          <root url="jar://C:/Users/Descargas/mysql-connector-j-9.4.0/mysql-connector-j-9.4.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -55,11 +55,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../jcalendar-1.4/lib/jcalendar-1.4.jar!/" />
+          <root url="jar://C:/Users/jcalendar-1.4/lib/jcalendar-1.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jcalendar-1.4" level="project" />
   </component>
 </module>

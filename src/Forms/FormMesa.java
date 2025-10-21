@@ -1,19 +1,20 @@
 package Forms;
 
-import Clases.abstractas.Producto;
 import Clases.concret.Mesa;
 import Clases.concret.Pedido;
 import Clases.concret.Cuenta;
 import DAO.MesaDAO;
 import DAO.PedidoDAO;
 import DAO.CuentaDAO;
-import DAO.ProductoDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
+
+import com.toedter.calendar.JCalendar;
+
 
 public class FormMesa extends JFrame {
     public JPanel JPMesasIni;
@@ -60,13 +61,13 @@ public class FormMesa extends JFrame {
     private JLabel lblMesa;
     private JLabel lblSelecEstado;
     private JLabel lblEstadoFin;
-    private JLabel lblCalendario;
     private JComboBox CBmesa4;
     private JButton btnAbrirCuenta;
     private JButton btnCerrarCuenta;
     private JButton btnEliminarProd;
     private JButton btnAñadirProd;
     private JLabel lblCuenta;
+    private JPanel JPCalendario;
     private JTable TBCuentas;
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
@@ -163,6 +164,34 @@ public class FormMesa extends JFrame {
             menu.pack();
             menu.setVisible(true);
         });
+
+        // Mejoras visuales a calendario
+        JPCalendario.setLayout(new BorderLayout()); // o el layout que uses
+        JCalendar calendario = new JCalendar();
+        JPCalendario.add(calendario, BorderLayout.CENTER);
+        JPCalendario.revalidate();
+        JPCalendario.repaint();
+        JPCalendario.setLayout(new BorderLayout());
+        PanelHora panelHora = new PanelHora();
+        JPCalendario.add(calendario, BorderLayout.CENTER);
+        JPCalendario.add(panelHora, BorderLayout.SOUTH); // o EAST si prefieres al costado
+        JPCalendario.revalidate();
+        JPCalendario.repaint();
+
+        calendario.setWeekOfYearVisible(false);
+        calendario.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        calendario.setBackground(new Color(255, 255, 255));
+        calendario.setDecorationBackgroundColor(new Color(255, 159, 101));
+        calendario.setSundayForeground(Color.RED);
+        calendario.setTodayButtonText("Hoy");
+        calendario.setNullDateButtonText("Sin fecha");
+
+        JPCalendario.setLayout(new BorderLayout());
+        JPCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPCalendario.setBackground(new Color(245, 245, 245));
+
+        JPCalendario.add(calendario, BorderLayout.CENTER);
+        JPCalendario.add(new PanelHora(), BorderLayout.SOUTH);
     }
     public FormMesa(int idMesaSeleccionada) {
         this(); // inicializa componentes y carga combos
@@ -426,6 +455,51 @@ public class FormMesa extends JFrame {
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
         ventana.setUndecorated(true); // Quita bordes y barra de título
         ventana.setVisible(true); // Muestra la ventana
+    }
+
+    public class PanelHora extends JPanel {
+
+        public JSpinner spinnerHora;
+        public JSpinner spinnerMinuto;
+
+        public PanelHora() {
+            setLayout(new GridBagLayout());
+            setBackground(new Color(250, 250, 250));
+            setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+                    "Seleccionar hora",
+                    0, 0,
+                    new Font("Segoe UI", Font.BOLD, 14),
+                    new Color(100, 100, 100)
+            ));
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 10, 5, 10);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            JLabel lblHora = new JLabel("Hora:");
+            lblHora.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            add(lblHora, gbc);
+
+            spinnerHora = new JSpinner(new SpinnerNumberModel(12, 0, 23, 1));
+            spinnerHora.setPreferredSize(new Dimension(60, 25));
+            spinnerHora.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            gbc.gridx = 1;
+            add(spinnerHora, gbc);
+
+            JLabel lblMinuto = new JLabel("Minutos:");
+            lblMinuto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            gbc.gridx = 2;
+            add(lblMinuto, gbc);
+
+            spinnerMinuto = new JSpinner(new SpinnerNumberModel(30, 0, 59, 1));
+            spinnerMinuto.setPreferredSize(new Dimension(60, 25));
+            spinnerMinuto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            gbc.gridx = 3;
+            add(spinnerMinuto, gbc);
+        }
     }
 
     public static void main(String[] args) {
