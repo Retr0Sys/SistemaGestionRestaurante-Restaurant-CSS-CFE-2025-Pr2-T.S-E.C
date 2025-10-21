@@ -181,15 +181,20 @@ public class FormMesa extends JFrame {
         calendario.setWeekOfYearVisible(false);
         calendario.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         calendario.setBackground(new Color(255, 255, 255));
-        calendario.setDecorationBackgroundColor(new Color(255, 159, 101));
-        calendario.setSundayForeground(Color.RED);
+        calendario.setDecorationBackgroundColor(new Color(255, 159, 101)); // color de encabezado
+        calendario.setSundayForeground(new Color(220, 20, 60)); // domingos en rojo suave
+        calendario.setWeekdayForeground(new Color(80, 80, 80)); // días normales en gris oscuro
         calendario.setTodayButtonText("Hoy");
         calendario.setNullDateButtonText("Sin fecha");
+        calendario.setOpaque(true);
+        calendario.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
 
-        JPCalendario.setLayout(new BorderLayout());
-        JPCalendario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JPCalendario.setBackground(new Color(245, 245, 245));
-
+        JPCalendario.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        JPCalendario.setLayout(new BorderLayout());
         JPCalendario.add(calendario, BorderLayout.CENTER);
         JPCalendario.add(new PanelHora(), BorderLayout.SOUTH);
     }
