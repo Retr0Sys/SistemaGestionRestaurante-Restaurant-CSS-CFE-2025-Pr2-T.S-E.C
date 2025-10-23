@@ -34,6 +34,14 @@ Hemos implementado módulos clave para asegurar un flujo de trabajo eficiente:
 
 ---
 
+## Organización de carpetas
+<p align="center">
+<img width="403" height="686" alt="image" src="https://github.com/user-attachments/assets/f373ca8c-80b2-427b-b169-e5f80f9950d2" />
+<br>
+</p>
+
+---
+
 ## ⚙️ Requisitos del Sistema
 
 Asegúrese de cumplir con los siguientes requisitos antes de la ejecución:
