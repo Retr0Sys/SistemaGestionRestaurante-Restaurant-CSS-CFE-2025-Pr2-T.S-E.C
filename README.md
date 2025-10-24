@@ -145,8 +145,14 @@ A continuación, se desglosan las diferentes ventanas claves del sistema:
   <i>Ejemplo de la interfaz de usuario de Acerca.</i>
 </p>
 
+<p align="center">
+  <img src="[https://github.com/user-attachments/assets/0a371848-8127-4780-aeca-0007090735ba](https://github.com/user-attachments/assets/f7097164-59f0-40a7-9417-72f791ca2625)" alt="UML" width="4096" height="1425"" />
+  <br>
+  <i>DiagramaUML de CSS.</i>
+</p>
 
 -----
+
 
 ## 🤝 Contribución y Desarrollo
 
