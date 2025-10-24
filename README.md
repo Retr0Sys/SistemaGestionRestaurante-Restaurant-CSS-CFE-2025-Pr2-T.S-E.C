@@ -40,6 +40,26 @@ Hemos implementado módulos clave para asegurar un flujo de trabajo eficiente:
 <br>
 </p>
 
+### 1. Capa de Datos y Persistencia
+Objetos de Acceso a Datos (DAO - Data Access Objects): Los DAO son esenciales porque abstraen y centralizan toda la lógica de comunicación con la base de datos. Su propósito es aislar la capa de negocio (la lógica del restaurante) de los detalles técnicos de la persistencia (cómo se guardan los datos). Esto permite cambiar la tecnología de la base de datos (p. ej., de MySQL a PostgreSQL) sin modificar la lógica principal de la aplicación.
+
+### 2. Abstracciones y Estructuras (POO)
+Clases Abstractas y Concretas:
+
+Las Clases Abstractas definen estructuras comunes y métodos generales que deben seguir las entidades, sirviendo como plantillas obligatorias (p. ej., una clase Producto abstracta).
+
+Las Clases Concretas implementan estas plantillas para crear objetos específicos y funcionales (p. ej., Mesa, Bebida).
+
+Interfaces: Se utilizan para establecer contratos de funcionalidad específica que varias clases deben cumplir. Esto centraliza la definición de métodos que se repiten (p. ej. MesaService) para asegurar una mejor organización y una alta cohesión del código.
+
+### 3. Manejo de Errores
+Excepciones: Las excepciones son el mecanismo primario para gestionar y reportar situaciones anómalas o errores inesperados durante la ejecución del programa (p. ej. StockInsuficienteException). Su propósito es interrumpir el flujo normal del programa de forma controlada, permitiendo al sistema recuperarse, informar al usuario del error y evitar que la aplicación se caiga o pierda datos.
+
+### 4. Interfaz de Usuario (Capa de Presentación)
+Formularios (Forms): La interfaz de usuario se construye a través de diferentes ventanas (Forms) que representan las distintas secciones de la aplicación (p. ej., Carta, Cocina, Acerca).
+
+Ventana Principal: Actúa como el dashboard central o punto de partida del programa, desde donde se accede y se coordina la navegación hacia todas las funcionalidades específicas del sistema de ventas.
+
 ---
 
 ## ⚙️ Requisitos del Sistema
