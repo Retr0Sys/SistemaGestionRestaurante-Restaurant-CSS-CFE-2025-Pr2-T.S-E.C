@@ -61,6 +61,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="jcalendar-1.4" level="project" />
+    <orderEntry type="library" exported="" name="jcalendar-1.5" level="project" />
+    <orderEntry type="library" name="mysql-connector-j-9.4.1" level="project" />
   </component>
 </module>

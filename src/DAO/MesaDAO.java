@@ -97,4 +97,47 @@ public class MesaDAO
             ps.executeUpdate();
         }
     }
+    public void asignarMesero(int idMesa, int idMesero) throws SQLException
+    {
+        String sql = "UPDATE mesa SET idMesero = ? WHERE idMesa = ?";
+
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql))
+        {
+            ps.setInt(1, idMesero);
+            ps.setInt(2, idMesa);
+            ps.executeUpdate();
+        }
+    }
+
+    public void desasignarMesero(int idMesa) throws SQLException
+    {
+        String sql = "UPDATE mesa SET idMesero = NULL WHERE idMesa = ?";
+
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql))
+        {
+            ps.setInt(1, idMesa);
+            ps.executeUpdate();
+        }
+    }
+    public String obtenerNombreMesero(int idMesa) throws SQLException
+    {
+        String sql = "SELECT CONCAT(m.nombre, ' ', m.apellido) AS mesero " +
+                "FROM mesa me " +
+                "LEFT JOIN mesero m ON me.idMesero = m.idMesero " +
+                "WHERE me.idMesa = ?";
+
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql))
+        {
+            ps.setInt(1, idMesa);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+                return rs.getString("mesero");
+        }
+        return null;
+    }
+
 }

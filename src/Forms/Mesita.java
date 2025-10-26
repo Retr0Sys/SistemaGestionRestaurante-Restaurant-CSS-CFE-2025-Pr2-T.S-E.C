@@ -70,10 +70,8 @@ public class Mesita extends JFrame {
 
         }
     }
+    //Consulta la BD y actualiza los íconos de las mesas según su estado.
 
-    /**
-     * Consulta la BD y actualiza los íconos de las mesas según su estado.
-     */
     private void actualizarEstadosMesas() {
         try {
             List<Mesa> mesas = mesaDAO.listar();

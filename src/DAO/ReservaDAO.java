@@ -80,10 +80,44 @@ public class ReservaDAO {
         return reserva;
     }
 
-    // Elimina una reserva por su ID
-    public void eliminar(int idReserva) throws SQLException {
+    public List<Reserva> obtenerPorMesaYFecha(int idMesa, Date fecha) throws SQLException {
+        List<Reserva> reservas = new ArrayList<>();
+        String sql = "SELECT * FROM reserva WHERE idMesa = ? AND fecha = ?";
+
         try (Connection cn = ConexionDB.getConnection();
-             PreparedStatement ps = cn.prepareStatement(SQL_DELETE)) {
+             PreparedStatement stmt = cn.prepareStatement(sql))
+        {
+
+            stmt.setInt(1, idMesa);
+            stmt.setDate(2, fecha);
+
+            try (ResultSet rs = stmt.executeQuery())
+            {
+                while (rs.next())
+                {
+                    Reserva r = new Reserva();
+                    r.setIdReserva(rs.getInt("idReserva"));
+                    r.setIdMesa(rs.getInt("idMesa"));
+                    r.setNombre(rs.getString("nombre"));
+                    r.setApellido(rs.getString("apellido"));
+                    r.setFecha(rs.getDate("fecha"));
+                    r.setHora(rs.getTime("hora"));
+                    reservas.add(r);
+                }
+            }
+        }
+
+        return reservas;
+    }
+
+
+
+    // Elimina una reserva por su ID
+    public void eliminar(int idReserva) throws SQLException
+    {
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(SQL_DELETE))
+        {
 
             ps.setInt(1, idReserva);
             ps.executeUpdate();
