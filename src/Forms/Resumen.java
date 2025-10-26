@@ -90,13 +90,6 @@ public class Resumen extends JFrame {
         btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaResumen);
             topFrame.dispose();
-            MenuPuntoVenta menu = new MenuPuntoVenta();
-            menu.setContentPane(menu.JPMenuPrinc);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            menu.setLocationRelativeTo(null);
-            menu.pack();
-            menu.setVisible(true);
         });
 
         //  Configuración de ventana
