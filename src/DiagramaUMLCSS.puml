@@ -102,6 +102,30 @@ class Mesa {
         + String toString()
     }
 
+class Mesero {
+        - int idMesero
+        - String nombre
+        - String apellido
+        - String telefono
+        - boolean activo
+
+        + Mesero()
+        + Mesero(int idMesero, String nombre, String apellido, String telefono, boolean activo)
+
+        + int getIdMesero()
+        + void setIdMesero(int idMesero)
+        + String getNombre()
+        + void setNombre(String nombre)
+        + String getApellido()
+        + void setApellido(String apellido)
+        + String getTelefono()
+        + void setTelefono(String telefono)
+        + boolean isActivo()
+        + void setActivo(boolean activo)
+        + String toString()
+    }
+
+
 class Pedido {
         - int idPedido
         - int idCuenta
