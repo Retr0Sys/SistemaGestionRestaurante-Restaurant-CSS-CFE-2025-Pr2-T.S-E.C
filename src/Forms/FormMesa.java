@@ -950,7 +950,7 @@ public class FormMesa extends JFrame {
         }
     }
 
-    // Método genérico para actualizar la mesa seleccionada
+    // Metodo para actualizar la mesa seleccionada
     private void actualizarMesaSeleccionada(int idMesa) {
         mesaSeleccionada = idMesa;
 
