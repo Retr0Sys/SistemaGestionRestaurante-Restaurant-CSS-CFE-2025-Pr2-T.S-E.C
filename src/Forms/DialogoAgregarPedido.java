@@ -13,11 +13,11 @@ public class DialogoAgregarPedido extends JDialog {
     private JTable tblProductos;
     private JButton btnAgregar;
     private JButton btnCancelar;
-    private JTextField txtSubtotal;
+    private JLabel txtSubtotal;
     private JPanel contentPane;
     private JSpinner spnCantidad;
 
-    public DialogoAgregarPedido(JFrame parent, JTable tablaDestino, JTextField txtSubtotalDestino) {
+    public DialogoAgregarPedido(JFrame parent, JTable tablaDestino, JLabel txtSubtotalDestino) {
         super(parent, true);
         this.txtSubtotal = txtSubtotalDestino;
 

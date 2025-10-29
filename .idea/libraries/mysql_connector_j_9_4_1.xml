@@ -1,8 +1,7 @@
 <component name="libraryTable">
-  <library name="mysql-connector-j-9.4.0">
+  <library name="mysql-connector-j-9.4.1">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../../Descargas/mysql-connector-j-9.4.0/mysql-connector-j-9.4.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../../../jcalendar-1.4/lib/jcalendar-1.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

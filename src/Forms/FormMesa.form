@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Forms.FormMesa">
-  <grid id="27dc6" binding="JPMesasIni" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="JPMesasIni" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="629" height="437"/>
@@ -10,7 +10,7 @@
     <children>
       <tabbedpane id="1d61b" binding="JPPedidos">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>
           </grid>
         </constraints>
@@ -36,7 +36,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <grid id="3c78" binding="JParribaPri" layout-manager="GridLayoutManager" row-count="4" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="3c78" binding="JParribaPri" layout-manager="GridLayoutManager" row-count="5" column-count="15" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <splitpane position="left"/>
@@ -60,33 +60,17 @@
                           <text value="Seleccionar estado:"/>
                         </properties>
                       </component>
-                      <component id="f120f" class="javax.swing.JLabel" binding="lblEstado">
-                        <constraints>
-                          <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="Estado actual:"/>
-                        </properties>
-                      </component>
                       <component id="a97aa" class="javax.swing.JComboBox" binding="CBmesa">
                         <constraints>
-                          <grid row="0" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <grid row="0" column="1" row-span="1" col-span="14" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties/>
                       </component>
                       <component id="651f2" class="javax.swing.JComboBox" binding="CBSelecEstado">
                         <constraints>
-                          <grid row="1" column="2" row-span="1" col-span="7" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                          <grid row="1" column="2" row-span="1" col-span="13" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties/>
-                      </component>
-                      <component id="c7a4e" class="javax.swing.JLabel" binding="lblEstadoFin">
-                        <constraints>
-                          <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="4" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="Aquí el estado de arriba"/>
-                        </properties>
                       </component>
                       <component id="2f247" class="javax.swing.JLabel" binding="lblCuenta">
                         <constraints>
@@ -98,7 +82,7 @@
                       </component>
                       <component id="c15d2" class="javax.swing.JButton" binding="btnCerrarCuenta">
                         <constraints>
-                          <grid row="3" column="4" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                          <grid row="3" column="10" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
                           <text value="Cerrar"/>
@@ -114,12 +98,28 @@
                       </component>
                       <vspacer id="6d697">
                         <constraints>
-                          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                          <grid row="3" column="3" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                         </constraints>
                       </vspacer>
+                      <component id="f120f" class="javax.swing.JLabel" binding="lblEstado">
+                        <constraints>
+                          <grid row="2" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Estado actual:"/>
+                        </properties>
+                      </component>
+                      <component id="cd92f" class="javax.swing.JLabel" binding="lblEstadoCuenta">
+                        <constraints>
+                          <grid row="4" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Cuenta"/>
+                        </properties>
+                      </component>
                     </children>
                   </grid>
-                  <grid id="b4c1e" binding="JPabajoPri" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="b4c1e" binding="JPabajoPri" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <splitpane position="right"/>
@@ -146,14 +146,6 @@
                         </constraints>
                         <properties>
                           <text value="Pedidos de la mesa"/>
-                        </properties>
-                      </component>
-                      <component id="4837d" class="javax.swing.JButton" binding="cambiarEstadoButton" default-binding="true">
-                        <constraints>
-                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value=""/>
                         </properties>
                       </component>
                     </children>
@@ -288,13 +280,15 @@
                   <text value="Sub-Total:"/>
                 </properties>
               </component>
-              <component id="44086" class="javax.swing.JTextField" binding="txtSubtotal">
+              <component id="aaa5a" class="javax.swing.JLabel" binding="txtSubtotal">
                 <constraints>
                   <grid row="8" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <text value=""/>
+                </properties>
               </component>
               <component id="c48c1" class="javax.swing.JButton" binding="BtnEnviar">
                 <constraints>
@@ -316,7 +310,9 @@
                 <constraints>
                   <grid row="0" column="1" row-span="2" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <model/>
+                </properties>
               </component>
               <component id="8913" class="javax.swing.JButton" binding="btnEliminarProd">
                 <constraints>
@@ -455,7 +451,7 @@
       </tabbedpane>
       <component id="9e0d7" class="javax.swing.JButton" binding="btnAtras">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value=""/>
@@ -463,10 +459,19 @@
       </component>
       <component id="10a35" class="javax.swing.JLabel" binding="lblMesas">
         <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Mesa"/>
+        </properties>
+      </component>
+      <component id="4837d" class="javax.swing.JButton" binding="cambiarEstadoButton" default-binding="true">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+          <text value=""/>
         </properties>
       </component>
     </children>

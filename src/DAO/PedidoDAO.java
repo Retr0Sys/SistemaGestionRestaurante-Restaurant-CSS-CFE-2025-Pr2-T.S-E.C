@@ -116,4 +116,33 @@ public class PedidoDAO {
         }
         return 0.0;
     }
+
+    public List<Pedido> listarPorCuentaConNombre(int idCuenta) throws SQLException {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT p.idPedido, p.idCuenta, p.idProducto, p.cantidad, p.fechaHora, " +
+                "c.nombre, c.precio " +
+                "FROM Pedido p " +
+                "JOIN CatalogoProducto c ON p.idProducto = c.IdCatalogoProducto " +
+                "WHERE p.idCuenta = ?";
+
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idCuenta);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    pedidos.add(new Pedido(
+                            rs.getInt("idPedido"),
+                            rs.getInt("idCuenta"),
+                            rs.getInt("idProducto"),
+                            rs.getInt("cantidad"),
+                            rs.getTimestamp("fechaHora"),
+                            rs.getString("nombre"),
+                            rs.getDouble("precio")
+                    ));
+                }
+            }
+        }
+        return pedidos;
     }
+
+}

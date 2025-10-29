@@ -22,9 +22,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-
+import java.awt.event.*;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FormMesa extends JFrame {
+    private Map<Integer, DefaultTableModel> mesaPedidosMap = new HashMap<>();
+    private int mesaSeleccionada = -1;
+
+
     public JPanel JPMesasIni;
     public  JComboBox<String> CBSelecEstado;
     private JComboBox<Integer> CBmesa;
@@ -54,7 +61,7 @@ public class FormMesa extends JFrame {
     private JLabel lblCantidad;
     private JTextField txtCantidad;
     private JLabel lblSubtotal;
-    JTextField txtSubtotal;
+    JLabel txtSubtotal;
     private JButton BtnEnviar;
     private JLabel lblPedidosMesaPedidos;
     private JComboBox CBmesa3;
@@ -63,7 +70,6 @@ public class FormMesa extends JFrame {
     private JLabel lblFecha;
     private JLabel lblMesa;
     private JLabel lblSelecEstado;
-    private JLabel lblEstadoFin;
     private JComboBox CBmesa4;
     private JButton btnAbrirCuenta;
     private JButton btnCerrarCuenta;
@@ -82,6 +88,7 @@ public class FormMesa extends JFrame {
     private JLabel lblMeseroAsignado;
     private JLabel lblNombreMesero;
     private JButton btnDesasignar;
+    private JLabel lblEstadoCuenta;
     private JTable TBCuentas;
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
@@ -236,6 +243,25 @@ public class FormMesa extends JFrame {
         cargarMeseros();
         cargarMesas();
         cargarEstados();
+
+        // Para el combo de mesa en el apartado principal
+        CBmesa.addActionListener(e -> {
+            if (CBmesa.getSelectedItem() != null) {
+                int idMesa = (int) CBmesa.getSelectedItem();
+                actualizarMesaSeleccionada(idMesa);
+                actualizarEstadoCuenta(idMesa);
+            }
+        });
+
+// Para el combo de mesa en el apartado de pedidos
+        CBmesa3.addActionListener(e -> {
+            if (CBmesa3.getSelectedItem() != null) {
+                int idMesa = (int) CBmesa3.getSelectedItem();
+                actualizarMesaSeleccionada(idMesa);
+            }
+        });
+
+
 
         añadirButton.addActionListener(e -> guardarReserva());
         eliminarButton.addActionListener(e -> eliminarReserva());
@@ -449,14 +475,19 @@ public class FormMesa extends JFrame {
                 JOptionPane.showMessageDialog(this, "La mesa ya tiene una cuenta abierta.");
                 return;
             }
+
             Cuenta nuevaCuenta = new Cuenta(idMesa, 1);
             cuentaDAO.insertar(nuevaCuenta);
             JOptionPane.showMessageDialog(this, "Cuenta abierta para la mesa " + idMesa);
+
+            // Recargar tabla de pedidos (vacía al inicio)
             cargarPedidosMesa(idMesa);
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al abrir cuenta: " + e.getMessage());
         }
     }
+
 
     private void cerrarCuenta() {
         try {
@@ -465,115 +496,127 @@ public class FormMesa extends JFrame {
                 JOptionPane.showMessageDialog(this, "No hay cuenta abierta para esta mesa.");
                 return;
             }
+
             cuentaDAO.cerrarCuenta(idMesa);
             JOptionPane.showMessageDialog(this, "Cuenta cerrada correctamente.");
-            cargarPedidosMesa(idMesa);
+
+            // Limpiar tabla de pedidos
+            TBPedidosMesa.setModel(new DefaultTableModel(
+                    new Object[]{"ID Pedido", "Producto", "Cantidad", "Fecha"}, 0
+            ));
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al cerrar cuenta: " + e.getMessage());
         }
     }
 
+
     private void cargarPedidosMesa(int idMesa) {
         try {
-            DefaultTableModel model = new DefaultTableModel(new String[]{"ID Pedido", "Producto", "Cantidad", "Fecha"}, 0);
+            DefaultTableModel model = new DefaultTableModel(
+                    new String[]{"Producto", "Cantidad", "Fecha"}, 0
+            );
+
             int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
             if (idCuenta == -1) {
                 TBPedidosMesa.setModel(model);
                 return;
             }
-            List<Pedido> pedidos = pedidoDAO.listarPorCuenta(idCuenta);
+
+            // Pedidos con nombre y precio ya incluidos
+            List<Pedido> pedidos = pedidoDAO.listarPorCuentaConNombre(idCuenta);
+
             for (Pedido p : pedidos) {
-                model.addRow(new Object[]{p.getIdPedido(), p.getIdProducto(), p.getCantidad(), p.getFechaHora()});
+                model.addRow(new Object[]{
+                        p.getNombreProducto(),
+                        p.getCantidad(),
+                        p.getFechaHora()
+                });
             }
+
             TBPedidosMesa.setModel(model);
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
         }
     }
 
+
     private void abrirDialogoAgregarPedido() {
-        DialogoAgregarPedido dialog = new DialogoAgregarPedido(this, TBProductosMesa, txtSubtotal);
-        dialog.setVisible(true);
-    }
-
-    private void enviarPedidos() {
-        DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
-        int filas = model.getRowCount();
-
-        if (filas == 0) {
-            JOptionPane.showMessageDialog(this, "No hay productos para enviar.");
+        if (mesaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una mesa antes de agregar productos.");
             return;
         }
 
-        int idMesa = (int) CBmesa3.getSelectedItem();
-        int idCuenta;
         try {
-            idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(mesaSeleccionada);
             if (idCuenta == -1) {
-                JOptionPane.showMessageDialog(this, "No hay cuenta abierta para esta mesa.");
+                JOptionPane.showMessageDialog(this,
+                        "No se puede agregar productos: la mesa no tiene una cuenta abierta.");
+                return;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al verificar la cuenta: " + e.getMessage());
+            return;
+        }
+
+        DefaultTableModel model = mesaPedidosMap.get(mesaSeleccionada);
+        if (model == null) {
+            model = new DefaultTableModel(new String[]{"ID Producto", "Nombre", "Cantidad", "Subtotal"}, 0);
+            mesaPedidosMap.put(mesaSeleccionada, model);
+            TBProductosMesa.setModel(model);
+        }
+
+        // Abre el diálogo
+        DialogoAgregarPedido dialog = new DialogoAgregarPedido(this, TBProductosMesa, txtSubtotal);
+        dialog.setVisible(true);
+
+        // Actualiza subtotal después de cerrar el diálogo
+        actualizarSubtotal(model);
+    }
+
+    private void enviarPedidos() {
+        if (mesaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una mesa para enviar los pedidos.");
+            return;
+        }
+
+        // Obtener ID de cuenta abierta
+        try {
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(mesaSeleccionada);
+            if (idCuenta == -1) {
+                JOptionPane.showMessageDialog(this, "No hay cuenta abierta para esta mesa. Abra la cuenta primero.");
                 return;
             }
 
-            for (int i = 0; i < filas; i++) {
-                Object valorId = model.getValueAt(i, 0);
-                Object valorCantidad = model.getValueAt(i, 2);
+            DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
+            if (model == null || model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No hay productos para enviar.");
+                return;
+            }
 
-                // Validar que los valores existan
-                if (valorId == null || valorCantidad == null) continue;
-
-                int idProducto = Integer.parseInt(valorId.toString());
-                int cantidad = Integer.parseInt(valorCantidad.toString());
-
+            // Enviar cada pedido a la BD
+            for (int i = 0; i < model.getRowCount(); i++) {
+                int idProducto = Integer.parseInt(model.getValueAt(i, 0).toString());
+                int cantidad = Integer.parseInt(model.getValueAt(i, 2).toString());
                 pedidoDAO.agregarPedido(idCuenta, idProducto, cantidad);
             }
 
             JOptionPane.showMessageDialog(this, "Pedidos enviados correctamente.");
 
-            // Limpiar tabla y subtotal
+            // Limpiar tabla de productos temporal
             model.setRowCount(0);
             txtSubtotal.setText("0");
 
-            // Actualizar tabla de pedidos en FormMesa
-            cargarPedidosMesa(idMesa);
+            // Recargar pedidos de la mesa desde BD
+            cargarPedidosMesa(mesaSeleccionada);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error enviando pedidos: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al enviar los pedidos: " + e.getMessage());
         }
     }
 
-    private void eliminarProductoSeleccionado() {
-        int filaSeleccionada = TBProductosMesa.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
-            return;
-        }
 
-        DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
-
-        // Obtener subtotal actual y valor del producto eliminado
-        try {
-            double subtotalActual = Double.parseDouble(txtSubtotal.getText());
-            Object valorSubtotalProd = model.getValueAt(filaSeleccionada, 3);
-
-            double subtotalProd = 0;
-            if (valorSubtotalProd != null && !valorSubtotalProd.toString().isEmpty()) {
-                subtotalProd = Double.parseDouble(valorSubtotalProd.toString());
-            }
-
-            // Actualizar subtotal
-            double nuevoSubtotal = subtotalActual - subtotalProd;
-            if (nuevoSubtotal < 0) nuevoSubtotal = 0;
-
-            txtSubtotal.setText(String.valueOf(nuevoSubtotal));
-
-            // Eliminar fila
-            model.removeRow(filaSeleccionada);
-
-            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error al calcular subtotal: " + e.getMessage());
-        }
-    }
     public static void mostrarPantallaCompleta(JFrame ventana) {
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
         ventana.setUndecorated(true); // Quita bordes y barra de título
@@ -819,12 +862,146 @@ public class FormMesa extends JFrame {
         }
     }
 
-
-
     private void limpiarCamposReserva() {
         txtNombre.setText("");
         txtApellido.setText("");
     }
+
+    private void cambiarMesaSeleccionada() {
+        if (CBmesa3.getSelectedItem() == null) return;
+
+        int idMesa = Integer.parseInt(CBmesa3.getSelectedItem().toString());
+        mesaSeleccionada = idMesa;
+
+        // Buscar si la mesa ya tiene modelo de pedidos guardado
+        DefaultTableModel model = mesaPedidosMap.get(idMesa);
+
+        if (model == null) {
+            // Crear uno nuevo si no existe
+            model = new DefaultTableModel(new String[]{"ID Producto", "Nombre", "Cantidad", "Subtotal"}, 0);
+            mesaPedidosMap.put(idMesa, model);
+        }
+
+        // Mostrar el modelo de esta mesa en la tabla
+        TBProductosMesa.setModel(model);
+    }
+    private void actualizarSubtotal(DefaultTableModel model) {
+        double total = 0.0;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object value = model.getValueAt(i, 3); // columna Subtotal
+            if (value != null) {
+                total += Double.parseDouble(value.toString());
+            }
+        }
+        txtSubtotal.setText(String.format("%.2f", total));
+    }
+    private void eliminarProductoSeleccionado() {
+        int filaSeleccionada = TBProductosMesa.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
+            return;
+        }
+
+        // Confirmar antes de eliminar
+        int opcion = JOptionPane.showOptionDialog(
+                this,
+                "¿Está seguro de que desea eliminar el producto seleccionado?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, null, null
+        );
+
+        if (opcion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
+
+        try {
+            // Subtotal actual
+            double subtotalActual = 0;
+            String txtSubStr = txtSubtotal.getText().trim().replace(",", ".");
+            if (!txtSubStr.isEmpty()) {
+                subtotalActual = Double.parseDouble(txtSubStr);
+            }
+
+            // Subtotal del producto a eliminar
+            Object valorSubtotalProd = model.getValueAt(filaSeleccionada, 3);
+            double subtotalProd = 0;
+            if (valorSubtotalProd != null) {
+                String prodStr = valorSubtotalProd.toString().trim().replace(",", ".");
+                if (!prodStr.isEmpty()) {
+                    subtotalProd = Double.parseDouble(prodStr);
+                }
+            }
+
+            // Nuevo subtotal
+            double nuevoSubtotal = subtotalActual - subtotalProd;
+            if (nuevoSubtotal < 0) nuevoSubtotal = 0;
+            txtSubtotal.setText(String.format("%.2f", nuevoSubtotal));
+
+            // Eliminar fila
+            model.removeRow(filaSeleccionada);
+
+            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error al calcular subtotal: " + e.getMessage());
+        }
+    }
+
+    // Método genérico para actualizar la mesa seleccionada
+    private void actualizarMesaSeleccionada(int idMesa) {
+        mesaSeleccionada = idMesa;
+
+        // Cargar pedidos enviados desde la BD
+        cargarPedidosMesa(idMesa);
+
+        // Cargar productos temporales (aún no enviados) para la mesa
+        DefaultTableModel modelProductos = mesaPedidosMap.get(idMesa);
+        if (modelProductos == null) {
+            modelProductos = new DefaultTableModel(new String[]{"ID Producto", "Nombre", "Cantidad", "Subtotal"}, 0);
+            mesaPedidosMap.put(idMesa, modelProductos);
+        }
+
+        // Mostrar modelo de productos en la tabla
+        TBProductosMesa.setModel(modelProductos);
+
+        // Actualizar subtotal de los productos temporales
+        actualizarSubtotal(modelProductos);
+    }
+
+    private void actualizarEstadoCuenta(int idMesa) {
+        try {
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+
+            if (idCuenta != -1) {
+                lblEstadoCuenta.setText("Abierta");
+                lblEstadoCuenta.setForeground(new java.awt.Color(0, 128, 0)); // verde
+            } else {
+                lblEstadoCuenta.setText("Cerrada");
+                lblEstadoCuenta.setForeground(new java.awt.Color(200, 0, 0)); // rojo
+            }
+
+        } catch (SQLException e) {
+            lblEstadoCuenta.setText("Error");
+            lblEstadoCuenta.setForeground(new java.awt.Color(200, 0, 0));
+            System.err.println("Error al consultar estado de cuenta: " + e.getMessage());
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public static void main(String[] args) {

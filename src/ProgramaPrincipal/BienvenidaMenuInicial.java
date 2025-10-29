@@ -86,7 +86,7 @@ public class BienvenidaMenuInicial extends JFrame {
                 } catch (InterruptedException ignored) {}
             }).start();
 
-            reproducirSonido("sonido/music.wav");
+            reproducirSonido("sonido/Tu-papa-Wachinanga-_meme_-Un-show-mas-plantilla.wav");
 
             Window ventana = SwingUtilities.getWindowAncestor(JPBienvenida);
             if (ventana != null) {
