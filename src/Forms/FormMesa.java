@@ -1008,6 +1008,10 @@ public class FormMesa extends JFrame {
             form.setVisible(true);
             mostrarPantallaCompleta(form);
 
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Rectangle bounds = env.getMaximumWindowBounds();
+            form.setBounds(bounds);
+
         });
     }
 }
