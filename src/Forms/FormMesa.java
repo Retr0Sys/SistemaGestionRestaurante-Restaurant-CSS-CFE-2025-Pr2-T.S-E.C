@@ -90,6 +90,8 @@ public class FormMesa extends JFrame {
     private JButton btnDesasignar;
     private JLabel lblEstadoCuenta;
     private JScrollPane JSPaneReservas;
+    private JLabel lblEstadoAct;
+    private JLabel lblCuentaActiva;
     private JTable TBCuentas;
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
@@ -191,19 +193,43 @@ public class FormMesa extends JFrame {
         JPMesasIni.setBackground(fondo);
         JPMesasIni.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
+        JPabajoPri.setBackground(new Color(250, 250, 250));
+        JPabajoPri.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+                BorderFactory.createEmptyBorder(15, 20, 15, 20)
+        ));
+
         // Tablas estilizadas
         TBPedidosMesa.setFont(fuenteGeneral);
         TBPedidosMesa.setRowHeight(28);
         TBPedidosMesa.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         TBPedidosMesa.getTableHeader().setBackground(acento);
         TBPedidosMesa.getTableHeader().setForeground(Color.WHITE);
+        TBPedidosMesa.setShowGrid(false);
+        TBPedidosMesa.setIntercellSpacing(new Dimension(0, 0));
+        TBPedidosMesa.setSelectionBackground(new Color(255, 224, 178)); // tono suave
 
+        TBProductosMesa.setShowGrid(false);
+        TBProductosMesa.setIntercellSpacing(new Dimension(0, 0));
+        TBProductosMesa.setSelectionBackground(new Color(255, 224, 178));
         TBProductosMesa.setFont(fuenteGeneral);
         TBProductosMesa.setRowHeight(28);
         TBProductosMesa.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         TBProductosMesa.getTableHeader().setBackground(acento);
         TBProductosMesa.getTableHeader().setForeground(Color.WHITE);
 
+        lblEstado.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblEstado.setForeground(new Color(80, 80, 80));
+        lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
+
+        lblEstado.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        lblEstadoCuenta.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        lblEstadoCuenta.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblEstadoCuenta.setOpaque(true);
+        lblEstadoCuenta.setBackground(new Color(240, 240, 240));
+        lblEstadoCuenta.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180)));
+        lblEstadoCuenta.setHorizontalAlignment(SwingConstants.CENTER);
 
         TBReservas.setFont(fuenteGeneral);
         TBReservas.setRowHeight(28);
@@ -212,16 +238,46 @@ public class FormMesa extends JFrame {
         TBReservas.getTableHeader().setForeground(Color.WHITE);
 
         lblMesas.setFont(fuenteTitulo);
-        lblMesas.setForeground(Color.BLACK);
+        lblMesas.setHorizontalAlignment(SwingConstants.CENTER);
+        lblMesas.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+
+        lblMesas.setOpaque(false); // No pinta fondo
+        lblMesas.setBackground(new Color(0, 0, 0, 0)); // Totalmente transparente
+        ImageIcon iconoCSS = new ImageIcon(
+                new ImageIcon("imagenes/IconoMesas.png")
+                        .getImage()
+                        .getScaledInstance(135, 135, Image.SCALE_SMOOTH)
+        );
+        lblMesas.setIcon(iconoCSS);
+
+
+        lblEstadoAct.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblCuentaActiva.setFont(new Font("Segoe UI", Font.BOLD, 18));
+
+
+        lblPedidoMesa.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblPedidoMesa.setForeground(new Color(80, 80, 80));
+        lblPedidoMesa.setHorizontalAlignment(SwingConstants.LEFT);
+        lblPedidoMesa.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        lblPedidoMesa.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(200, 200, 200)));
+
 
 
         // Subtotal visual
-        txtSubtotal.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
         txtSubtotal.setForeground(new Color(124, 126, 124));
         txtSubtotal.setHorizontalAlignment(JTextField.CENTER);
 
+        txtSubtotal.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        txtSubtotal.setForeground(new Color(51, 102, 153));
+        txtSubtotal.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        txtSubtotal.setBackground(new Color(255, 255, 255));
+
         // Combos estilizados
         CBmesa.setFont(fuenteGeneral);
+        CBmesa.setBackground(Color.WHITE);
+        CBmesa.setMaximumRowCount(6); // para evitar que se extienda demasiado
         CBmesa3.setFont(fuenteGeneral);
         CBSelecEstado.setFont(fuenteGeneral);
         CBmesa.setBorder(BorderFactory.createLineBorder(acento, 2));
@@ -236,6 +292,12 @@ public class FormMesa extends JFrame {
         aplicarHover(btnCerrarCuenta);
         aplicarHover(añadirButton);
         aplicarHover(eliminarButton);
+
+        btnAbrirCuenta.setFocusPainted(false);
+        btnAbrirCuenta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
 
         if (TBProductosMesa.getModel() == null || TBProductosMesa.getColumnCount() == 0) {
             TBProductosMesa.setModel(new DefaultTableModel(
@@ -1005,13 +1067,16 @@ public class FormMesa extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FormMesa form = new FormMesa();
-            form.setVisible(true);
-            mostrarPantallaCompleta(form);
 
-            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Rectangle bounds = env.getMaximumWindowBounds();
-            form.setBounds(bounds);
 
+            // Obtener el tamaño de pantalla completa
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            if (gd.isFullScreenSupported()) {
+                gd.setFullScreenWindow(form); // Modo pantalla completa real
+            } else {
+                form.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                form.setVisible(true);
+            }
         });
     }
 }
