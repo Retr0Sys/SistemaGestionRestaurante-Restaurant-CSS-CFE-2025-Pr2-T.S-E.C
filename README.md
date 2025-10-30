@@ -1,4 +1,4 @@
-🍽️ Sistema de Gestión de Restaurantes (SGR) | CSS
+# 🍽️ Sistema de Gestión de Restaurantes (SGR) | CSS
 
 <div align="center">
   
