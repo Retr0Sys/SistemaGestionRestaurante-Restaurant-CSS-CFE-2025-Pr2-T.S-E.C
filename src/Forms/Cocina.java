@@ -25,24 +25,30 @@ public class Cocina extends JFrame {
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
 
+        ventanaCocina = new JPanel(new BorderLayout());
         ventanaCocina.setBackground(fondo);
-        ventanaCocina.setLayout(new BorderLayout());
 
-        // Configurar ícono botón atrás
+        lblTitulo = new JLabel("Gestión de Cocina");
+        lblTitulo.setFont(fuenteTitulo);
+        lblTitulo.setForeground(new Color(60, 60, 60));
+
+        tblTablaCocina = new JTable();
+        cboxEstadoPedido = new JComboBox<>();
+        btnActualizar = new JButton("Actualizar");
+        lblEstadoPedido = new JLabel("Estado:");
+        btnAtras = new JButton();
+
+        // Botón atrás
         ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png")
-                .getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+                .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
+        btnAtras.setPreferredSize(new Dimension(100, 100));
+        btnAtras.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-
-        // Título
-        setTitle("Gestión de Cocina");
-        lblTitulo.setFont(fuenteTitulo);
-        lblTitulo.setHorizontalAlignment(JLabel.CENTER);
-
-        // Estados posibles
+        // Combo estados
         cboxEstadoPedido.addItem("Pendiente");
         cboxEstadoPedido.addItem("En preparación");
         cboxEstadoPedido.addItem("Servido");
@@ -55,31 +61,50 @@ public class Cocina extends JFrame {
         btnActualizar.setBackground(acento);
         btnActualizar.setForeground(Color.WHITE);
         btnActualizar.setFocusPainted(false);
+        btnActualizar.setPreferredSize(new Dimension(140, 35));
+        btnActualizar.setBorder(BorderFactory.createLineBorder(acento, 2));
 
-        // Modelo de la tabla
+        // Tabla
         String[] columnas = {"ID", "Producto", "Mesa", "Cantidad", "Estado"};
         modelo = new DefaultTableModel(columnas, 0) {
-            @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
+        //Visual a las tablas
         tblTablaCocina.setModel(modelo);
         tblTablaCocina.setFont(fuenteGeneral);
         tblTablaCocina.setRowHeight(28);
         tblTablaCocina.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         tblTablaCocina.getTableHeader().setBackground(acento);
         tblTablaCocina.getTableHeader().setForeground(Color.WHITE);
+        tblTablaCocina.setShowGrid(false);
+        tblTablaCocina.setIntercellSpacing(new Dimension(0, 0));
+        tblTablaCocina.setSelectionBackground(new Color(255, 230, 200));
+        tblTablaCocina.setSelectionForeground(Color.BLACK);
 
         // Panel superior
         JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.setBackground(fondo);
-        panelSuperior.add(lblTitulo, BorderLayout.CENTER);
+        panelSuperior.setBackground(new Color(255, 255, 255));
+        panelSuperior.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
+        //Configuración de paneles para una mejor organización
+        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelTitulo.setOpaque(false);
+        panelTitulo.add(lblTitulo);
+
         panelSuperior.add(btnAtras, BorderLayout.WEST);
+        panelSuperior.add(panelTitulo, BorderLayout.CENTER);
 
         // Panel inferior
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelInferior.setBackground(fondo);
+        panelInferior.setBackground(new Color(255, 255, 255));
+        panelInferior.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(2, 0, 0, 0, new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
         panelInferior.add(lblEstadoPedido);
         panelInferior.add(cboxEstadoPedido);
         panelInferior.add(btnActualizar);
@@ -92,26 +117,23 @@ public class Cocina extends JFrame {
         // Cargar datos
         cargarPedidos();
 
-        // Acción del botón actualizar
+        // Acciones
         btnActualizar.addActionListener(e -> actualizarEstadoPedido());
 
-        // Botón Atrás
         btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCocina);
-            topFrame.dispose();
+            if (topFrame != null) topFrame.dispose();
+
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            menu.setLocationRelativeTo(null);
+            menu.setUndecorated(true);
             menu.pack();
+            menu.setLocationRelativeTo(null);
             menu.setVisible(true);
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
         });
     }
-
-    /**
-     * Carga los pedidos activos desde la base de datos
-     */
+    //Cargar pedidos a la BD
     private void cargarPedidos() {
         modelo.setRowCount(0);
         String sql = """
@@ -141,10 +163,7 @@ public class Cocina extends JFrame {
             JOptionPane.showMessageDialog(this, "❌ Error cargando pedidos: " + e.getMessage());
         }
     }
-
-    /**
-     * Actualiza el estado del pedido seleccionado
-     */
+    //Actualizar pedidos en la BD
     private void actualizarEstadoPedido() {
         int fila = tblTablaCocina.getSelectedRow();
         if (fila != -1) {
@@ -167,8 +186,7 @@ public class Cocina extends JFrame {
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this,
                         "❌ Error al actualizar estado: " + e.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this,
@@ -178,21 +196,16 @@ public class Cocina extends JFrame {
         }
     }
 
-    public static void mostrarPantallaCompleta(JFrame ventana) {
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
-        ventana.setUndecorated(true); // Quita bordes y barra de título
-        ventana.setVisible(true); // Muestra la ventana
-    }
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Cocina ventana = new Cocina();
             ventana.setContentPane(ventana.ventanaCocina);
-            ventana.setBounds(300, 200, 700, 400);
+            ventana.setUndecorated(true);
+            ventana.pack();
+            ventana.setLocationRelativeTo(null);
             ventana.setVisible(true);
+            ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            mostrarPantallaCompleta(ventana);
-
         });
     }
 }

@@ -14,57 +14,45 @@ public class BienvenidaMenuInicial extends JFrame {
     private JLabel lblBienvenida;
     private JLabel lblSubtitulo;
     private JButton BtnIngresar;
+    private JButton BtnSalir;
     private JLabel lblFoto;
+    private JFrame ventanaPrincipal;
 
-    public BienvenidaMenuInicial() {
-        // Panel principal con layout vertical
+    public BienvenidaMenuInicial(JFrame frame) {
+        //Ajustes visuales
+        this.ventanaPrincipal = frame;
+
         JPBienvenida = new JPanel();
         JPBienvenida.setOpaque(false);
         JPBienvenida.setLayout(new BoxLayout(JPBienvenida, BoxLayout.Y_AXIS));
-        JPBienvenida.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 10, 0, new Color(150, 150, 150, 100)),
-                BorderFactory.createEmptyBorder(50, 50, 50, 50)
-        ));
+        JPBienvenida.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
-        // Tipografía elegante si está disponible
-        Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 28);
-        Font fuenteSubtitulo = new Font("Segoe UI", Font.PLAIN, 18);
+        Font fuenteTitulo = new Font("SansSerif", Font.BOLD, 30);
+        Font fuenteSubtitulo = new Font("SansSerif", Font.PLAIN, 18);
 
-        // Texto de bienvenida con sombra
         lblBienvenida = new JLabel("¡Bienvenido al Punto de Venta!");
         lblBienvenida.setFont(fuenteTitulo);
         lblBienvenida.setForeground(new Color(30, 30, 30));
         lblBienvenida.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblBienvenida.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 0, 10, 0),
-                BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(200, 200, 200))
-        ));
+        lblBienvenida.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
-        // Subtítulo
         lblSubtitulo = new JLabel("Sistema de gestión para restaurantes");
         lblSubtitulo.setFont(fuenteSubtitulo);
         lblSubtitulo.setForeground(new Color(100, 100, 100));
         lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblSubtitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
+        lblSubtitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-        // Separador visual
-        JSeparator separador = new JSeparator(SwingConstants.HORIZONTAL);
-        separador.setMaximumSize(new Dimension(400, 2));
-        separador.setForeground(new Color(180, 180, 180));
-
-        // Logo con marco decorativo
         lblFoto = new JLabel();
-        ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH));
+        ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH));
         lblFoto.setIcon(iconoCSS);
         lblFoto.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblFoto.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200), 2, true),
+                BorderFactory.createLineBorder(new Color(150, 150, 150), 3),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-
-        // Botón con imagen y efectos
+        //Funcionalidad al botón ingresar
         BtnIngresar = new JButton();
-        ImageIcon iconoIngresar = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH));
+        ImageIcon iconoIngresar = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH));
         BtnIngresar.setIcon(iconoIngresar);
         BtnIngresar.setContentAreaFilled(false);
         BtnIngresar.setBorderPainted(false);
@@ -72,60 +60,54 @@ public class BienvenidaMenuInicial extends JFrame {
         BtnIngresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         BtnIngresar.setAlignmentX(Component.CENTER_ALIGNMENT);
         BtnIngresar.setToolTipText("Haz clic para comenzar");
+        BtnIngresar.setPreferredSize(new Dimension(220, 220));
+        BtnIngresar.setMaximumSize(new Dimension(220, 220));
 
-        // Acción del botón con sonido + rebote
         BtnIngresar.addActionListener(e -> {
-            new Thread(() -> {
-                try {
-                    for (int i = 0; i < 3; i++) {
-                        BtnIngresar.setLocation(BtnIngresar.getX(), BtnIngresar.getY() - 5);
-                        Thread.sleep(50);
-                        BtnIngresar.setLocation(BtnIngresar.getX(), BtnIngresar.getY() + 5);
-                        Thread.sleep(50);
-                    }
-                } catch (InterruptedException ignored) {}
-            }).start();
-
             reproducirSonido("sonido/Tu-papa-Wachinanga-_meme_-Un-show-mas-plantilla.wav");
 
-            Window ventana = SwingUtilities.getWindowAncestor(JPBienvenida);
-            if (ventana != null) {
-                ventana.dispose();
-            }
+            ventanaPrincipal.dispose(); //cerrar ventana actual
 
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.pack();
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.setLocationRelativeTo(null);
             menu.setVisible(true);
         });
 
-        // Efectos visuales: zoom + sombra + brillo
         BtnIngresar.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent evt) {
-                ImageIcon iconoZoom = new ImageIcon(new ImageIcon("imagenes/Ingresar.png")
-                        .getImage().getScaledInstance(240, 240, Image.SCALE_SMOOTH));
-                BtnIngresar.setIcon(iconoZoom);
                 BtnIngresar.setBorder(BorderFactory.createLineBorder(new Color(255, 215, 0), 2));
             }
 
             public void mouseExited(MouseEvent evt) {
-                BtnIngresar.setIcon(iconoIngresar);
                 BtnIngresar.setBorder(BorderFactory.createEmptyBorder());
             }
         });
+        //Funcionalidad al botón salir
+        BtnSalir = new JButton("Salir");
+        BtnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
+        BtnSalir.setForeground(Color.WHITE);
+        BtnSalir.setBackground(new Color(180, 50, 50));
+        BtnSalir.setFocusPainted(false);
+        BtnSalir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        BtnSalir.setPreferredSize(new Dimension(100, 35));
+        BtnSalir.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            System.exit(0);
+        });
 
-        // Agregamos componentes en orden
         JPBienvenida.add(lblBienvenida);
         JPBienvenida.add(lblSubtitulo);
-        JPBienvenida.add(separador);
-        JPBienvenida.add(Box.createRigidArea(new Dimension(0, 20)));
         JPBienvenida.add(lblFoto);
+        JPBienvenida.add(Box.createRigidArea(new Dimension(0, 10)));
         JPBienvenida.add(BtnIngresar);
+        JPBienvenida.add(Box.createRigidArea(new Dimension(0, 10)));
+        JPBienvenida.add(BtnSalir);
     }
-
-    // Método para reproducir sonido
+    //Metodo para reproducir sonidos
     private void reproducirSonido(String ruta) {
         try {
             File archivoSonido = new File(ruta);
@@ -137,35 +119,55 @@ public class BienvenidaMenuInicial extends JFrame {
             System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
         }
     }
-    public static void mostrarPantallaCompleta(JFrame ventana) {
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
-        ventana.setUndecorated(true); // Quita bordes y barra de título
-        ventana.setVisible(true); // Muestra la ventana
-    }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Bienvenida");
-        frame.setIconImage(new ImageIcon("imagenes/CSSLogo.jpg").getImage());
+        JFrame frame = new JFrame();
+        frame.setUndecorated(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Fondo con imagen
+        //Inicializamos componentes
+
+        BienvenidaMenuInicial bienvenida = new BienvenidaMenuInicial(frame);
+
         JLabel fondo = new JLabel(new ImageIcon("imagenes/madera.jpg"));
-        fondo.setLayout(new GridBagLayout()); // Centrado absoluto
+        fondo.setLayout(new BorderLayout());
 
-        BienvenidaMenuInicial bienvenida = new BienvenidaMenuInicial();
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.setBackground(new Color(255, 255, 255, 200));
+        panelCentral.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        panelCentral.add(bienvenida.JPBienvenida, BorderLayout.CENTER);
 
-        // Panel translúcido sobre fondo
-        JPanel panelTranslucido = new JPanel();
-        panelTranslucido.setBackground(new Color(255, 255, 255, 180));
-        panelTranslucido.setLayout(new BorderLayout());
-        panelTranslucido.add(bienvenida.JPBienvenida, BorderLayout.CENTER);
+        JPanel panelSalir = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelSalir.setOpaque(false);
+        panelSalir.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 10));
+        panelSalir.add(bienvenida.BtnSalir);
 
-        fondo.add(panelTranslucido);
+        fondo.add(panelCentral, BorderLayout.CENTER);
+        fondo.add(panelSalir, BorderLayout.SOUTH);
 
         frame.setContentPane(fondo);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        mostrarPantallaCompleta(frame);
+
+        // Animación de entrada
+        SwingUtilities.invokeLater(() -> {
+            Point start = bienvenida.JPBienvenida.getLocation();
+            bienvenida.JPBienvenida.setLocation(start.x, start.y + 100);
+
+            Timer anim = new Timer(10, null);
+            anim.addActionListener(new ActionListener() {
+                int y = start.y + 100;
+                public void actionPerformed(ActionEvent e) {
+                    if (y > start.y) {
+                        y -= 4;
+                        bienvenida.JPBienvenida.setLocation(start.x, y);
+                    } else {
+                        bienvenida.JPBienvenida.setLocation(start.x, start.y);
+                        anim.stop();
+                    }
+                }
+            });
+            anim.start();
+        });
     }
 }

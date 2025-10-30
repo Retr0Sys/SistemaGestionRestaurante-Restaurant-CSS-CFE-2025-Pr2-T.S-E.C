@@ -28,9 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FormMesa extends JFrame {
+
     private Map<Integer, DefaultTableModel> mesaPedidosMap = new HashMap<>();
     private int mesaSeleccionada = -1;
-
 
     public JPanel JPMesasIni;
     public  JComboBox<String> CBSelecEstado;
@@ -89,6 +89,7 @@ public class FormMesa extends JFrame {
     private JLabel lblNombreMesero;
     private JButton btnDesasignar;
     private JLabel lblEstadoCuenta;
+    private JScrollPane JSPaneReservas;
     private JTable TBCuentas;
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
@@ -202,8 +203,17 @@ public class FormMesa extends JFrame {
         TBProductosMesa.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         TBProductosMesa.getTableHeader().setBackground(acento);
         TBProductosMesa.getTableHeader().setForeground(Color.WHITE);
+
+
+        TBReservas.setFont(fuenteGeneral);
+        TBReservas.setRowHeight(28);
+        TBReservas.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        TBReservas.getTableHeader().setBackground(acento);
+        TBReservas.getTableHeader().setForeground(Color.WHITE);
+
         lblMesas.setFont(fuenteTitulo);
         lblMesas.setForeground(Color.BLACK);
+
 
         // Subtotal visual
         txtSubtotal.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -220,14 +230,12 @@ public class FormMesa extends JFrame {
 
         // Botones con cursor y sombra
         inicializarIconos();
-        aplicarHover(btnAtras);
-        aplicarHover(cambiarEstadoButton);
-        aplicarHover(BtnAsignar);
-        aplicarHover(BtnEnviar);
         aplicarHover(btnAñadirProd);
         aplicarHover(btnEliminarProd);
         aplicarHover(btnAbrirCuenta);
         aplicarHover(btnCerrarCuenta);
+        aplicarHover(añadirButton);
+        aplicarHover(eliminarButton);
 
         if (TBProductosMesa.getModel() == null || TBProductosMesa.getColumnCount() == 0) {
             TBProductosMesa.setModel(new DefaultTableModel(
@@ -262,7 +270,7 @@ public class FormMesa extends JFrame {
         });
 
 
-
+        //Acciones de los botones
         añadirButton.addActionListener(e -> guardarReserva());
         eliminarButton.addActionListener(e -> eliminarReserva());
 
@@ -278,24 +286,25 @@ public class FormMesa extends JFrame {
         BtnEnviar.addActionListener(e -> enviarPedidos());
 
         btnAtras.addActionListener(e -> {
+            // Cerrar la ventana actual
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPMesasIni);
             topFrame.dispose();
+
+            // Crear y mostrar la ventana anterior en pantalla completa
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            menu.pack();
             menu.setVisible(true);
         });
 
-        // ====================
-// 📆 CONFIGURACIÓN DEL JCALENDAR
-// ====================
+
+// CONFIGURACIÓN DEL JCALENDAR
         JPCalendario.setLayout(new BorderLayout());
         JCalendar calendario = new JCalendar();
         PanelHora panelHora = new PanelHora(); // Clase interna que ya tenés
 
-// Estilo visual
+// Estilo visual al calendario
         calendario.setWeekOfYearVisible(false);
         calendario.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         calendario.setBackground(Color.WHITE);
@@ -333,9 +342,9 @@ public class FormMesa extends JFrame {
         }
     }
 
-    /**
-     * Método auxiliar para seleccionar la mesa correspondiente en un JComboBox.
-     */
+
+    // Método auxiliar para seleccionar la mesa correspondiente en un JComboBox.
+
     private void seleccionarMesaEnCombo(JComboBox<?> combo, int idMesa) {
         if (combo == null) return; // evita nullpointer si el combo no está en el form
 
@@ -353,7 +362,7 @@ public class FormMesa extends JFrame {
     }
 
 
-
+    //Efecto al pasar el mouse
     private void aplicarHover(JButton boton) {
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -367,34 +376,34 @@ public class FormMesa extends JFrame {
         });
     }
 
-
+    //Asepctos visaules para cargar íconos con sus configuraciones
     private void inicializarIconos() {
-        btnAtras.setIcon(new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
+        btnAtras.setIcon(new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH)));
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
 
-        cambiarEstadoButton.setIcon(new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
+        cambiarEstadoButton.setIcon(new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH)));
         cambiarEstadoButton.setBorderPainted(false);
         cambiarEstadoButton.setContentAreaFilled(false);
         cambiarEstadoButton.setFocusPainted(false);
 
-        BtnAsignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
+        BtnAsignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH)));
         BtnAsignar.setBorderPainted(false);
         BtnAsignar.setContentAreaFilled(false);
         BtnAsignar.setFocusPainted(false);
 
-        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
+        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
         BtnEnviar.setBorderPainted(false);
         BtnEnviar.setContentAreaFilled(false);
         BtnEnviar.setFocusPainted(false);
 
-        btnAñadirProd.setIcon(new ImageIcon(new ImageIcon("imagenes/Añadir.png").getImage().getScaledInstance(230, 230, Image.SCALE_SMOOTH)));
-        btnAñadirProd.setBorderPainted(false);
-        btnAñadirProd.setContentAreaFilled(false);
-        btnAñadirProd.setFocusPainted(false);
+        btnDesasignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Designar.png").getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH)));
+        btnDesasignar.setBorderPainted(false);
+        btnDesasignar.setContentAreaFilled(false);
+        btnDesasignar.setFocusPainted(false);
     }
-
+    //Se cargan los meseros de la BD
     private void cargarMeseros()
     {
         CBMesero.removeAllItems();
@@ -417,7 +426,7 @@ public class FormMesa extends JFrame {
         }
     }
 
-
+    //Se cargan mesas de la BD
     private void cargarMesas() {
         try {
             List<Mesa> mesas = mesaDAO.listar();
@@ -435,14 +444,14 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error cargando mesas: " + e.getMessage());
         }
     }
-
+    //Se cargan los estados (HardCodeados)
     private void cargarEstados() {
         CBSelecEstado.addItem("Disponible");
         CBSelecEstado.addItem("Ocupada");
         CBSelecEstado.addItem("Reservada");
         CBSelecEstado.addItem("Limpieza");
     }
-
+    //Métodos para mostrar los datos de la mesa por sus ID
     private void mostrarDatosMesa() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -453,7 +462,7 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error mostrando datos: " + e.getMessage());
         }
     }
-
+    //Metodo para cambiar estados de las mesas
     private void cambiarEstadoMesa() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -467,7 +476,7 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error actualizando estado: " + e.getMessage());
         }
     }
-
+    //Método para abrir cuentas
     private void abrirCuenta() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -488,7 +497,7 @@ public class FormMesa extends JFrame {
         }
     }
 
-
+    //Metodo para cerrar cuentas
     private void cerrarCuenta() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -510,7 +519,7 @@ public class FormMesa extends JFrame {
         }
     }
 
-
+    //Metodos para cargar pedidos en las mesas
     private void cargarPedidosMesa(int idMesa) {
         try {
             DefaultTableModel model = new DefaultTableModel(
@@ -541,7 +550,7 @@ public class FormMesa extends JFrame {
         }
     }
 
-
+    //Metodo para agregar pedidos
     private void abrirDialogoAgregarPedido() {
         if (mesaSeleccionada == -1) {
             JOptionPane.showMessageDialog(this, "Seleccione una mesa antes de agregar productos.");
@@ -574,7 +583,7 @@ public class FormMesa extends JFrame {
         // Actualiza subtotal después de cerrar el diálogo
         actualizarSubtotal(model);
     }
-
+    // Metodo para enviar los pedidos a la BD
     private void enviarPedidos() {
         if (mesaSeleccionada == -1) {
             JOptionPane.showMessageDialog(this, "Seleccione una mesa para enviar los pedidos.");
@@ -616,13 +625,13 @@ public class FormMesa extends JFrame {
         }
     }
 
-
+    //Pantalla completa
     public static void mostrarPantallaCompleta(JFrame ventana) {
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
         ventana.setUndecorated(true); // Quita bordes y barra de título
         ventana.setVisible(true); // Muestra la ventana
     }
-
+    //Manejo de fecha y hora con Spinners
     public class PanelHora extends JPanel {
 
         public JSpinner spinnerHora;
@@ -667,6 +676,7 @@ public class FormMesa extends JFrame {
             add(spinnerMinuto, gbc);
         }
     }
+    //Se guarda las reservas en la BD
     private void guardarReserva() {
         try {
             int idMesa = (int) CBmesa4.getSelectedItem();
@@ -819,7 +829,7 @@ public class FormMesa extends JFrame {
     }
 
 
-
+    //Metodo para cargar las reservas en la tabla correspondiente
     private void cargarReservasEnTabla() {
         try {
             DefaultTableModel model = new DefaultTableModel(
@@ -866,7 +876,7 @@ public class FormMesa extends JFrame {
         txtNombre.setText("");
         txtApellido.setText("");
     }
-
+    //Metodo para cambiar la mesa seleccionada
     private void cambiarMesaSeleccionada() {
         if (CBmesa3.getSelectedItem() == null) return;
 
@@ -885,6 +895,7 @@ public class FormMesa extends JFrame {
         // Mostrar el modelo de esta mesa en la tabla
         TBProductosMesa.setModel(model);
     }
+    //Metodo para actualizar el subtotal
     private void actualizarSubtotal(DefaultTableModel model) {
         double total = 0.0;
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -895,6 +906,7 @@ public class FormMesa extends JFrame {
         }
         txtSubtotal.setText(String.format("%.2f", total));
     }
+    //Metodo para eliminar productos selecionados de la tabla
     private void eliminarProductoSeleccionado() {
         int filaSeleccionada = TBProductosMesa.getSelectedRow();
         if (filaSeleccionada == -1) {
@@ -970,7 +982,7 @@ public class FormMesa extends JFrame {
         // Actualizar subtotal de los productos temporales
         actualizarSubtotal(modelProductos);
     }
-
+    //Metodo para cambiar el estado de la mesa
     private void actualizarEstadoCuenta(int idMesa) {
         try {
             int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
@@ -989,20 +1001,6 @@ public class FormMesa extends JFrame {
             System.err.println("Error al consultar estado de cuenta: " + e.getMessage());
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

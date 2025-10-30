@@ -2,47 +2,43 @@ package Forms;
 
 import Clases.concret.Mesa;
 
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class MenuPuntoVenta extends JFrame {
     public JPanel JPMenuPrinc;
-    private JButton btnCarta;
-    private JButton btnCocina;
-    private JButton btnFact;
-    private JButton btnMesa;
-    private JButton btnResumen;
-    private JButton btnAcerca;
+    private JButton btnCarta, btnCocina, btnFact, btnMesa, btnResumen, btnAcerca, btnSalir;
     private JLabel lblCSS;
 
     public MenuPuntoVenta() {
-        // Fondo con imagen
+        //Ajustes visuales
         JLabel fondo = new JLabel(new ImageIcon("imagenes/madera.jpg"));
         fondo.setLayout(new BorderLayout());
 
-        // Panel principal
         JPMenuPrinc = new JPanel();
         JPMenuPrinc.setOpaque(false);
         JPMenuPrinc.setLayout(new BoxLayout(JPMenuPrinc, BoxLayout.Y_AXIS));
-        JPMenuPrinc.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        JPMenuPrinc.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(40, 40, 40, 40),
+                BorderFactory.createMatteBorder(2, 2, 6, 6, new Color(120, 120, 120, 60))
+        ));
 
-        // Título superior
         JLabel lblTitulo = new JLabel("Menú Principal");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 30));
         lblTitulo.setForeground(new Color(60, 60, 60));
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 30, 0));
 
-        // Panel de botones
         JPanel panelBotones = new JPanel(new GridLayout(2, 3, 30, 30));
         panelBotones.setOpaque(false);
+        panelBotones.setBackground(new Color(255, 255, 255, 80));
+        panelBotones.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
 
-        // Crear botones con estilo
         btnCarta = crearBoton("imagenes/Menu.png");
         btnCocina = crearBoton("imagenes/Cocina.png");
         btnFact = crearBoton("imagenes/Facturas.png");
@@ -50,7 +46,6 @@ public class MenuPuntoVenta extends JFrame {
         btnResumen = crearBoton("imagenes/Resumen.png");
         btnAcerca = crearBoton("imagenes/Acerca.png");
 
-        // Agregar botones al panel
         panelBotones.add(btnCarta);
         panelBotones.add(btnCocina);
         panelBotones.add(btnFact);
@@ -58,15 +53,36 @@ public class MenuPuntoVenta extends JFrame {
         panelBotones.add(btnResumen);
         panelBotones.add(btnAcerca);
 
-        // Footer con ícono y estilo
         lblCSS = new JLabel("Sistema CSS - Punto de Venta");
-        lblCSS.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        lblCSS.setFont(new Font("SansSerif", Font.PLAIN, 16));
         lblCSS.setForeground(new Color(80, 80, 80));
         lblCSS.setIcon(new ImageIcon("imagenes/iconoCSS.png"));
         lblCSS.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblCSS.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
-        // Acciones con sonido
+        // Botón salir
+        btnSalir = new JButton("Salir");
+        btnSalir.setIcon(new ImageIcon(new ImageIcon("imagenes/Salir.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+        btnSalir.setFont(new Font("SansSerif", Font.BOLD, 16));
+        btnSalir.setForeground(Color.WHITE);
+        btnSalir.setBackground(new Color(180, 50, 50));
+        btnSalir.setFocusPainted(false);
+        btnSalir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSalir.setPreferredSize(new Dimension(200, 60));
+        btnSalir.setMaximumSize(new Dimension(200, 60));
+        btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnSalir.addActionListener(e -> {
+            reproducirSonido("sonido/button_09-190435.wav");
+            System.exit(0);
+        });
+
+        JPanel panelSalir = new JPanel();
+        panelSalir.setOpaque(false);
+        panelSalir.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
+        panelSalir.add(btnSalir);
+        panelSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Acciones de botones
         btnCarta.addActionListener(e -> {
             reproducirSonido("sonido/button_09-190435.wav");
             abrirVentanaMax(new Carta(), "ventanaCarta");
@@ -97,23 +113,33 @@ public class MenuPuntoVenta extends JFrame {
             abrirVentanaAcerca(new Acerca(), "JPacerca");
         });
 
-        // Agregar al panel principal
         JPMenuPrinc.add(lblTitulo);
         JPMenuPrinc.add(panelBotones);
         JPMenuPrinc.add(lblCSS);
+        JPMenuPrinc.add(panelSalir);
 
         fondo.add(JPMenuPrinc, BorderLayout.CENTER);
         setContentPane(fondo);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
         setVisible(true);
-        setUndecorated(true); // Quita bordes y barra de título
-        setVisible(true); // Muestra la ventana
 
-
+        // Animación de entrada
+        JPMenuPrinc.setLocation(0, -100);
+        Timer anim = new Timer(10, new AbstractAction() {
+            int y = -100;
+            public void actionPerformed(ActionEvent e) {
+                if (y < 0) {
+                    JPMenuPrinc.setLocation(0, y++);
+                } else {
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+        anim.start();
     }
-
-    // Método para reproducir sonido
+    //Metodo para reproducir sonidos
     private void reproducirSonido(String ruta) {
         try {
             File archivoSonido = new File(ruta);
@@ -125,11 +151,10 @@ public class MenuPuntoVenta extends JFrame {
             System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
         }
     }
-
-    // Método para crear botones con imagen y efectos
+    //Metodo para dar imagenes al os botones
     private JButton crearBoton(String rutaImagen) {
         JButton boton = new JButton();
-        ImageIcon icono = new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+        ImageIcon icono = new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH));
         boton.setIcon(icono);
         boton.setContentAreaFilled(false);
         boton.setBorderPainted(false);
@@ -137,39 +162,47 @@ public class MenuPuntoVenta extends JFrame {
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Hover: sombra + zoom
+        //Efectos al pasar el ratón
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH)));
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(190, 190, Image.SCALE_SMOOTH)));
                 boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH)));
                 boton.setBorder(BorderFactory.createEmptyBorder());
             }
         });
 
         return boton;
     }
-
+    //Metodo para abrir la ventana en pantalla completa
     private void abrirVentanaMax(JFrame ventana, String panelNombre) {
-        dispose();
-        ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
+        dispose(); // cerrar ventana actual
+
+        // Obtener el panel por nombre
+        JPanel panel = (JPanel) getPanelPorNombre(ventana, panelNombre);
+        ventana.setContentPane(panel);
+
+        ventana.setUndecorated(true); // sin bordes
+        ventana.pack(); // ajustar al contenido
+        ventana.setLocationRelativeTo(null); // centrar
+        ventana.setVisible(true); // mostrar primero
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // luego maximizar
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setLocationRelativeTo(null);
-        ventana.pack();
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        ventana.setVisible(true);
     }
 
     private void abrirVentanaAcerca(JFrame ventana, String panelNombre) {
         ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
+        ventana.setUndecorated(true); //  sin bordes
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); //  pantalla completa
         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ventana.pack();
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
     }
-
+    //Comprobaciones de existencia de la ventana
     private Component getPanelPorNombre(JFrame ventana, String nombreCampo) {
         try {
             return (Component) ventana.getClass().getDeclaredField(nombreCampo).get(ventana);

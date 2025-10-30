@@ -46,46 +46,36 @@ public class Facturacion extends JFrame {
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
 
+
         ventanaFact.setBackground(fondo);
-        ventanaFact.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        ventanaFact.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(acento, 3),
+                BorderFactory.createEmptyBorder(30, 30, 30, 30)
+        ));
 
         // Configuración de botones
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
         btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAtras.setPreferredSize(new Dimension(130, 130));
+        btnAtras.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH));
         btnComprobante.setIcon(imagen2);
         btnComprobante.setBorderPainted(false);
         btnComprobante.setContentAreaFilled(false);
         btnComprobante.setFocusPainted(false);
-        btnComprobante.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnComprobante.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnComprobante.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnComprobante.setBorder(BorderFactory.createEmptyBorder());
-            }
-        });
-
-        btnAtras.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAtras.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAtras.setBorder(BorderFactory.createEmptyBorder());
-            }
-        });
 
         // Título
         setTitle("Facturación");
         lblFact.setFont(fuenteTitulo);
         lblFact.setForeground(acento);
+        lblFact.setHorizontalAlignment(SwingConstants.CENTER);
+        lblFact.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
 
         // Etiquetas
         lblSubtotal.setFont(fuenteGeneral);
@@ -156,13 +146,15 @@ public class Facturacion extends JFrame {
         // Botón atrás
         btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaFact);
-            topFrame.dispose();
+            if (topFrame != null) topFrame.dispose();
+
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
+            menu.setUndecorated(true);
             menu.pack();
+            menu.setLocationRelativeTo(null);
             menu.setVisible(true);
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
         });
     }
 
@@ -485,7 +477,7 @@ public class Facturacion extends JFrame {
         for (int i = 0; i < hasta; i++) total += arr[i];
         return total;
     }
-
+    //Operaciones con los valores obtenidos.
     private void actualizarTotal() {
         String seleccion = (String) cboxDescuento.getSelectedItem();
         int porcentaje = 0;
@@ -499,20 +491,15 @@ public class Facturacion extends JFrame {
         lblTotalNum.setText("$ " + total);
     }
 
-    public static void mostrarPantallaCompleta(JFrame ventana) {
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
-        ventana.setUndecorated(true); // Quita bordes y barra de título
-        ventana.setVisible(true); // Muestra la ventana
-    }
-
-
     public static void main(String[] args) {
         Facturacion ventana = new Facturacion();
         ventana.setContentPane(ventana.ventanaFact);
-        ventana.setBounds(300, 200, 500, 300);
-        ventana.setVisible(true);
+        ventana.setUndecorated(true); //  sin bordes
+        ventana.pack();               //  ajusta al contenido
+        ventana.setLocationRelativeTo(null); // centrado
+        ventana.setVisible(true);     // mostrar primero
+        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // luego maximizar
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mostrarPantallaCompleta(ventana);
 
     }
 }

@@ -90,37 +90,32 @@ public class Resumen extends JFrame {
         btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaResumen);
             topFrame.dispose();
+
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            menu.setUndecorated(true);
+            menu.setVisible(true);
+
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Rectangle bounds = env.getMaximumWindowBounds();
+            menu.setBounds(bounds);
         });
 
-        //  Configuración de ventana
+        // Configuración de ventana
         setContentPane(ventanaResumen);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Resumen");
-        setVisible(true);
-        setUndecorated(true);
-        setVisible(true);
     }
-
+    //Damos estilo a los botones
     private void estilizarBoton(JButton boton, String rutaIcono) {
         ImageIcon icono = new ImageIcon(new ImageIcon(rutaIcono).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
         boton.setIcon(icono);
         boton.setBorderPainted(false);
         boton.setContentAreaFilled(false);
         boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        boton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
-            }
-
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setBorder(BorderFactory.createEmptyBorder());
-            }
-        });
     }
-
+    //Metodo para cargar las ventas del día (Notese el código hardcodeado de prueba)
     private void cargarVentasDelDia() {
         modelo.setRowCount(0);
         modelo.addRow(new Object[]{"Mesa 1", "Pizza Margarita", 2, "$500"});
@@ -130,6 +125,7 @@ public class Resumen extends JFrame {
         modelo.addRow(new Object[]{"Mesa 4", "Hamburguesa", 1, "$400"});
     }
 
+    //Metodo para cargar los pedidos por mesa
     private void cargarPedidosPorMesa(String mesa) {
         modelo.setRowCount(0);
         switch (mesa) {
@@ -148,7 +144,7 @@ public class Resumen extends JFrame {
                 break;
         }
     }
-
+    //Metodo para cargar el top 3 de los mas vendidos
     private void cargarTop3() {
         modelo.setRowCount(0);
         modelo.addRow(new Object[]{"-", "Pizza Margarita", 10, "$2500"});
@@ -157,6 +153,15 @@ public class Resumen extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Resumen::new);
+        SwingUtilities.invokeLater(() -> {
+            Resumen resumen = new Resumen();
+            resumen.setUndecorated(true);
+            resumen.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Rectangle bounds = env.getMaximumWindowBounds();
+            resumen.setBounds(bounds);
+            resumen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            resumen.setVisible(true);
+        });
     }
 }

@@ -46,10 +46,15 @@ public class Carta extends JFrame
 
     public Carta()
     {
+        //Configuraciones de aspectos visuales al código.
         setTitle("Carta del Restaurante");
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        ventanaCarta = new JPanel();
+        ventanaCarta.setLayout(new BorderLayout());
+        ventanaCarta.setBackground(new Color(245, 245, 245));
 
         // Estética general
         Color fondo = new Color(245, 245, 245);
@@ -58,15 +63,30 @@ public class Carta extends JFrame
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 16);
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 18);
 
+        ventanaCarta.setLayout(new BorderLayout());
         ventanaCarta.setBackground(fondo);
         ventanaCarta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        TBCarta.setFont(fuenteGeneral);
+        TBCarta.setBackground(blanco);
+        TBCarta.setBorder(BorderFactory.createLineBorder(acento, 2));
 
         JPCarta.setBackground(blanco);
         JPcambiarCarta.setBackground(blanco);
         JPCrear.setBackground(blanco);
 
-        JPcambiarCarta.setBorder(BorderFactory.createTitledBorder("Modificar Producto"));
-        JPCrear.setBorder(BorderFactory.createTitledBorder("Crear Nuevo Producto"));
+        ventanaCarta.add(TBCarta, BorderLayout.CENTER);
+        ventanaCarta.add(panelBotonAtras, BorderLayout.SOUTH);
+
+        JPcambiarCarta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Modificar Producto"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+
+        JPCrear.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Crear Nuevo Producto"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
 
         lblTituloCarta.setFont(fuenteTitulo);
         lblTituloCarta.setForeground(acento);
@@ -86,9 +106,9 @@ public class Carta extends JFrame
         txtNuevoPrecio.setBorder(BorderFactory.createLineBorder(acento, 1));
 
         // Botones con estilo
-        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", 150, 160);
-        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", 150, 160);
-        btnAtras = crearBotonConEstilo("imagenes/Atras.png", 130, 140);
+        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", 150, 155);
+        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", 150, 155);
+        btnAtras = crearBotonConEstilo("imagenes/Atras.png", 140, 145);
 
         panelBotonModificar.setLayout(new FlowLayout(FlowLayout.CENTER));
         panelBotonModificar.setBackground(blanco);
@@ -111,6 +131,10 @@ public class Carta extends JFrame
         tblTablaCartaMenu.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         tblTablaCartaMenu.getTableHeader().setBackground(acento);
         tblTablaCartaMenu.getTableHeader().setForeground(Color.WHITE);
+        tblTablaCartaMenu.setShowGrid(false);
+        tblTablaCartaMenu.setIntercellSpacing(new Dimension(0, 0));
+        tblTablaCartaMenu.setSelectionBackground(new Color(255, 230, 200));
+        tblTablaCartaMenu.setSelectionForeground(Color.BLACK);
 
         JScrollPane scroll = new JScrollPane(tblTablaCartaMenu);
         scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -309,15 +333,17 @@ public class Carta extends JFrame
         });
 
         // Botón Atrás
-        btnAtras.addActionListener(e ->
-        {
+        btnAtras.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCarta);
-            topFrame.dispose();
+            if (topFrame != null) {
+                topFrame.dispose();
+            }
 
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
+            menu.setUndecorated(true); // pantalla completa sin bordes
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH); // maximiza
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.pack();
             menu.setLocationRelativeTo(null);
             menu.setVisible(true);
@@ -343,7 +369,7 @@ public class Carta extends JFrame
         }
     }
 
-    // 🔹 Llena la tabla SOLO con los productos disponibles
+    //  Llena la tabla SOLO con los productos disponibles
     private void cargarProductosDisponibles()
     {
         modelo.setRowCount(0);
@@ -377,40 +403,18 @@ public class Carta extends JFrame
         boton.setFocusPainted(false);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        boton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoZoom, tamañoZoom, Image.SCALE_SMOOTH)));
-                boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
-            }
-
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH)));
-                boton.setBorder(BorderFactory.createEmptyBorder());
-            }
-        });
 
         return boton;
     }
 
-    public static void mostrarPantallaCompleta(JFrame ventana) {
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximiza
-        ventana.setUndecorated(true); // Quita bordes y barra de título
-        ventana.setVisible(true); // Muestra la ventana
-    }
-
-
-    public static void main(String[] args)
-    {
-        SwingUtilities.invokeLater(() ->
-        {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
             Carta carta = new Carta();
             carta.setContentPane(carta.ventanaCarta);
+            carta.setUndecorated(true);
+            carta.setExtendedState(JFrame.MAXIMIZED_BOTH);
             carta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            carta.pack();
-            carta.setLocationRelativeTo(null);
             carta.setVisible(true);
-            mostrarPantallaCompleta(carta);
-
         });
     }
 }

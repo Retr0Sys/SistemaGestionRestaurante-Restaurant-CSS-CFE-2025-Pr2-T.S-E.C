@@ -18,47 +18,43 @@ public class Mesita extends JFrame {
     private MesaDAO mesaDAO = new MesaDAO();
 
     public Mesita() {
-        // Color de fondo
+        //Aspectos visuales
         panelMesita.setBackground(new Color(245, 245, 245));
+        panelMesita.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-        // Vincular botones del .form con el arreglo
+        if (JPDentroScroll != null) {
+            JPDentroScroll.setBackground(Color.WHITE);
+            JPDentroScroll.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(200, 200, 200), 2),
+                    BorderFactory.createEmptyBorder(20, 20, 20, 20)
+            ));
+        }
+        //Adjuntamos los bottones al array de JButtons
         botonesMesa = new JButton[]{
                 btnMesa1, btnMesa2, btnMesa3, btnMesa4, btnMesa5, btnMesa6,
                 btnMesa7, btnMesa8, btnMesa9, btnMesa10, btnMesa11, btnMesa12
         };
         iconosMesa = new ImageIcon[12];
 
-        // Cargar estado de las mesas desde la BD
         actualizarEstadosMesas();
-
-        // Aplicar estilos y acciones
+        //Damos formato a los botones
         for (int i = 0; i < botonesMesa.length; i++) {
             final int index = i;
             JButton boton = botonesMesa[i];
+
+            boton.setPreferredSize(new Dimension(160, 160));
             boton.setBorderPainted(false);
             boton.setContentAreaFilled(false);
             boton.setFocusPainted(false);
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            // Efecto hover
-            boton.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
-                }
-
-                public void mouseExited(java.awt.event.MouseEvent evt) {
-                    boton.setBorder(BorderFactory.createEmptyBorder());
-                }
-            });
-
-            // Acción: abrir FormMesa con el número de mesa seleccionado
+            //Al seleccionar cualquiera de los botones nos envía a la siguiente ventana con la mesa seleccionada
             boton.addActionListener(e -> {
-                int idMesaSeleccionada = index + 1; // suponiendo que btnMesa1 es la mesa 1, btnMesa2 la 2, etc.
+                int idMesaSeleccionada = index + 1;
 
                 JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
                 topFrame.dispose();
 
-                FormMesa menu = new FormMesa(idMesaSeleccionada); // 👈 pasamos el número de mesa
+                FormMesa menu = new FormMesa(idMesaSeleccionada);
                 menu.setContentPane(menu.JPMesasIni);
                 menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 menu.setLocationRelativeTo(null);
@@ -66,12 +62,9 @@ public class Mesita extends JFrame {
                 menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 menu.setVisible(true);
             });
-
-
         }
     }
-    //Consulta la BD y actualiza los íconos de las mesas según su estado.
-
+    //Metodo para asignar una imagen dependiendo del estado de la mesa
     private void actualizarEstadosMesas() {
         try {
             List<Mesa> mesas = mesaDAO.listar();
@@ -88,7 +81,7 @@ public class Mesita extends JFrame {
                     "Error de BD", JOptionPane.ERROR_MESSAGE);
         }
     }
-     //Devuelve la ruta del ícono según el estado de la mesa.
+    //Obtenemos las rutas de las imagenes
     private String obtenerRutaIcono(int numeroMesa, String estado) {
         if (estado == null) estado = "Libre";
         switch (estado.toLowerCase()) {
@@ -104,7 +97,6 @@ public class Mesita extends JFrame {
         }
     }
 
-
     public static void mostrarPantallaCompleta(JFrame ventana) {
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ventana.setUndecorated(true);
@@ -114,8 +106,6 @@ public class Mesita extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Mesita");
-
-            // ⚠️ Debe ir antes de add() o pack()
             frame.setUndecorated(true);
 
             Mesita vista = new Mesita();
@@ -127,5 +117,4 @@ public class Mesita extends JFrame {
             frame.setVisible(true);
         });
     }
-
 }
