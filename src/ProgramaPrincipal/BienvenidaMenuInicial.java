@@ -19,7 +19,10 @@ public class BienvenidaMenuInicial extends JFrame {
     private JFrame ventanaPrincipal;
 
     public BienvenidaMenuInicial(JFrame frame) {
-        //Ajustes visuales
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
         this.ventanaPrincipal = frame;
 
         JPBienvenida = new JPanel();
@@ -43,31 +46,31 @@ public class BienvenidaMenuInicial extends JFrame {
         lblSubtitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
         lblFoto = new JLabel();
-        ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH));
+        int logoSize = (int)(screenHeight * 0.3);
+        ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(logoSize, logoSize, Image.SCALE_SMOOTH));
         lblFoto.setIcon(iconoCSS);
         lblFoto.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblFoto.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(150, 150, 150), 3),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-        //Funcionalidad al botón ingresar
+
         BtnIngresar = new JButton();
-        ImageIcon iconoIngresar = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH));
+        int btnSize = (int)(screenHeight * 0.25);
+        ImageIcon iconoIngresar = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(btnSize, btnSize, Image.SCALE_SMOOTH));
         BtnIngresar.setIcon(iconoIngresar);
+        BtnIngresar.setPreferredSize(new Dimension(btnSize, btnSize));
+        BtnIngresar.setMaximumSize(new Dimension(btnSize, btnSize));
         BtnIngresar.setContentAreaFilled(false);
         BtnIngresar.setBorderPainted(false);
         BtnIngresar.setFocusPainted(false);
         BtnIngresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         BtnIngresar.setAlignmentX(Component.CENTER_ALIGNMENT);
         BtnIngresar.setToolTipText("Haz clic para comenzar");
-        BtnIngresar.setPreferredSize(new Dimension(220, 220));
-        BtnIngresar.setMaximumSize(new Dimension(220, 220));
 
         BtnIngresar.addActionListener(e -> {
             reproducirSonido("sonido/Tu-papa-Wachinanga-_meme_-Un-show-mas-plantilla.wav");
-
-            ventanaPrincipal.dispose(); //cerrar ventana actual
-
+            ventanaPrincipal.dispose();
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -86,7 +89,7 @@ public class BienvenidaMenuInicial extends JFrame {
                 BtnIngresar.setBorder(BorderFactory.createEmptyBorder());
             }
         });
-        //Funcionalidad al botón salir
+
         BtnSalir = new JButton("Salir");
         BtnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         BtnSalir.setForeground(Color.WHITE);
@@ -107,7 +110,7 @@ public class BienvenidaMenuInicial extends JFrame {
         JPBienvenida.add(Box.createRigidArea(new Dimension(0, 10)));
         JPBienvenida.add(BtnSalir);
     }
-    //Metodo para reproducir sonidos
+
     private void reproducirSonido(String ruta) {
         try {
             File archivoSonido = new File(ruta);
@@ -121,12 +124,12 @@ public class BienvenidaMenuInicial extends JFrame {
     }
 
     public static void main(String[] args) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         JFrame frame = new JFrame();
         frame.setUndecorated(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setSize(screenSize);
+        frame.setLocation(0, 0);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Inicializamos componentes
 
         BienvenidaMenuInicial bienvenida = new BienvenidaMenuInicial(frame);
 
@@ -149,7 +152,6 @@ public class BienvenidaMenuInicial extends JFrame {
         frame.setContentPane(fondo);
         frame.setVisible(true);
 
-        // Animación de entrada
         SwingUtilities.invokeLater(() -> {
             Point start = bienvenida.JPBienvenida.getLocation();
             bienvenida.JPBienvenida.setLocation(start.x, start.y + 100);

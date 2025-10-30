@@ -18,41 +18,48 @@ public class Mesita extends JFrame {
     private MesaDAO mesaDAO = new MesaDAO();
 
     public Mesita() {
-        //Aspectos visuales
+        // Obtener resolución de pantalla
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoPantalla = screenSize.width;
+        int iconSize = (int) (anchoPantalla * 0.10);
+
+        // Aspectos visuales
+        panelMesita = new JPanel(new GridLayout(3, 4, 30, 30)); // 3 filas x 4 columnas
         panelMesita.setBackground(new Color(245, 245, 245));
         panelMesita.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-        if (JPDentroScroll != null) {
-            JPDentroScroll.setBackground(Color.WHITE);
-            JPDentroScroll.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(200, 200, 200), 2),
-                    BorderFactory.createEmptyBorder(20, 20, 20, 20)
-            ));
-        }
-        //Adjuntamos los bottones al array de JButtons
+        JPDentroScroll = new JPanel();
+        JPDentroScroll.setBackground(Color.WHITE);
+        JPDentroScroll.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 2),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+
+        // Inicializar botones
+        btnMesa1 = new JButton(); btnMesa2 = new JButton(); btnMesa3 = new JButton(); btnMesa4 = new JButton();
+        btnMesa5 = new JButton(); btnMesa6 = new JButton(); btnMesa7 = new JButton(); btnMesa8 = new JButton();
+        btnMesa9 = new JButton(); btnMesa10 = new JButton(); btnMesa11 = new JButton(); btnMesa12 = new JButton();
+
         botonesMesa = new JButton[]{
                 btnMesa1, btnMesa2, btnMesa3, btnMesa4, btnMesa5, btnMesa6,
                 btnMesa7, btnMesa8, btnMesa9, btnMesa10, btnMesa11, btnMesa12
         };
         iconosMesa = new ImageIcon[12];
 
-        actualizarEstadosMesas();
-        //Damos formato a los botones
+        actualizarEstadosMesas(iconSize);
+
         for (int i = 0; i < botonesMesa.length; i++) {
             final int index = i;
             JButton boton = botonesMesa[i];
 
-            boton.setPreferredSize(new Dimension(160, 160));
+            boton.setPreferredSize(new Dimension(iconSize, iconSize));
             boton.setBorderPainted(false);
             boton.setContentAreaFilled(false);
             boton.setFocusPainted(false);
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            //Al seleccionar cualquiera de los botones nos envía a la siguiente ventana con la mesa seleccionada
+
             boton.addActionListener(e -> {
                 int idMesaSeleccionada = index + 1;
-
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPDentroScroll);
-                topFrame.dispose();
 
                 FormMesa menu = new FormMesa(idMesaSeleccionada);
                 menu.setContentPane(menu.JPMesasIni);
@@ -62,17 +69,19 @@ public class Mesita extends JFrame {
                 menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 menu.setVisible(true);
             });
+
+            panelMesita.add(boton);
         }
     }
-    //Metodo para asignar una imagen dependiendo del estado de la mesa
-    private void actualizarEstadosMesas() {
+
+    private void actualizarEstadosMesas(int iconSize) {
         try {
             List<Mesa> mesas = mesaDAO.listar();
             for (int i = 0; i < botonesMesa.length && i < mesas.size(); i++) {
                 Mesa mesa = mesas.get(i);
                 String ruta = obtenerRutaIcono(mesa.getIdMesa(), mesa.getEstado());
                 iconosMesa[i] = new ImageIcon(new ImageIcon(ruta).getImage()
-                        .getScaledInstance(160, 160, Image.SCALE_SMOOTH));
+                        .getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
                 botonesMesa[i].setIcon(iconosMesa[i]);
                 botonesMesa[i].setToolTipText("Mesa " + mesa.getIdMesa() + " - " + mesa.getEstado());
             }
@@ -81,7 +90,7 @@ public class Mesita extends JFrame {
                     "Error de BD", JOptionPane.ERROR_MESSAGE);
         }
     }
-    //Obtenemos las rutas de las imagenes
+
     private String obtenerRutaIcono(int numeroMesa, String estado) {
         if (estado == null) estado = "Libre";
         switch (estado.toLowerCase()) {
@@ -103,12 +112,20 @@ public class Mesita extends JFrame {
         ventana.setVisible(true);
     }
 
+    public static void adaptarVentanaAResolucion(JFrame ventana) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds();
+        ventana.setBounds(bounds);
+        ventana.setLocation(bounds.x, bounds.y);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Mesita");
             frame.setUndecorated(true);
 
             Mesita vista = new Mesita();
+            adaptarVentanaAResolucion(frame);
             frame.setContentPane(vista.panelMesita);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();

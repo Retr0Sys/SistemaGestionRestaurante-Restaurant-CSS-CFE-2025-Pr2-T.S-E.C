@@ -1068,15 +1068,13 @@ public class FormMesa extends JFrame {
         SwingUtilities.invokeLater(() -> {
             FormMesa form = new FormMesa();
 
-
-            // Obtener el tamaño de pantalla completa
             GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            if (gd.isFullScreenSupported()) {
-                gd.setFullScreenWindow(form); // Modo pantalla completa real
-            } else {
-                form.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                form.setVisible(true);
-            }
+            gd.setFullScreenWindow(form); // Esto debe funcionar si no hay interferencias
+
+            form.getRootPane().registerKeyboardAction(e -> {
+                gd.setFullScreenWindow(null); // Sale del modo pantalla completa
+                form.dispose(); // Cierra la ventana
+            }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
         });
     }
 }
