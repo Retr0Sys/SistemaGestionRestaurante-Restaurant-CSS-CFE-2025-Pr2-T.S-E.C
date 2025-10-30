@@ -99,6 +99,7 @@ public class Facturacion extends JFrame {
         // Cargar mesas desde BD
         cargarMesasDesdeBD();
 
+
         // Cargar propinas
         cboxDescuento.addItem("0%");
         cboxDescuento.addItem("5%");
@@ -126,7 +127,7 @@ public class Facturacion extends JFrame {
         // Botón generar comprobante
         btnComprobante.addActionListener(e -> {
             String mesa = (String) cboxMesa.getSelectedItem();
-            String propina = (String) cboxDescuento.getSelectedItem();
+            String descuento = (String) cboxDescuento.getSelectedItem();
             String metodoPago = (String) cboxMetPago.getSelectedItem();
             String total = lblTotalNum.getText();
 
@@ -134,13 +135,13 @@ public class Facturacion extends JFrame {
                     "📋 Comprobante\n" +
                             "Mesa: " + mesa + "\n" +
                             "Subtotal: $" + subtotal + "\n" +
-                            "Propina: " + propina + "\n" +
+                            "Descuento: " + descuento + "\n" +
                             "Método de pago: " + metodoPago + "\n" +
                             "Total: " + total,
                     "Factura generada",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            crearPDF(mesa, propina, metodoPago, total);
+            crearPDF(mesa, descuento, metodoPago, total);
         });
 
         // Botón atrás
@@ -232,12 +233,26 @@ public class Facturacion extends JFrame {
     }
 
     // ====================== Crear PDF ======================
+    // ====================== Crear PDF (versión corregida y robusta) ======================
     private void crearPDF(String mesa, String propina, String metodoPago, String total) {
+        PDDocument documento = null;
+        PDPageContentStream contenido = null;
         try {
-            PDDocument documento = new PDDocument();
+            // --- obtener idMesa de forma segura ---
+            Object sel = cboxMesa.getSelectedItem();
+            if (sel == null) {
+                JOptionPane.showMessageDialog(this, "No hay ninguna mesa seleccionada para generar la factura.");
+                return;
+            }
+            String seleccionMesa = sel.toString();
+            // asumimos formato "Mesa X"
+            int idMesa = Integer.parseInt(seleccionMesa.replace("Mesa ", "").trim());
+
+            // --- preparar documento y página ---
+            documento = new PDDocument();
             PDPage pagina = new PDPage(PDRectangle.LETTER);
             documento.addPage(pagina);
-            PDPageContentStream contenido = new PDPageContentStream(documento, pagina);
+            contenido = new PDPageContentStream(documento, pagina);
 
             float anchoPagina = pagina.getMediaBox().getWidth();
             float altoPagina = pagina.getMediaBox().getHeight();
@@ -282,7 +297,7 @@ public class Facturacion extends JFrame {
             contenido.showText("moneda: UYU");
             contenido.endText();
 
-            // Método de pago y fecha
+            // Metodo de pago, fecha y mesero
             contenido.beginText();
             contenido.setFont(PDType1Font.HELVETICA, 10);
             contenido.newLineAtOffset(anchoPagina - 200, ticketY);
@@ -291,20 +306,29 @@ public class Facturacion extends JFrame {
 
             String fechaHora = new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date());
             contenido.beginText();
+            contenido.setFont(PDType1Font.HELVETICA, 10);
             contenido.newLineAtOffset(anchoPagina - 200, ticketY - 15);
             contenido.showText("Fecha: " + fechaHora);
             contenido.endText();
 
+            // Obtener y mostrar el mesero asignado
+            String nombreMesero = obtenerNombreMeseroPorMesa(idMesa);
+            contenido.beginText();
+            contenido.setFont(PDType1Font.HELVETICA, 10);
+            contenido.newLineAtOffset(anchoPagina - 200, ticketY - 30);
+            contenido.showText("Mesero: " + nombreMesero);
+            contenido.endText();
+
             // Línea divisoria
-            y = ticketY - 30;
+            y = ticketY - 35;
             contenido.setStrokingColor(new Color(180, 180, 220));
             contenido.setLineWidth(1f);
             contenido.moveTo(margenIzq, y);
             contenido.lineTo(anchoPagina - margenIzq, y);
             contenido.stroke();
-            y -= 30;
+            y -= 35;
 
-            // Mesa
+            // Mesa (centrado)
             String mesaTexto = mesa;
             float mesaTextoWidth = PDType1Font.HELVETICA_BOLD.getStringWidth(mesaTexto) / 1000 * 14;
             float mesaTextoX = (anchoPagina - mesaTextoWidth) / 2;
@@ -351,9 +375,7 @@ public class Facturacion extends JFrame {
             float tableX = (anchoPagina - tableWidth) / 2;
             float tableY = y;
 
-            // Obtener pedidos de la mesa
-            String seleccionMesa = (String) cboxMesa.getSelectedItem();
-            int idMesa = Integer.parseInt(seleccionMesa.replace("Mesa ", "").trim());
+            // Obtener pedidos de la mesa (usando idMesa ya calculado)
             CuentaDAO cuentaDAO = new CuentaDAO();
             int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
             List<Pedido> pedidos = PedidoDAO.listarPorCuenta(idCuenta);
@@ -362,10 +384,10 @@ public class Facturacion extends JFrame {
             datos[0] = new String[]{"Producto", "Cantidad", "Precio"};
             for (int i = 0; i < pedidos.size(); i++) {
                 Pedido p = pedidos.get(i);
-                String nombreProd = p.getNombreProducto(); // asegurarse de que Pedido tenga getNombreProducto()
+                String nombreProd = p.getNombreProducto();
                 int cant = p.getCantidad();
                 double precio = obtenerPrecioProducto(p.getIdProducto());
-                datos[i + 1] = new String[]{nombreProd, String.valueOf(cant), "$" + precio};
+                datos[i + 1] = new String[]{nombreProd, String.valueOf(cant), String.format("$ %.2f", precio)};
             }
 
             // Dibujar tabla
@@ -394,10 +416,28 @@ public class Facturacion extends JFrame {
             contenido.stroke();
             y -= 20;
 
-            // Facturación en dos columnas
-            String[] etiquetas = {"Subtotal:", "IVA:", "Propina:", "Total:"};
-            double iva = subtotal * 0.22; // ejemplo 22%
-            String[] valores = {"$" + subtotal, "$" + iva, propina, total};
+            // Facturación en dos columnas (descuento / IVA / total)
+            String seleccion = (String) cboxDescuento.getSelectedItem();
+            int porcentajeDescuento = 0;
+            if (seleccion != null) {
+                if (seleccion.equals("5%")) porcentajeDescuento = 5;
+                else if (seleccion.equals("10%")) porcentajeDescuento = 10;
+                else if (seleccion.equals("15%")) porcentajeDescuento = 15;
+            }
+
+            double descuento = subtotal * porcentajeDescuento / 100.0;
+            double subtotalConDescuento = subtotal - descuento;
+            double iva = subtotalConDescuento * 0.22;
+            double totalFinal = subtotalConDescuento + iva;
+
+            String[] etiquetas = {"Subtotal:", "Descuento (" + porcentajeDescuento + "%):", "IVA (22%):", "Total:"};
+            String[] valores = {
+                    String.format("$ %.2f", subtotal),
+                    String.format("-$ %.2f", descuento),
+                    String.format("$ %.2f", iva),
+                    String.format("$ %.2f", totalFinal)
+            };
+
             for (int i = 0; i < etiquetas.length; i++) {
                 contenido.beginText();
                 contenido.setFont(PDType1Font.HELVETICA, 12);
@@ -422,7 +462,7 @@ public class Facturacion extends JFrame {
             contenido.stroke();
             y -= 30;
 
-            // ======================= Bloque legal y agradecimiento =======================
+            // Bloque legal y agradecimiento
             String legal1 = "Documento legal aprobado y en regla por DGI";
             String legal2 = "N° Legal de 1000 a 3500 Vencimiento 31/12/2025";
 
@@ -462,15 +502,38 @@ public class Facturacion extends JFrame {
             contenido.showText(ivaTexto);
             contenido.endText();
 
+            // cerrar stream antes de guardar
             contenido.close();
-            documento.save("src/ProgramaPrincipal/Facturas/e-Ticket_A_N°_" + contadorFactura + ".pdf");
+            contenido = null;
+
+            // asegurar que la carpeta exista
+            java.io.File dir = new java.io.File("src/ProgramaPrincipal/Facturas");
+            if (!dir.exists()) dir.mkdirs();
+
+            // guardar documento
+            String ruta = "src/ProgramaPrincipal/Facturas/e-Ticket_A_N°_" + contadorFactura + ".pdf";
+            documento.save(ruta);
             documento.close();
+            documento = null;
             contadorFactura++;
 
+            // informar al usuario
+            JOptionPane.showMessageDialog(this, "Factura generada: " + ruta);
+
         } catch (Exception x) {
-            System.out.println("error: " + x.getMessage());
+            // imprimir traza completa para debugging
+            x.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al generar PDF: " + x.getMessage());
+        } finally {
+            try {
+                if (contenido != null) contenido.close();
+            } catch (Exception ignored) {}
+            try {
+                if (documento != null) documento.close();
+            } catch (Exception ignored) {}
         }
     }
+
 
     private float sum(float[] arr, int hasta) {
         float total = 0;
@@ -478,18 +541,50 @@ public class Facturacion extends JFrame {
         return total;
     }
     //Operaciones con los valores obtenidos.
+    // ====================== Actualizar total con descuento e IVA ======================
     private void actualizarTotal() {
         String seleccion = (String) cboxDescuento.getSelectedItem();
-        int porcentaje = 0;
+        int porcentajeDescuento = 0;
+
         if (seleccion != null) {
-            if (seleccion.equals("5%")) porcentaje = 5;
-            else if (seleccion.equals("10%")) porcentaje = 10;
-            else if (seleccion.equals("15%")) porcentaje = 15;
+            if (seleccion.equals("5%")) porcentajeDescuento = 5;
+            else if (seleccion.equals("10%")) porcentajeDescuento = 10;
+            else if (seleccion.equals("15%")) porcentajeDescuento = 15;
         }
 
-        double total = subtotal + (subtotal * porcentaje / 100.0);
-        lblTotalNum.setText("$ " + total);
+        double descuento = subtotal * porcentajeDescuento / 100.0;
+        double subtotalConDescuento = subtotal - descuento;
+        double iva = subtotalConDescuento * 0.22; // IVA del 22%
+        double total = subtotalConDescuento + iva;
+
+        // Mostrar en pantalla
+        lblTotalNum.setText(String.format("$ %.2f", total));
     }
+    // ====================== Obtener nombre del mesero asignado ======================
+    private String obtenerNombreMeseroPorMesa(int idMesa) {
+        String nombre = "Desconocido";
+        try {
+            String sql = "SELECT CONCAT(mesero.nombre, ' ', mesero.apellido) AS nombreCompleto " +
+                    "FROM mesa " +
+                    "JOIN mesero ON mesa.idMesero = mesero.idMesero " +
+                    "WHERE mesa.idMesa = ?";
+            try (java.sql.Connection con = ConexionDB.getConnection();
+                 java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, idMesa);
+                try (java.sql.ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        nombre = rs.getString("nombreCompleto");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo mesero: " + e.getMessage());
+        }
+        return nombre;
+    }
+
+
+
 
     public static void main(String[] args) {
         Facturacion ventana = new Facturacion();
