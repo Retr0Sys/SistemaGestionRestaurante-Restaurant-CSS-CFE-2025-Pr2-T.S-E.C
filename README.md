@@ -1,4 +1,4 @@
-<img width="1365" height="767" alt="Captura de pantalla 2025-10-30 132323" src="https://github.com/user-attachments/assets/20b59874-04ed-499f-afc1-dbae92ef7ab7" /># 🍽️ Sistema de Gestión de Restaurantes (SGR) | CSS
+🍽️ Sistema de Gestión de Restaurantes (SGR) | CSS
 
 <div align="center">
   
