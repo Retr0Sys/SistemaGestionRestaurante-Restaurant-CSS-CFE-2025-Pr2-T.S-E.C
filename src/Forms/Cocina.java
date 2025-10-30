@@ -1,11 +1,12 @@
 package Forms;
 
-import DAO.ConexionDB;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.sql.*;
+
+import DAO.ConexionDB;
 
 public class Cocina extends JFrame {
     public JPanel ventanaCocina;
@@ -25,6 +26,11 @@ public class Cocina extends JFrame {
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
 
+        // Obtener resolución de pantalla
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoPantalla = screenSize.width;
+        int iconSize = (int) (anchoPantalla * 0.10); // 10% del ancho
+
         ventanaCocina = new JPanel(new BorderLayout());
         ventanaCocina.setBackground(fondo);
 
@@ -38,14 +44,15 @@ public class Cocina extends JFrame {
         lblEstadoPedido = new JLabel("Estado:");
         btnAtras = new JButton();
 
-        // Botón atrás
+        // Botón atrás con tamaño dinámico
         ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png")
-                .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
-        btnAtras.setPreferredSize(new Dimension(100, 100));
+        btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAtras.setPreferredSize(new Dimension(iconSize, iconSize));
         btnAtras.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Combo estados
@@ -57,12 +64,15 @@ public class Cocina extends JFrame {
         cboxEstadoPedido.setBorder(BorderFactory.createLineBorder(acento, 2));
 
         lblEstadoPedido.setFont(fuenteGeneral);
+
+        // Botón actualizar con tamaño dinámico
         btnActualizar.setFont(fuenteGeneral);
         btnActualizar.setBackground(acento);
         btnActualizar.setForeground(Color.WHITE);
         btnActualizar.setFocusPainted(false);
-        btnActualizar.setPreferredSize(new Dimension(140, 35));
+        btnActualizar.setPreferredSize(new Dimension(iconSize + 40, 45));
         btnActualizar.setBorder(BorderFactory.createLineBorder(acento, 2));
+        btnActualizar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Tabla
         String[] columnas = {"ID", "Producto", "Mesa", "Cantidad", "Estado"};
@@ -71,7 +81,6 @@ public class Cocina extends JFrame {
                 return false;
             }
         };
-        //Visual a las tablas
         tblTablaCocina.setModel(modelo);
         tblTablaCocina.setFont(fuenteGeneral);
         tblTablaCocina.setRowHeight(28);
@@ -90,7 +99,7 @@ public class Cocina extends JFrame {
                 BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(10, 20, 10, 20)
         ));
-        //Configuración de paneles para una mejor organización
+
         JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelTitulo.setOpaque(false);
         panelTitulo.add(lblTitulo);
@@ -133,11 +142,11 @@ public class Cocina extends JFrame {
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
         });
     }
-    //Cargar pedidos a la BD
+
     private void cargarPedidos() {
         modelo.setRowCount(0);
         String sql = """
-            SELECT p.idPedido, cP.nombre AS producto, m.idMesa AS mesa, 
+            SELECT p.idPedido, cP.nombre AS producto, m.idMesa AS mesa,
                    p.cantidad, p.estado
             FROM pedido p
             JOIN cuenta c ON p.idCuenta = c.idCuenta
@@ -163,7 +172,7 @@ public class Cocina extends JFrame {
             JOptionPane.showMessageDialog(this, "❌ Error cargando pedidos: " + e.getMessage());
         }
     }
-    //Actualizar pedidos en la BD
+
     private void actualizarEstadoPedido() {
         int fila = tblTablaCocina.getSelectedRow();
         if (fila != -1) {
@@ -180,8 +189,7 @@ public class Cocina extends JFrame {
 
                 JOptionPane.showMessageDialog(this,
                         "✅ Estado actualizado correctamente.",
-                        "Confirmación",
-                        JOptionPane.INFORMATION_MESSAGE);
+                        "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                 cargarPedidos();
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this,
@@ -191,14 +199,21 @@ public class Cocina extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this,
                     "⚠️ Seleccione un pedido de la tabla.",
-                    "Advertencia",
-                    JOptionPane.WARNING_MESSAGE);
+                    "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    public static void adaptarVentanaAResolucion(JFrame ventana) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds();
+        ventana.setBounds(bounds);
+        ventana.setLocation(bounds.x, bounds.y);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Cocina ventana = new Cocina();
+            adaptarVentanaAResolucion(ventana);
             ventana.setContentPane(ventana.ventanaCocina);
             ventana.setUndecorated(true);
             ventana.pack();

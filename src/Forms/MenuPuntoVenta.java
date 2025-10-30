@@ -151,10 +151,15 @@ public class MenuPuntoVenta extends JFrame {
             System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
         }
     }
-    //Metodo para dar imagenes al os botones
+    //Metodo para dar imagenes a los botones
     private JButton crearBoton(String rutaImagen) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoPantalla = screenSize.width;
+        int iconSize = (int) (anchoPantalla * 0.12); // 12% del ancho
+        int hoverSize = iconSize + 10;
+
         JButton boton = new JButton();
-        ImageIcon icono = new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH));
+        ImageIcon icono = new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         boton.setIcon(icono);
         boton.setContentAreaFilled(false);
         boton.setBorderPainted(false);
@@ -162,15 +167,15 @@ public class MenuPuntoVenta extends JFrame {
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //Efectos al pasar el ratón
+        // Efectos al pasar el ratón
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(190, 190, Image.SCALE_SMOOTH)));
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(hoverSize, hoverSize, Image.SCALE_SMOOTH)));
                 boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH)));
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
                 boton.setBorder(BorderFactory.createEmptyBorder());
             }
         });
@@ -211,7 +216,30 @@ public class MenuPuntoVenta extends JFrame {
         }
     }
 
+    public static void adaptarVentanaAResolucion(JFrame ventana) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds(); // área útil sin superponer barra de tareas
+
+        ventana.setBounds(bounds); // adapta tamaño
+        ventana.setLocation(bounds.x, bounds.y); // asegura posición correcta
+    }
+
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(MenuPuntoVenta::new);
+        SwingUtilities.invokeLater(() -> {
+            MenuPuntoVenta menu = new MenuPuntoVenta();
+
+            // Adaptar a resolución de pantalla
+            MenuPuntoVenta.adaptarVentanaAResolucion(menu);
+
+            // Aplicar configuración visual completa
+            menu.setContentPane(menu.JPMenuPrinc);
+            menu.setUndecorated(true);
+            menu.pack();
+            menu.setLocationRelativeTo(null);
+            menu.setVisible(true);
+            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        });
     }
 }

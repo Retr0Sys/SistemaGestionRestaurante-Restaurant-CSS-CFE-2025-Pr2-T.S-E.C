@@ -40,6 +40,12 @@ public class Facturacion extends JFrame {
     private static int contadorFactura = 1;
 
     public Facturacion() {
+
+        // Obtener resolución de pantalla
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoPantalla = screenSize.width;
+        int iconSize = (int) (anchoPantalla * 0.10); // 10% del ancho
+
         // Estética general
         Color fondo = new Color(245, 245, 245);
         Color acento = new Color(255, 159, 101);
@@ -53,29 +59,34 @@ public class Facturacion extends JFrame {
                 BorderFactory.createEmptyBorder(30, 30, 30, 30)
         ));
 
-        // Configuración de botones
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH));
+        // Botón Atras
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
         btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAtras.setPreferredSize(new Dimension(130, 130));
+        btnAtras.setPreferredSize(new Dimension(iconSize, iconSize));
         btnAtras.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH));
+// Botón Comprobante
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         btnComprobante.setIcon(imagen2);
         btnComprobante.setBorderPainted(false);
         btnComprobante.setContentAreaFilled(false);
         btnComprobante.setFocusPainted(false);
+        btnComprobante.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnComprobante.setPreferredSize(new Dimension(iconSize, iconSize));
+        btnComprobante.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 
         // Título
-        setTitle("Facturación");
-        lblFact.setFont(fuenteTitulo);
-        lblFact.setForeground(acento);
-        lblFact.setHorizontalAlignment(SwingConstants.CENTER);
-        lblFact.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        ImageIcon iconoFact = new ImageIcon(
+                new ImageIcon("imagenes/LogoFactura.png")
+                        .getImage()
+                        .getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)
+        );
+        lblFact.setIcon(iconoFact);
 
         // Etiquetas
         lblSubtotal.setFont(fuenteGeneral);
@@ -586,8 +597,17 @@ public class Facturacion extends JFrame {
 
 
 
+    public static void adaptarVentanaAResolucion(JFrame ventana) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds(); // área útil sin superponer barra de tareas
+
+        ventana.setBounds(bounds); // adapta tamaño
+        ventana.setLocation(bounds.x, bounds.y); // asegura posición correcta
+    }
+
     public static void main(String[] args) {
         Facturacion ventana = new Facturacion();
+        adaptarVentanaAResolucion(ventana);
         ventana.setContentPane(ventana.ventanaFact);
         ventana.setUndecorated(true); //  sin bordes
         ventana.pack();               //  ajusta al contenido

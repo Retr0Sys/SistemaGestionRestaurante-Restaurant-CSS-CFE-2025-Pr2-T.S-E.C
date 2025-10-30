@@ -46,6 +46,17 @@ public class Carta extends JFrame
 
     public Carta()
     {
+        // Obtener resolución de pantalla
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoPantalla = screenSize.width;
+        int tamañoNormal = (int) (anchoPantalla * 0.10); // 10% del ancho
+        int tamañoZoom = tamañoNormal + 15;
+
+// Botones con estilo dinámico
+        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", tamañoNormal, tamañoZoom);
+        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", tamañoNormal, tamañoZoom);
+        btnAtras = crearBotonConEstilo("imagenes/Atras.png", tamañoNormal, tamañoZoom);
+
         //Configuraciones de aspectos visuales al código.
         setTitle("Carta del Restaurante");
         setSize(700, 500);
@@ -403,13 +414,34 @@ public class Carta extends JFrame
         boton.setFocusPainted(false);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        // Efecto hover
+        boton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoZoom, tamañoZoom, Image.SCALE_SMOOTH)));
+                boton.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH)));
+                boton.setBorder(BorderFactory.createEmptyBorder());
+            }
+        });
 
         return boton;
+    }
+
+    public static void adaptarVentanaAResolucion(JFrame ventana) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds(); // área útil sin superponer barra de tareas
+
+        ventana.setBounds(bounds); // adapta tamaño
+        ventana.setLocation(bounds.x, bounds.y); // asegura posición correcta
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Carta carta = new Carta();
+            adaptarVentanaAResolucion(carta);
             carta.setContentPane(carta.ventanaCarta);
             carta.setUndecorated(true);
             carta.setExtendedState(JFrame.MAXIMIZED_BOTH);

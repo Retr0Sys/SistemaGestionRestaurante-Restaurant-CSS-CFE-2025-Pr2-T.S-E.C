@@ -23,6 +23,11 @@ public class Resumen extends JFrame {
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoPantalla = screenSize.width;
+        int altoPantalla = screenSize.height;
+        int iconSize = (int) (anchoPantalla * 0.08); // 8% del ancho de pantalla
+
         ventanaResumen = new JPanel(new BorderLayout());
         ventanaResumen.setBackground(fondo);
         ventanaResumen.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
@@ -45,8 +50,8 @@ public class Resumen extends JFrame {
         JScrollPane scrollTabla = new JScrollPane(tblTabla);
         ventanaResumen.add(scrollTabla, BorderLayout.CENTER);
 
-        // Panel de controles
-        JPanel panelControles = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        // Panel de controles con GridLayout
+        JPanel panelControles = new JPanel(new GridLayout(1, 5, 20, 10));
         panelControles.setBackground(fondo);
 
         cboxMesa = new JComboBox<>();
@@ -62,10 +67,10 @@ public class Resumen extends JFrame {
         btnTop3 = new JButton();
         btnAtras = new JButton();
 
-        estilizarBoton(btnVentasDelDia, "imagenes/Ventas diarias.png");
-        estilizarBoton(btnpedidosPorMesa, "imagenes/Pedidos x mesa.png");
-        estilizarBoton(btnTop3, "imagenes/Top 3.png");
-        estilizarBoton(btnAtras, "imagenes/Atras.png");
+        estilizarBoton(btnVentasDelDia, "imagenes/Ventas diarias.png", iconSize);
+        estilizarBoton(btnpedidosPorMesa, "imagenes/Pedidos x mesa.png", iconSize);
+        estilizarBoton(btnTop3, "imagenes/Top 3.png", iconSize);
+        estilizarBoton(btnAtras, "imagenes/Atras.png", iconSize);
 
         panelControles.add(btnVentasDelDia);
         panelControles.add(btnpedidosPorMesa);
@@ -107,15 +112,17 @@ public class Resumen extends JFrame {
         setContentPane(ventanaResumen);
         setTitle("Resumen");
     }
-    //Damos estilo a los botones
-    private void estilizarBoton(JButton boton, String rutaIcono) {
-        ImageIcon icono = new ImageIcon(new ImageIcon(rutaIcono).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-        boton.setIcon(icono);
+
+    // Estilizar botón con tamaño dinámico
+    private void estilizarBoton(JButton boton, String rutaIcono, int size) {
+        ImageIcon iconoOriginal = new ImageIcon(rutaIcono);
+        Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        boton.setIcon(new ImageIcon(imagenEscalada));
         boton.setBorderPainted(false);
         boton.setContentAreaFilled(false);
         boton.setFocusPainted(false);
     }
-    //Metodo para cargar las ventas del día (Notese el código hardcodeado de prueba)
+
     private void cargarVentasDelDia() {
         modelo.setRowCount(0);
         modelo.addRow(new Object[]{"Mesa 1", "Pizza Margarita", 2, "$500"});
@@ -125,7 +132,6 @@ public class Resumen extends JFrame {
         modelo.addRow(new Object[]{"Mesa 4", "Hamburguesa", 1, "$400"});
     }
 
-    //Metodo para cargar los pedidos por mesa
     private void cargarPedidosPorMesa(String mesa) {
         modelo.setRowCount(0);
         switch (mesa) {
@@ -144,7 +150,7 @@ public class Resumen extends JFrame {
                 break;
         }
     }
-    //Metodo para cargar el top 3 de los mas vendidos
+
     private void cargarTop3() {
         modelo.setRowCount(0);
         modelo.addRow(new Object[]{"-", "Pizza Margarita", 10, "$2500"});
@@ -152,14 +158,19 @@ public class Resumen extends JFrame {
         modelo.addRow(new Object[]{"-", "Refresco", 6, "$900"});
     }
 
+    public static void adaptarVentanaAResolucion(JFrame ventana) {
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds();
+        ventana.setBounds(bounds);
+        ventana.setLocation(bounds.x, bounds.y);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Resumen resumen = new Resumen();
+            adaptarVentanaAResolucion(resumen);
             resumen.setUndecorated(true);
             resumen.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Rectangle bounds = env.getMaximumWindowBounds();
-            resumen.setBounds(bounds);
             resumen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             resumen.setVisible(true);
         });
