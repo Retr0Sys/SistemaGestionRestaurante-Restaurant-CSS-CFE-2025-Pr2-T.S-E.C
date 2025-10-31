@@ -92,6 +92,7 @@ public class FormMesa extends JFrame {
     private JScrollPane JSPaneReservas;
     private JLabel lblEstadoAct;
     private JLabel lblCuentaActiva;
+    private JScrollPane JscrollPedidos;
     private JTable TBCuentas;
     private MesaDAO mesaDAO = new MesaDAO();
     private PedidoDAO pedidoDAO = new PedidoDAO();
@@ -1056,25 +1057,17 @@ public class FormMesa extends JFrame {
         }
     }
 
-    public static void adaptarVentanaAResolucion(JFrame ventana) {
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        Rectangle bounds = env.getMaximumWindowBounds();
-        ventana.setBounds(bounds);
-        ventana.setLocation(bounds.x, bounds.y);
-    }
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("FormMesa");
-            frame.setUndecorated(true);
+            FormMesa form = new FormMesa();
 
-            FormMesa vista = new FormMesa();
-            adaptarVentanaAResolucion(frame);
-            frame.setContentPane(vista.JPMesasIni);
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            gd.setFullScreenWindow(form); // Esto debe funcionar si no hay interferencias
+
+            form.getRootPane().registerKeyboardAction(e -> {
+                gd.setFullScreenWindow(null); // Sale del modo pantalla completa
+                form.dispose(); // Cierra la ventana
+            }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
         });
     }
 }

@@ -59,7 +59,7 @@ public class Mesita extends JFrame {
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
             boton.addActionListener(e -> {
-                int idMesaSeleccionada = index + 1;
+                int idMesaSeleccionada = index + 1; // número de la mesa que se presionó
 
                 dispose();
 
@@ -67,7 +67,9 @@ public class Mesita extends JFrame {
                     JFrame frame = new JFrame("FormMesa");
                     frame.setUndecorated(true);
 
-                    FormMesa vista = new FormMesa();
+                    // Le pasamos el número de mesa al constructor
+                    FormMesa vista = new FormMesa(idMesaSeleccionada);
+
                     adaptarVentanaAResolucion(frame);
                     frame.setContentPane(vista.JPMesasIni);
                     frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -76,6 +78,7 @@ public class Mesita extends JFrame {
                     frame.setVisible(true);
                 });
             });
+
 
             panelMesita.add(boton);
         }
