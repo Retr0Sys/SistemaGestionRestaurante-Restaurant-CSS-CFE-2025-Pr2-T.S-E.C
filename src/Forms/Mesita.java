@@ -61,6 +61,8 @@ public class Mesita extends JFrame {
             boton.addActionListener(e -> {
                 int idMesaSeleccionada = index + 1;
 
+                dispose();
+
                 FormMesa menu = new FormMesa(idMesaSeleccionada);
                 menu.setContentPane(menu.JPMesasIni);
                 menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

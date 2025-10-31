@@ -125,19 +125,6 @@ public class MenuPuntoVenta extends JFrame {
         setUndecorated(true);
         setVisible(true);
 
-        // Animación de entrada
-        JPMenuPrinc.setLocation(0, -100);
-        Timer anim = new Timer(10, new AbstractAction() {
-            int y = -100;
-            public void actionPerformed(ActionEvent e) {
-                if (y < 0) {
-                    JPMenuPrinc.setLocation(0, y++);
-                } else {
-                    ((Timer) e.getSource()).stop();
-                }
-            }
-        });
-        anim.start();
     }
     //Metodo para reproducir sonidos
     private void reproducirSonido(String ruta) {
@@ -200,7 +187,6 @@ public class MenuPuntoVenta extends JFrame {
 
     private void abrirVentanaAcerca(JFrame ventana, String panelNombre) {
         ventana.setContentPane((JPanel) getPanelPorNombre(ventana, panelNombre));
-        ventana.setUndecorated(true); //  sin bordes
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); //  pantalla completa
         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventana.pack();
