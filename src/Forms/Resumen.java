@@ -60,7 +60,7 @@ public class Resumen extends JFrame {
         cboxMesa = new JComboBox<>();
         cboxMesa.setFont(fuenteGeneral);
         cboxMesa.setBorder(BorderFactory.createLineBorder(acento, 2));
-        cargarMesasDesdeBD(); // 🔹 ahora se carga desde la tabla `mesa`
+        cargarMesasDesdeBD(); // ahora se carga desde la tabla `mesa`
 
         btnVentasDelDia = new JButton();
         btnpedidosPorMesa = new JButton();
