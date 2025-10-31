@@ -241,14 +241,6 @@ public class FormMesa extends JFrame {
         lblMesas.setHorizontalAlignment(SwingConstants.CENTER);
         lblMesas.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
 
-        lblMesas.setOpaque(false); // No pinta fondo
-        lblMesas.setBackground(new Color(0, 0, 0, 0)); // Totalmente transparente
-        ImageIcon iconoCSS = new ImageIcon(
-                new ImageIcon("imagenes/IconoMesas.png")
-                        .getImage()
-                        .getScaledInstance(135, 135, Image.SCALE_SMOOTH)
-        );
-        lblMesas.setIcon(iconoCSS);
 
 
         lblEstadoAct.setFont(new Font("Segoe UI", Font.BOLD, 18));
