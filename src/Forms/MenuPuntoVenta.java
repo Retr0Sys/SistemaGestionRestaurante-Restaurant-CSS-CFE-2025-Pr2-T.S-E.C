@@ -221,7 +221,6 @@ public class MenuPuntoVenta extends JFrame {
             // Aplicar configuración visual completa
             menu.setContentPane(menu.JPMenuPrinc);
             menu.setUndecorated(true);
-            menu.pack();
             menu.setLocationRelativeTo(null);
             menu.setVisible(true);
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH);

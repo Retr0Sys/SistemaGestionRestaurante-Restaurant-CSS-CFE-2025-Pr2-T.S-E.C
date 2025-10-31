@@ -1079,8 +1079,8 @@ public class FormMesa extends JFrame {
             FormMesa vista = new FormMesa();
             adaptarVentanaAResolucion(frame);
             frame.setContentPane(vista.JPMesasIni);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
