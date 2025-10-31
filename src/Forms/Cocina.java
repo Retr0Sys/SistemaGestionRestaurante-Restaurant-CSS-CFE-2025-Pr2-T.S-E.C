@@ -216,7 +216,6 @@ public class Cocina extends JFrame {
             adaptarVentanaAResolucion(ventana);
             ventana.setContentPane(ventana.ventanaCocina);
             ventana.setUndecorated(true);
-            ventana.pack();
             ventana.setLocationRelativeTo(null);
             ventana.setVisible(true);
             ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);

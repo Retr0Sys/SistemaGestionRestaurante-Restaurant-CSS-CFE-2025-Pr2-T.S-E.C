@@ -610,7 +610,6 @@ public class Facturacion extends JFrame {
         adaptarVentanaAResolucion(ventana);
         ventana.setContentPane(ventana.ventanaFact);
         ventana.setUndecorated(true); //  sin bordes
-        ventana.pack();               //  ajusta al contenido
         ventana.setLocationRelativeTo(null); // centrado
         ventana.setVisible(true);     // mostrar primero
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // luego maximizar

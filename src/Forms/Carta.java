@@ -355,7 +355,6 @@ public class Carta extends JFrame
             menu.setUndecorated(true); // pantalla completa sin bordes
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH); // maximiza
             menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.pack();
             menu.setLocationRelativeTo(null);
             menu.setVisible(true);
         });

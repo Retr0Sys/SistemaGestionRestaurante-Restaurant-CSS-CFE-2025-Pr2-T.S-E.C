@@ -61,13 +61,20 @@ public class Mesita extends JFrame {
             boton.addActionListener(e -> {
                 int idMesaSeleccionada = index + 1;
 
-                FormMesa menu = new FormMesa(idMesaSeleccionada);
-                menu.setContentPane(menu.JPMesasIni);
-                menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                menu.setLocationRelativeTo(null);
-                menu.pack();
-                menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                menu.setVisible(true);
+                dispose();
+
+                SwingUtilities.invokeLater(() -> {
+                    JFrame frame = new JFrame("FormMesa");
+                    frame.setUndecorated(true);
+
+                    FormMesa vista = new FormMesa();
+                    adaptarVentanaAResolucion(frame);
+                    frame.setContentPane(vista.JPMesasIni);
+                    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
+                });
             });
 
             panelMesita.add(boton);
@@ -106,12 +113,6 @@ public class Mesita extends JFrame {
         }
     }
 
-    public static void mostrarPantallaCompleta(JFrame ventana) {
-        ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        ventana.setUndecorated(true);
-        ventana.setVisible(true);
-    }
-
     public static void adaptarVentanaAResolucion(JFrame ventana) {
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Rectangle bounds = env.getMaximumWindowBounds();
@@ -127,9 +128,8 @@ public class Mesita extends JFrame {
             Mesita vista = new Mesita();
             adaptarVentanaAResolucion(frame);
             frame.setContentPane(vista.panelMesita);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
