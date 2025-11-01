@@ -1,13 +1,23 @@
 package Interfaces;
 
+import Clases.abstractas.Producto;
+import java.sql.SQLException;
+import java.util.List;
+
 public interface CartaService {
 
-    void mostrarCarta();
+    // Retorna todos los productos, estén disponibles o no
+    List<Producto> listarTodos() throws SQLException;
 
-    void agregarItem(String item);
+    // Retorna solo los productos disponibles
+    List<Producto> listarDisponibles() throws SQLException;
 
-    void eliminarItem(String item);
+    // Actualiza el precio y estado de un producto
+    void actualizarProducto(int idProducto, double nuevoPrecio, int estado) throws SQLException;
 
-    void actualizarItem(String item, String nuevoItem);
+    // Crea un nuevo producto
+    void crearProducto(Producto producto) throws SQLException;
 
+    // Busca un producto por nombre
+    Producto buscarPorNombre(String nombre) throws SQLException;
 }
