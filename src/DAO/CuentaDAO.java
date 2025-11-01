@@ -83,40 +83,15 @@ public class CuentaDAO
     }
 
     // Cierra la cuenta abierta de la mesa (pone estado = 0 y fechaCierre = NOW())
-    public void cerrarCuenta(int idMesa) throws SQLException
-    {
-        try (Connection cn = ConexionDB.getConnection();
-             PreparedStatement ps = cn.prepareStatement(SQL_CERRAR_CUENTA))
-        {
+    public void cerrarCuenta(int idMesa) throws SQLException {
+        String sql = "UPDATE cuenta SET estado = 0, fechaCierre = NOW() WHERE idMesa = ? AND estado = 1";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idMesa);
             ps.executeUpdate();
         }
     }
 
-    // Devuelve la Cuenta abierta de la mesa (con timestamps), o null si no existe
-    public Cuenta obtenerCuentaAbierta(int idMesa) throws SQLException
-    {
-        try (Connection cn = ConexionDB.getConnection();
-             PreparedStatement ps = cn.prepareStatement(SQL_SELECT_ABIERTA))
-        {
-            ps.setInt(1, idMesa);
-            try (ResultSet rs = ps.executeQuery())
-            {
-                if (rs.next())
-                {
-                    Cuenta c = new Cuenta(
-                            rs.getInt("idCuenta"),
-                            rs.getInt("idMesa"),
-                            rs.getTimestamp("fechaApertura"),
-                            rs.getTimestamp("fechaCierre"),
-                            rs.getInt("estado")
-                    );
-                    return c;
-                }
-            }
-        }
-        return null;
-    }
 
     // Lista todas las cuentas (historial)
     public List<Cuenta> listar() throws SQLException
