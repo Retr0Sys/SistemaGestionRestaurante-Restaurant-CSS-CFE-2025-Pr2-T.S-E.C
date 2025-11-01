@@ -109,6 +109,16 @@
           <text value=""/>
         </properties>
       </component>
+      <hspacer id="86bf2">
+        <constraints>
+          <grid row="6" column="5" row-span="1" col-span="8" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
+      <hspacer id="4ae1e">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </hspacer>
     </children>
   </grid>
 </form>

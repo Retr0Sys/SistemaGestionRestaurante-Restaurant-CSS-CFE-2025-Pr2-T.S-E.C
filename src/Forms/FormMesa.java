@@ -223,6 +223,10 @@ public class FormMesa extends JFrame {
         lblEstado.setForeground(new Color(80, 80, 80));
         lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
 
+        lblNombreMesero.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblNombreMesero.setForeground(new Color(80, 80, 80));
+        lblNombreMesero.setHorizontalAlignment(SwingConstants.CENTER);
+
         lblEstado.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         lblEstadoCuenta.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
@@ -285,9 +289,17 @@ public class FormMesa extends JFrame {
         aplicarHover(btnCerrarCuenta);
         aplicarHover(añadirButton);
         aplicarHover(eliminarButton);
+        aplicarHover(cambiarEstadoButton);
+
 
         btnAbrirCuenta.setFocusPainted(false);
         btnAbrirCuenta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        cambiarEstadoButton.setFocusPainted(false);
+        cambiarEstadoButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
@@ -438,17 +450,13 @@ public class FormMesa extends JFrame {
         btnAtras.setContentAreaFilled(false);
         btnAtras.setFocusPainted(false);
 
-        cambiarEstadoButton.setIcon(new ImageIcon(new ImageIcon("imagenes/Cambiar estado.png").getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH)));
-        cambiarEstadoButton.setBorderPainted(false);
-        cambiarEstadoButton.setContentAreaFilled(false);
-        cambiarEstadoButton.setFocusPainted(false);
 
         BtnAsignar.setIcon(new ImageIcon(new ImageIcon("imagenes/Asignar.png").getImage().getScaledInstance(170, 170, Image.SCALE_SMOOTH)));
         BtnAsignar.setBorderPainted(false);
         BtnAsignar.setContentAreaFilled(false);
         BtnAsignar.setFocusPainted(false);
 
-        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+        BtnEnviar.setIcon(new ImageIcon(new ImageIcon("imagenes/Enviar.png").getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH)));
         BtnEnviar.setBorderPainted(false);
         BtnEnviar.setContentAreaFilled(false);
         BtnEnviar.setFocusPainted(false);
