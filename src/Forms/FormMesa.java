@@ -531,18 +531,36 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error actualizando estado: " + e.getMessage());
         }
     }
-    //Método para abrir cuentas
+    private void cambiarEstadoMesaAutomatico(int idMesa, String nuevoEstado) {
+        try {
+            Mesa m = mesaDAO.buscarPorId(idMesa);
+            if (m != null) {
+                m.setEstado(nuevoEstado);
+                mesaDAO.actualizar(m);
+                lblEstado.setText(nuevoEstado);
+                System.out.println("Mesa " + idMesa + " actualizada a estado: " + nuevoEstado);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar estado de la mesa: " + e.getMessage());
+        }
+    }
     private void abrirCuenta() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
+
             if (cuentaDAO.tieneCuentaAbierta(idMesa)) {
                 JOptionPane.showMessageDialog(this, "La mesa ya tiene una cuenta abierta.");
                 return;
             }
 
+            // Crear nueva cuenta
             Cuenta nuevaCuenta = new Cuenta(idMesa, 1);
             cuentaDAO.insertar(nuevaCuenta);
-            JOptionPane.showMessageDialog(this, "Cuenta abierta para la mesa " + idMesa);
+
+            // Cambiar estado automáticamente a "Ocupada"
+            cambiarEstadoMesaAutomatico(idMesa, "Ocupada");
+
+            JOptionPane.showMessageDialog(this, "Cuenta abierta para la mesa " + idMesa + ". Estado: Ocupada.");
 
             // Recargar tabla de pedidos (vacía al inicio)
             cargarPedidosMesa(idMesa);
@@ -556,13 +574,18 @@ public class FormMesa extends JFrame {
     private void cerrarCuenta() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
+
             if (!cuentaDAO.tieneCuentaAbierta(idMesa)) {
                 JOptionPane.showMessageDialog(this, "No hay cuenta abierta para esta mesa.");
                 return;
             }
 
             cuentaDAO.cerrarCuenta(idMesa);
-            JOptionPane.showMessageDialog(this, "Cuenta cerrada correctamente.");
+
+            // Cambiar estado automáticamente a "Disponible"
+            cambiarEstadoMesaAutomatico(idMesa, "Disponible");
+
+            JOptionPane.showMessageDialog(this, "Cuenta cerrada. Mesa disponible nuevamente.");
 
             // Limpiar tabla de pedidos
             TBPedidosMesa.setModel(new DefaultTableModel(
@@ -575,6 +598,7 @@ public class FormMesa extends JFrame {
     }
 
     //Metodos para cargar pedidos en las mesas
+
     private void cargarPedidosMesa(int idMesa) {
         try {
             DefaultTableModel model = new DefaultTableModel(
@@ -604,6 +628,7 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
         }
     }
+
 
     //Metodo para agregar pedidos
     private void abrirDialogoAgregarPedido() {
