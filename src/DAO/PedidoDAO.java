@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import Clases.concret.Pedido;
+import Exepciones.StockInsuficienteException;
 
 public class PedidoDAO {
 
@@ -36,7 +37,7 @@ public class PedidoDAO {
                     int filas = ps2.executeUpdate();
                     if (filas == 0) {
                         con.rollback();
-                        throw new SQLException("Stock insuficiente para este producto.");
+                        throw new StockInsuficienteException();
                     }
                 }
 
@@ -224,7 +225,7 @@ public class PedidoDAO {
                         int filas = ps.executeUpdate();
                         if (filas == 0) {
                             con.rollback();
-                            throw new SQLException("Stock insuficiente para reactivar el pedido.");
+                            throw new StockInsuficienteException();
                         }
                     }
                 }

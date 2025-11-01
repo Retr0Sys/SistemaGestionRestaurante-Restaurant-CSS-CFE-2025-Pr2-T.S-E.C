@@ -4,6 +4,7 @@ import Clases.abstractas.Producto;
 import Clases.concret.Comida;
 import Clases.concret.Bebida;
 import Clases.concret.Postre;
+import Exepciones.StockInsuficienteException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -100,6 +101,10 @@ public class ProductoDAO {
     }
 
     public static void actualizarStock(int idProducto, int nuevoStock) throws SQLException {
+        if (nuevoStock < 0) {
+            throw new StockInsuficienteException();
+        }
+
         String sql = "UPDATE CatalogoProducto SET stock=? WHERE IdCatalogoProducto=?";
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -108,6 +113,7 @@ public class ProductoDAO {
             ps.executeUpdate();
         }
     }
+
 
     public static int obtenerStock(int idProducto) throws SQLException {
         String sql = "SELECT stock FROM CatalogoProducto WHERE IdCatalogoProducto=?";
