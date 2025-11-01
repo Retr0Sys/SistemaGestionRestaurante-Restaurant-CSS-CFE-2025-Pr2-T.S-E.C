@@ -746,7 +746,6 @@ public class FormMesa extends JFrame {
         }
     }
     //Se guarda las reservas en la BD
-    // Se guarda la reserva en la BD y actualiza el estado de la mesa
     private void guardarReserva() {
         try {
             if (CBmesa4.getSelectedItem() == null) {
@@ -869,8 +868,8 @@ public class FormMesa extends JFrame {
             reservaDAO.insertar(reserva);
 
             // Actualizar estado de la mesa a "Reservada"
-            MesaDAO mesaDAO = new MesaDAO();
-            mesaDAO.actualizarEstado(idMesa, "Reservada");
+            //MesaDAO mesaDAO = new MesaDAO();
+            //mesaDAO.actualizarEstado(idMesa, "Reservada");
 
             JOptionPane.showMessageDialog(this, "Reserva guardada correctamente.");
 
