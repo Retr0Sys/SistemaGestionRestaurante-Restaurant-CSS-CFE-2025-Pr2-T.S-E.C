@@ -1,12 +1,16 @@
 package Forms;
 
+import Clases.concret.Pedido;
+import Interfaces.CartaService;
+import Interfaces.CartaServiceImpl;
+import DAO.ConexionDB;
+import DAO.PedidoDAO;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.sql.*;
-
-import DAO.ConexionDB;
+import java.util.List;
 
 public class Cocina extends JFrame {
     public JPanel ventanaCocina;
@@ -19,8 +23,13 @@ public class Cocina extends JFrame {
 
     private DefaultTableModel modelo;
 
+    // Servicio de carta (por si se requiere consultar productos)
+    private final CartaService cartaService = new CartaServiceImpl();
+
     public Cocina() {
-        // Paleta y fuentes
+        // ================================
+        // Configuración visual
+        // ================================
         Color fondo = new Color(245, 245, 245);
         Color acento = new Color(255, 159, 101);
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
@@ -29,7 +38,7 @@ public class Cocina extends JFrame {
         // Obtener resolución de pantalla
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int anchoPantalla = screenSize.width;
-        int iconSize = (int) (anchoPantalla * 0.10); // 10% del ancho
+        int iconSize = (int) (anchoPantalla * 0.10);
 
         ventanaCocina = new JPanel(new BorderLayout());
         ventanaCocina.setBackground(fondo);
@@ -44,7 +53,9 @@ public class Cocina extends JFrame {
         lblEstadoPedido = new JLabel("Estado:");
         btnAtras = new JButton();
 
-        // Botón atrás con tamaño dinámico
+        // ================================
+        // Botón atrás
+        // ================================
         ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png")
                 .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
@@ -55,7 +66,9 @@ public class Cocina extends JFrame {
         btnAtras.setPreferredSize(new Dimension(iconSize, iconSize));
         btnAtras.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // ================================
         // Combo estados
+        // ================================
         cboxEstadoPedido.addItem("Pendiente");
         cboxEstadoPedido.addItem("En preparación");
         cboxEstadoPedido.addItem("Servido");
@@ -65,7 +78,9 @@ public class Cocina extends JFrame {
 
         lblEstadoPedido.setFont(fuenteGeneral);
 
-        // Botón actualizar con tamaño dinámico
+        // ================================
+        // Botón actualizar
+        // ================================
         btnActualizar.setFont(fuenteGeneral);
         btnActualizar.setBackground(acento);
         btnActualizar.setForeground(Color.WHITE);
@@ -74,7 +89,9 @@ public class Cocina extends JFrame {
         btnActualizar.setBorder(BorderFactory.createLineBorder(acento, 2));
         btnActualizar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Tabla
+        // ================================
+        // Tabla pedidos
+        // ================================
         String[] columnas = {"ID", "Producto", "Mesa", "Cantidad", "Estado"};
         modelo = new DefaultTableModel(columnas, 0) {
             public boolean isCellEditable(int row, int column) {
@@ -92,24 +109,23 @@ public class Cocina extends JFrame {
         tblTablaCocina.setSelectionBackground(new Color(255, 230, 200));
         tblTablaCocina.setSelectionForeground(Color.BLACK);
 
-        // Panel superior
+        // ================================
+        // Paneles
+        // ================================
         JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.setBackground(new Color(255, 255, 255));
+        panelSuperior.setBackground(Color.WHITE);
         panelSuperior.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(10, 20, 10, 20)
         ));
-
         JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelTitulo.setOpaque(false);
         panelTitulo.add(lblTitulo);
-
         panelSuperior.add(btnAtras, BorderLayout.WEST);
         panelSuperior.add(panelTitulo, BorderLayout.CENTER);
 
-        // Panel inferior
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelInferior.setBackground(new Color(255, 255, 255));
+        panelInferior.setBackground(Color.WHITE);
         panelInferior.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(2, 0, 0, 0, new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(10, 20, 10, 20)
@@ -118,15 +134,18 @@ public class Cocina extends JFrame {
         panelInferior.add(cboxEstadoPedido);
         panelInferior.add(btnActualizar);
 
-        // Agregar componentes
         ventanaCocina.add(panelSuperior, BorderLayout.NORTH);
         ventanaCocina.add(new JScrollPane(tblTablaCocina), BorderLayout.CENTER);
         ventanaCocina.add(panelInferior, BorderLayout.SOUTH);
 
+        // ================================
         // Cargar datos
+        // ================================
         cargarPedidos();
 
+        // ================================
         // Acciones
+        // ================================
         btnActualizar.addActionListener(e -> actualizarEstadoPedido());
 
         btnAtras.addActionListener(e -> {
@@ -143,33 +162,43 @@ public class Cocina extends JFrame {
         });
     }
 
+    // ======================================================
+    // MÉTODOS DE NEGOCIO (usando DAO/Service)
+    // ======================================================
+
     private void cargarPedidos() {
         modelo.setRowCount(0);
-        String sql = """
-            SELECT p.idPedido, cP.nombre AS producto, m.idMesa AS mesa,
-                   p.cantidad, p.estado
-            FROM pedido p
-            JOIN cuenta c ON p.idCuenta = c.idCuenta
-            JOIN mesa m ON c.idMesa = m.idMesa
-            JOIN CatalogoProducto cP ON p.idProducto = cP.IdCatalogoProducto
-            WHERE p.estado NOT IN ('Servido', 'Cancelado')
-            ORDER BY p.fechaHora ASC
-        """;
+        try {
+            String sql = """
+                SELECT p.idPedido, cP.nombre AS producto, m.idMesa AS mesa,
+                       p.cantidad, p.estado
+                FROM pedido p
+                JOIN cuenta c ON p.idCuenta = c.idCuenta
+                JOIN mesa m ON c.idMesa = m.idMesa
+                JOIN CatalogoProducto cP ON p.idProducto = cP.IdCatalogoProducto
+                WHERE p.estado NOT IN ('Servido', 'Cancelado')
+                ORDER BY p.fechaHora ASC
+            """;
 
-        try (Connection cn = ConexionDB.getConnection();
-             Statement st = cn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                int id = rs.getInt("idPedido");
-                String producto = rs.getString("producto");
-                String mesa = "Mesa " + rs.getInt("mesa");
-                int cantidad = rs.getInt("cantidad");
-                String estado = rs.getString("estado");
+            try (Connection cn = ConexionDB.getConnection();
+                 Statement st = cn.createStatement();
+                 ResultSet rs = st.executeQuery(sql)) {
 
-                modelo.addRow(new Object[]{id, producto, mesa, cantidad, estado});
+                while (rs.next()) {
+                    int id = rs.getInt("idPedido");
+                    String producto = rs.getString("producto");
+                    String mesa = "Mesa " + rs.getInt("mesa");
+                    int cantidad = rs.getInt("cantidad");
+                    String estado = rs.getString("estado");
+
+                    modelo.addRow(new Object[]{id, producto, mesa, cantidad, estado});
+                }
             }
+
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "❌ Error cargando pedidos: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    "❌ Error cargando pedidos: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -202,6 +231,10 @@ public class Cocina extends JFrame {
                     "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
     }
+
+    // ======================================================
+    // UTILIDADES
+    // ======================================================
 
     public static void adaptarVentanaAResolucion(JFrame ventana) {
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();

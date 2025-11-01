@@ -1,36 +1,22 @@
 package Interfaces;
 
-import Exepciones.MesaNoDisponibleException;
-import Exepciones.StockInsuficienteException;
+import Clases.concret.Pedido;
+import DAO.PedidoDAOImpl;
 
-public class PedidoServiceImpl implements PedidoService {
+import java.sql.SQLException;
+import java.util.List;
+
+public class PedidoServiceImpl implements IPedidoService {
+
+    private final PedidoDAOImpl pedidoDAO = new PedidoDAOImpl();
 
     @Override
-    public String crearPedido(int mesaID) throws MesaNoDisponibleException {
-        // Lógica para crear un pedido
-        return "";
+    public List<Pedido> listarPendientes() throws SQLException {
+        return pedidoDAO.listarPendientes();
     }
 
     @Override
-    public void agregarItem(String pedidoID, String productoId, int cantidad) throws StockInsuficienteException {
-        // Lógica para agregar un ítem al pedido
-    }
-
-    @Override
-    public void quitarItem(String pedidoId, String productoId) {
-        // Lógica para quitar un ítem del pedido
-    }
-
-    @Override
-    public double calcularTotal(String pedidoId) {
-        // Lógica para calcular el total del pedido
-        return 0;
-    }
-
-
-    @Override
-    public void cerrarPedido(String pedidoId) throws IllegalStateException {
-        // Lógica para cerrar el pedido
-
+    public void actualizarEstado(int idPedido, String nuevoEstado) throws SQLException {
+        pedidoDAO.actualizarEstado(idPedido, nuevoEstado);
     }
 }
