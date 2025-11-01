@@ -142,6 +142,11 @@ public class Facturacion extends JFrame {
             String metodoPago = (String) cboxMetPago.getSelectedItem();
             String total = lblTotalNum.getText();
 
+            if (mesa == null) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar una mesa antes de generar el comprobante.");
+                return;
+            }
+
             JOptionPane.showMessageDialog(this,
                     "📋 Comprobante\n" +
                             "Mesa: " + mesa + "\n" +
@@ -152,8 +157,22 @@ public class Facturacion extends JFrame {
                     "Factura generada",
                     JOptionPane.INFORMATION_MESSAGE);
 
+            // Generar PDF
             crearPDF(mesa, descuento, metodoPago, total);
+
+            // Cerrar la cuenta en la base de datos
+            try {
+                int idMesa = Integer.parseInt(mesa.replace("Mesa ", "").trim());
+                cerrarCuentaDeMesa(idMesa);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al cerrar la cuenta: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+
+            // Refrescar combo de mesas disponibles
+            cargarMesasDesdeBD();
         });
+
 
         // Botón atrás
         btnAtras.addActionListener(e -> {
@@ -171,18 +190,56 @@ public class Facturacion extends JFrame {
     }
 
     // ====================== Cargar mesas desde BD ======================
+    // ====================== Cargar mesas con cuenta activa y subtotal > 0 ======================
     private void cargarMesasDesdeBD() {
         try {
             MesaDAO mesaDAO = new MesaDAO();
-            cboxMesa.removeAllItems();
-            for (Mesa m : mesaDAO.listar()) {
-                cboxMesa.addItem("Mesa " + m.getIdMesa());
+            CuentaDAO cuentaDAO = new CuentaDAO();
+            PedidoDAO pedidoDAO = new PedidoDAO();
+
+            cboxMesa.removeAllItems(); // Limpiar combo antes de recargar
+
+            List<Mesa> mesas = mesaDAO.listar();
+            boolean hayMesasValidas = false;
+
+            for (Mesa mesa : mesas) {
+                int idMesa = mesa.getIdMesa();
+
+                // Verificar si tiene una cuenta abierta
+                if (cuentaDAO.tieneCuentaAbierta(idMesa)) {
+                    int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+
+                    // Calcular subtotal real de los pedidos de la cuenta
+                    double subtotalMesa = 0;
+                    List<Pedido> pedidos = PedidoDAO.listarPorCuenta(idCuenta);
+
+                    for (Pedido p : pedidos) {
+                        double precio = obtenerPrecioProducto(p.getIdProducto());
+                        subtotalMesa += precio * p.getCantidad();
+                    }
+
+                    // Si el subtotal es válido (> 0), agregar al combo
+                    if (subtotalMesa > 0) {
+                        cboxMesa.addItem("Mesa " + idMesa);
+                        hayMesasValidas = true;
+                    }
+                }
             }
+
+            // Si ninguna mesa cumple la condición
+            if (!hayMesasValidas) {
+                JOptionPane.showMessageDialog(this,
+                        "⚠️ No hay mesas con cuentas activas o con consumo mayor a $0.",
+                        "Sin mesas disponibles",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error cargando mesas: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     // ====================== Cargar pedidos de la mesa seleccionada ======================
     private void cargarPedidosDeMesa() {
@@ -245,7 +302,9 @@ public class Facturacion extends JFrame {
 
     // ====================== Crear PDF ======================
     // ====================== Crear PDF (versión corregida y robusta) ======================
-    private void crearPDF(String mesa, String propina, String metodoPago, String total) {
+    private void crearPDF(String mesa, String propina, String metodoPago, String total)
+    {
+        String ruta= "";
         PDDocument documento = null;
         PDPageContentStream contenido = null;
         try {
@@ -522,7 +581,7 @@ public class Facturacion extends JFrame {
             if (!dir.exists()) dir.mkdirs();
 
             // guardar documento
-            String ruta = "src/ProgramaPrincipal/Facturas/e-Ticket_A_N°_" + contadorFactura + ".pdf";
+            ruta = "src/ProgramaPrincipal/Facturas/e-Ticket_A_N°_" + contadorFactura + ".pdf";
             documento.save(ruta);
             documento.close();
             documento = null;
@@ -542,6 +601,22 @@ public class Facturacion extends JFrame {
             try {
                 if (documento != null) documento.close();
             } catch (Exception ignored) {}
+        }
+
+        // Abre el PDF
+        try {
+            java.io.File archivoPDF = new java.io.File(ruta);
+            if (archivoPDF.exists()) {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(archivoPDF);
+                } else {
+                    JOptionPane.showMessageDialog(this, "La apertura automática no es compatible en este sistema.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró el archivo PDF para abrirlo.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al intentar abrir el PDF: " + e.getMessage());
         }
     }
 
@@ -593,6 +668,26 @@ public class Facturacion extends JFrame {
         }
         return nombre;
     }
+    // ====================== Cerrar cuenta en la BD ======================
+    // ====================== Cerrar cuenta en la BD ======================
+    private void cerrarCuentaDeMesa(int idMesa) {
+        try {
+            CuentaDAO cuentaDAO = new CuentaDAO();
+            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
+
+            if (idCuenta != -1) {
+                // cambia estado = 0 (cerrada)
+                cuentaDAO.cerrarCuenta(idMesa);
+                JOptionPane.showMessageDialog(this, "✅ Cuenta de la mesa " + idMesa + " cerrada correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "⚠️ No se encontró una cuenta abierta para la mesa " + idMesa);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cerrar cuenta: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -614,6 +709,5 @@ public class Facturacion extends JFrame {
         ventana.setVisible(true);     // mostrar primero
         ventana.setExtendedState(JFrame.MAXIMIZED_BOTH); // luego maximizar
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 }
