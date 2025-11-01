@@ -20,4 +20,9 @@ public interface CartaService {
 
     // Busca un producto por nombre
     Producto buscarPorNombre(String nombre) throws SQLException;
+
+    void actualizarStock(int idProducto, int nuevoStock) throws SQLException;
+
+    int obtenerStock(int idProducto) throws SQLException;
+
 }

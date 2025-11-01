@@ -96,4 +96,28 @@ public class ProductoDAO {
 
         return productos;
     }
+    public static void actualizarStock(int idProducto, int nuevoStock) throws SQLException {
+        String sql = "UPDATE CatalogoProducto SET stock=? WHERE IdCatalogoProducto=?";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, nuevoStock);
+            ps.setInt(2, idProducto);
+            ps.executeUpdate();
+        }
+    }
+
+    public static int obtenerStock(int idProducto) throws SQLException {
+        String sql = "SELECT stock FROM CatalogoProducto WHERE IdCatalogoProducto=?";
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idProducto);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("stock");
+                }
+            }
+        }
+        return 0;
+    }
+
 }

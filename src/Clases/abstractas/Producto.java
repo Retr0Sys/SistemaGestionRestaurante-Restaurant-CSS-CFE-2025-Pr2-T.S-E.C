@@ -1,64 +1,40 @@
 package Clases.abstractas;
 
-public abstract class Producto
-{
+public abstract class Producto {
     protected int id;
     protected String nombre;
     protected double precio;
     protected int estado;
+    protected int stock; // 🆕 Nuevo campo
 
-    public Producto(int id, String nombre, double precio, int estado)
-    {
+    public Producto(int id, String nombre, double precio, int estado, int stock) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.estado = estado;
+        this.stock = stock;
     }
 
-    public double getPrecio()
-    {
-        return precio;
+    // Constructor original (sin stock)
+    public Producto(int id, String nombre, double precio, int estado) {
+        this(id, nombre, precio, estado, 0);
     }
 
-    public void setPrecio(double precio)
-    {
-        this.precio = precio;
-    }
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
 
-    public String getNombre()
-    {
-        return nombre;
-    }
+    public double getPrecio() { return precio; }
+    public void setPrecio(double precio) { this.precio = precio; }
 
-    public void setNombre(String nombre)
-    {
-        this.nombre = nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public int getId()
-    {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id)
-    {
-        this.id = id;
-    }
+    public int getEstado() { return estado; }
+    public void setEstado(int estado) { this.estado = estado; }
 
-    // Getter y setter para estado
-    public int getEstado()
-    {
-        return estado;
-    }
-
-    public void setEstado(int estado)
-    {
-        this.estado = estado;
-    }
-
-    // Cada subclase define cómo calcula el impuesto
     public abstract void calcularImpuesto();
-
-    // Cada subclase devuelve su categoría ("comida", "bebida", "postre")
     public abstract String getCategoria();
 }

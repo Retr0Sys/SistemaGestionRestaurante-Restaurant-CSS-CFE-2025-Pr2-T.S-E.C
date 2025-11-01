@@ -15,56 +15,30 @@ import java.util.List;
 
 public class Carta extends JFrame {
     public JPanel ventanaCarta;
-    private JLabel lblTitulo;
+    private JLabel lblTituloCarta;
     private JTable tblTablaCartaMenu;
-    private JButton btnAtras;
+    private JButton btnAtras, btnModificar, btnCrear;
     private JTabbedPane TBCarta;
-    private JPanel JPCarta;
-    private JPanel JPcambiarCarta;
+    private JPanel JPCarta, JPcambiarCarta, JPCrear;
+    private JComboBox<String> CBProducto, CBDisponibilidad, CBcategoria;
+    private JTextField txtPrecio, txtStockCambiar, txtNuevoProducto, txtNuevoPrecio, txtStockCrear;
+    private JPanel panelBotonAtras, panelBotonModificar, panelBotonCrear;
+    private JScrollPane JSCarta;
     private JLabel lblNombProdAcambiar;
     private JLabel lblNuevoPrecio;
     private JLabel lblNuevoDisp;
-    private JComboBox CBProducto;
-    private JTextField txtPrecio;
-    private JComboBox CBDisponibilidad;
-    private JLabel lblTituloCarta;
-    private JButton btnModificar;
-    private JPanel JPCrear;
-    private JTextField txtNuevoProducto;
-    private JTextField txtNuevoPrecio;
-    private JComboBox CBcategoria;
-    private JButton btnCrear;
-    private JPanel panelBotonAtras;
-    private JPanel panelBotonModificar;
-    private JPanel panelBotonCrear;
-    private JScrollPane JSCarta;
-
+    private JLabel lblStockCambiar;
+    private JLabel lblStockCrear;
     private DefaultTableModel modelo;
 
-    // 🔹 Servicio de la capa intermedia
     private final CartaService cartaService = new CartaServiceImpl();
 
     public Carta() {
-        // Obtener resolución de pantalla
+        // ===== Resolución y estilos =====
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int anchoPantalla = screenSize.width;
         int tamañoNormal = (int) (anchoPantalla * 0.10);
         int tamañoZoom = tamañoNormal + 15;
-
-        // Botones con estilo
-        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", tamañoNormal, tamañoZoom);
-        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", tamañoNormal, tamañoZoom);
-        btnAtras = crearBotonConEstilo("imagenes/Atras.png", tamañoNormal, tamañoZoom);
-
-        // Configuración general
-        setTitle("Carta del Restaurante");
-        setSize(700, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        ventanaCarta = new JPanel();
-        ventanaCarta.setLayout(new BorderLayout());
-        ventanaCarta.setBackground(new Color(245, 245, 245));
 
         Color fondo = new Color(245, 245, 245);
         Color blanco = new Color(255, 255, 255);
@@ -72,63 +46,51 @@ public class Carta extends JFrame {
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 16);
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 18);
 
+        // ===== Ventana principal =====
+        setTitle("Carta del Restaurante");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        ventanaCarta = new JPanel(new BorderLayout());
+        ventanaCarta.setBackground(fondo);
         ventanaCarta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        // ===== Botones con estilo =====
+        btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", tamañoNormal, tamañoZoom);
+        btnCrear = crearBotonConEstilo("imagenes/Enviar.png", tamañoNormal, tamañoZoom);
+        btnAtras = crearBotonConEstilo("imagenes/Atras.png", tamañoNormal, tamañoZoom);
+
+        // ===== TABS =====
+        TBCarta = new JTabbedPane();
         TBCarta.setFont(fuenteGeneral);
         TBCarta.setBackground(blanco);
         TBCarta.setBorder(BorderFactory.createLineBorder(acento, 2));
+
+        JPCarta = new JPanel(new BorderLayout());
+        JPcambiarCarta = new JPanel();
+        JPCrear = new JPanel();
 
         JPCarta.setBackground(blanco);
         JPcambiarCarta.setBackground(blanco);
         JPCrear.setBackground(blanco);
 
+        TBCarta.addTab("Carta", JPCarta);
+        TBCarta.addTab("Modificar Producto", JPcambiarCarta);
+        TBCarta.addTab("Crear Producto", JPCrear);
+
         ventanaCarta.add(TBCarta, BorderLayout.CENTER);
-        ventanaCarta.add(panelBotonAtras, BorderLayout.SOUTH);
 
-        JPcambiarCarta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Modificar Producto"),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-
-        JPCrear.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Crear Nuevo Producto"),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-
-        lblTituloCarta.setFont(fuenteTitulo);
-        lblTituloCarta.setForeground(acento);
-
-        txtPrecio.setFont(fuenteGeneral);
-        txtNuevoProducto.setFont(fuenteGeneral);
-        txtNuevoPrecio.setFont(fuenteGeneral);
-        CBProducto.setFont(fuenteGeneral);
-        CBDisponibilidad.setFont(fuenteGeneral);
-        CBcategoria.setFont(fuenteGeneral);
-
-        CBProducto.setBorder(BorderFactory.createLineBorder(acento, 2));
-        CBDisponibilidad.setBorder(BorderFactory.createLineBorder(acento, 2));
-        CBcategoria.setBorder(BorderFactory.createLineBorder(acento, 2));
-        txtPrecio.setBorder(BorderFactory.createLineBorder(acento, 1));
-        txtNuevoProducto.setBorder(BorderFactory.createLineBorder(acento, 1));
-        txtNuevoPrecio.setBorder(BorderFactory.createLineBorder(acento, 1));
-
-        // Paneles de botones
-        panelBotonModificar.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panelBotonModificar.setBackground(blanco);
-        panelBotonModificar.add(btnModificar);
-
-        panelBotonCrear.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panelBotonCrear.setBackground(blanco);
-        panelBotonCrear.add(btnCrear);
-
-        panelBotonAtras.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // ===== Panel Atrás =====
+        panelBotonAtras = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelBotonAtras.setBackground(fondo);
         panelBotonAtras.add(btnAtras);
+        ventanaCarta.add(panelBotonAtras, BorderLayout.SOUTH);
 
-        // Tabla
-        String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado"};
+        // ===== Tabla Carta =====
+        String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado", "Stock"};
         modelo = new DefaultTableModel(columnas, 0);
-        tblTablaCartaMenu.setModel(modelo);
+        tblTablaCartaMenu = new JTable(modelo);
         tblTablaCartaMenu.setFont(fuenteGeneral);
         tblTablaCartaMenu.setRowHeight(28);
         tblTablaCartaMenu.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -141,163 +103,113 @@ public class Carta extends JFrame {
 
         JScrollPane scroll = new JScrollPane(tblTablaCartaMenu);
         scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JPCarta.setLayout(new BorderLayout());
         JPCarta.add(scroll, BorderLayout.CENTER);
 
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMinWidth(0);
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMaxWidth(0);
         tblTablaCartaMenu.getColumnModel().getColumn(0).setPreferredWidth(0);
 
-        // Cargar datos iniciales
-        cargarProductosDisponibles();
-        cargarComboProductos();
+        // ===== Modificar Producto =====
+        JPcambiarCarta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Modificar Producto"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        JPcambiarCarta.setLayout(new GridLayout(5, 2, 10, 10));
 
+        CBProducto = new JComboBox<>();
+        txtPrecio = new JTextField();
+        txtStockCambiar = new JTextField();
+        CBDisponibilidad = new JComboBox<>();
         CBDisponibilidad.addItem("Disponible");
         CBDisponibilidad.addItem("No Disponible");
 
+        JPcambiarCarta.add(new JLabel("Producto:")); JPcambiarCarta.add(CBProducto);
+        JPcambiarCarta.add(new JLabel("Nuevo Precio:")); JPcambiarCarta.add(txtPrecio);
+        JPcambiarCarta.add(new JLabel("Nuevo Stock:")); JPcambiarCarta.add(txtStockCambiar);
+        JPcambiarCarta.add(new JLabel("Disponibilidad:")); JPcambiarCarta.add(CBDisponibilidad);
+
+        panelBotonModificar = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelBotonModificar.setBackground(blanco);
+        panelBotonModificar.add(btnModificar);
+        JPcambiarCarta.add(panelBotonModificar);
+
+        // ===== Crear Producto =====
+        JPCrear.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Crear Nuevo Producto"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        JPCrear.setLayout(new GridLayout(5, 2, 10, 10));
+
+        txtNuevoProducto = new JTextField();
+        txtNuevoPrecio = new JTextField();
+        txtStockCrear = new JTextField();
+        CBcategoria = new JComboBox<>();
         CBcategoria.addItem("comida");
         CBcategoria.addItem("bebida");
         CBcategoria.addItem("postre");
 
-        // ✅ Eventos
-        CBProducto.addActionListener(e -> {
-            String nombreSeleccionado = (String) CBProducto.getSelectedItem();
-            if (nombreSeleccionado != null) {
-                try {
-                    Producto p = cartaService.buscarPorNombre(nombreSeleccionado);
-                    if (p != null) {
-                        txtPrecio.setText(String.valueOf(p.getPrecio()));
-                        CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
-                    }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, "Error obteniendo producto: " + ex.getMessage());
-                }
-            }
-        });
+        JPCrear.add(new JLabel("Nombre:")); JPCrear.add(txtNuevoProducto);
+        JPCrear.add(new JLabel("Precio:")); JPCrear.add(txtNuevoPrecio);
+        JPCrear.add(new JLabel("Stock:")); JPCrear.add(txtStockCrear);
+        JPCrear.add(new JLabel("Categoría:")); JPCrear.add(CBcategoria);
 
+        panelBotonCrear = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelBotonCrear.setBackground(blanco);
+        panelBotonCrear.add(btnCrear);
+        JPCrear.add(panelBotonCrear);
+
+        // ===== Eventos =====
+        CBProducto.addActionListener(e -> cargarDatosProductoSeleccionado());
         tblTablaCartaMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int fila = tblTablaCartaMenu.getSelectedRow();
                 if (fila != -1) {
-                    String nombreSeleccionado = (String) tblTablaCartaMenu.getValueAt(fila, 1);
-                    CBProducto.setSelectedItem(nombreSeleccionado);
-                    try {
-                        Producto p = cartaService.buscarPorNombre(nombreSeleccionado);
-                        if (p != null) {
-                            txtPrecio.setText(String.valueOf(p.getPrecio()));
-                            CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
-                        }
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(null, "Error cargando datos del producto: " + ex.getMessage());
-                    }
+                    CBProducto.setSelectedItem(tblTablaCartaMenu.getValueAt(fila, 1).toString());
+                    cargarDatosProductoSeleccionado();
                 }
             }
         });
 
-        // 🔹 Botón Modificar
-        btnModificar.addActionListener(e -> {
-            String nombreSeleccionado = (String) CBProducto.getSelectedItem();
-            String nuevoPrecioStr = txtPrecio.getText();
-            String nuevoEstadoStr = (String) CBDisponibilidad.getSelectedItem();
+        btnModificar.addActionListener(e -> modificarProducto());
+        btnCrear.addActionListener(e -> crearProducto());
+        btnAtras.addActionListener(e -> cerrarVentana());
 
-            if (nombreSeleccionado == null || nuevoPrecioStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Seleccione un producto y complete el precio.");
-                return;
-            }
-
-            try {
-                double nuevoPrecio = Double.parseDouble(nuevoPrecioStr);
-                int estado = nuevoEstadoStr.equals("Disponible") ? 1 : 0;
-
-                Producto producto = cartaService.buscarPorNombre(nombreSeleccionado);
-                if (producto == null) {
-                    JOptionPane.showMessageDialog(this, "Producto no encontrado.");
-                    return;
-                }
-
-                cartaService.actualizarProducto(producto.getId(), nuevoPrecio, estado);
-                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
-
-                cargarProductosDisponibles();
-                cargarComboProductos();
-                txtPrecio.setText("");
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Precio inválido.");
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al actualizar: " + ex.getMessage());
-            }
-        });
-
-        // 🔹 Botón Crear
-        btnCrear.addActionListener(e -> {
-            String nombre = txtNuevoProducto.getText().trim();
-            String categoria = (String) CBcategoria.getSelectedItem();
-            String precioStr = txtNuevoPrecio.getText().trim();
-
-            if (nombre.isEmpty() || categoria == null || precioStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Complete todos los campos para crear el producto.");
-                return;
-            }
-
-            try {
-                double precio = Double.parseDouble(precioStr);
-                Producto nuevoProducto;
-
-                switch (categoria.toLowerCase()) {
-                    case "comida" -> nuevoProducto = new Comida(0, nombre, precio, 1);
-                    case "bebida" -> nuevoProducto = new Bebida(0, nombre, precio, 1);
-                    case "postre" -> nuevoProducto = new Postre(0, nombre, precio, 1);
-                    default -> {
-                        JOptionPane.showMessageDialog(this, "Categoría inválida.");
-                        return;
-                    }
-                }
-
-                cartaService.crearProducto(nuevoProducto);
-                JOptionPane.showMessageDialog(this, "Producto creado correctamente.");
-
-                cargarProductosDisponibles();
-                cargarComboProductos();
-                txtNuevoProducto.setText("");
-                txtNuevoPrecio.setText("");
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Precio inválido.");
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al crear producto: " + ex.getMessage());
-            }
-        });
-
-        // 🔹 Botón Atrás
-        btnAtras.addActionListener(e -> {
-            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(ventanaCarta);
-            if (topFrame != null) {
-                topFrame.dispose();
-            }
-
-            MenuPuntoVenta menu = new MenuPuntoVenta();
-            menu.setContentPane(menu.JPMenuPrinc);
-            menu.setUndecorated(true);
-            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            menu.setLocationRelativeTo(null);
-            menu.setVisible(true);
-        });
+        // ===== Cargar datos iniciales =====
+        cargarProductosDisponibles();
+        cargarComboProductos();
     }
 
-    // 🔹 Cargar productos disponibles
+    private void cargarDatosProductoSeleccionado() {
+        String nombre = (String) CBProducto.getSelectedItem();
+        if (nombre != null) {
+            try {
+                Producto p = cartaService.buscarPorNombre(nombre);
+                if (p != null) {
+                    txtPrecio.setText(String.valueOf(p.getPrecio()));
+                    txtStockCambiar.setText(String.valueOf(cartaService.obtenerStock(p.getId())));
+                    CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error obteniendo datos: " + e.getMessage());
+            }
+        }
+    }
+
     private void cargarProductosDisponibles() {
         modelo.setRowCount(0);
         try {
-            List<Producto> productos = cartaService.listarDisponibles();
+            List<Producto> productos = cartaService.listarTodos();
             for (Producto p : productos) {
+                int stock = cartaService.obtenerStock(p.getId());
+                String estadoStr = (p.getEstado() == 1 && stock > 0) ? "Disponible" : "No Disponible";
+
                 modelo.addRow(new Object[]{
                         p.getId(),
                         p.getNombre(),
                         p.getPrecio(),
                         p.getClass().getSimpleName(),
-                        "Disponible"
+                        estadoStr,
+                        stock
                 });
             }
         } catch (SQLException e) {
@@ -305,7 +217,7 @@ public class Carta extends JFrame {
         }
     }
 
-    // 🔹 Cargar productos en el ComboBox
+
     private void cargarComboProductos() {
         CBProducto.removeAllItems();
         try {
@@ -314,8 +226,128 @@ public class Carta extends JFrame {
                 CBProducto.addItem(p.getNombre());
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error cargando productos en combo: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error cargando combo: " + e.getMessage());
         }
+    }
+
+    private void modificarProducto() {
+        String nombre = (String) CBProducto.getSelectedItem();
+        if (nombre == null) return;
+
+        try {
+            String precioStr = txtPrecio.getText().trim();
+            String stockStr = txtStockCambiar.getText().trim();
+
+            if (precioStr.isEmpty() || stockStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Precio y stock son obligatorios.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double precio = Double.parseDouble(precioStr);
+            if (precio <= 0) {
+                JOptionPane.showMessageDialog(this, "El precio debe ser mayor a 0.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int stock = Integer.parseInt(stockStr);
+            if (stock < 0) {
+                JOptionPane.showMessageDialog(this, "El stock no puede ser negativo.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (stock <= 5 && stock > 0) {
+                JOptionPane.showMessageDialog(this, "El stock es bajo (≤5).",
+                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+
+            int estado = (stock == 0) ? 0 : (CBDisponibilidad.getSelectedItem().equals("Disponible") ? 1 : 0);
+            Producto p = cartaService.buscarPorNombre(nombre);
+            if (p != null) {
+                cartaService.actualizarProducto(p.getId(), precio, estado);
+                cartaService.actualizarStock(p.getId(), stock);
+                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+                cargarProductosDisponibles();
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Precio o stock inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    private void crearProducto() {
+        try {
+            String nombre = txtNuevoProducto.getText().trim();
+            String categoria = (String) CBcategoria.getSelectedItem();
+            String precioStr = txtNuevoPrecio.getText().trim();
+            String stockStr = txtStockCrear.getText().trim();
+
+            // Validaciones
+            if (nombre.isEmpty() || nombre.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this,
+                        "El nombre del producto es obligatorio y no puede ser solo números.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double precio = Double.parseDouble(precioStr);
+            if (precio <= 0) {
+                JOptionPane.showMessageDialog(this, "El precio debe ser mayor a 0.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int stock = Integer.parseInt(stockStr);
+            if (stock < 0) {
+                JOptionPane.showMessageDialog(this, "El stock no puede ser negativo.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (stock <= 5) {
+                JOptionPane.showMessageDialog(this, "El stock es bajo (≤5).",
+                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+
+            int estado = (stock == 0) ? 0 : 1; // stock 0 → No Disponible
+            Producto nuevo;
+            switch (categoria.toLowerCase()) {
+                case "comida" -> nuevo = new Comida(0, nombre, precio, estado);
+                case "bebida" -> nuevo = new Bebida(0, nombre, precio, estado);
+                case "postre" -> nuevo = new Postre(0, nombre, precio, estado);
+                default -> {
+                    JOptionPane.showMessageDialog(this, "Categoría inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            cartaService.crearProducto(nuevo);
+            cartaService.actualizarStock(nuevo.getId(), stock);
+            JOptionPane.showMessageDialog(this, "Producto creado correctamente.");
+
+            cargarProductosDisponibles();
+            cargarComboProductos();
+            txtNuevoProducto.setText("");
+            txtNuevoPrecio.setText("");
+            txtStockCrear.setText("");
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Precio o stock inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al crear producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+
+    private void cerrarVentana() {
+        dispose();
+        MenuPuntoVenta menu = new MenuPuntoVenta();
+        menu.setContentPane(menu.JPMenuPrinc);
+        menu.setUndecorated(true);
+        menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        menu.setVisible(true);
     }
 
     private JButton crearBotonConEstilo(String rutaImagen, int tamañoNormal, int tamañoZoom) {
@@ -339,25 +371,15 @@ public class Carta extends JFrame {
                         .getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH)));
             }
         });
-
         return boton;
-    }
-
-    public static void adaptarVentanaAResolucion(JFrame ventana) {
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        Rectangle bounds = env.getMaximumWindowBounds();
-        ventana.setBounds(bounds);
-        ventana.setLocation(bounds.x, bounds.y);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Carta carta = new Carta();
-            adaptarVentanaAResolucion(carta);
             carta.setContentPane(carta.ventanaCarta);
             carta.setUndecorated(true);
             carta.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            carta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             carta.setVisible(true);
         });
     }

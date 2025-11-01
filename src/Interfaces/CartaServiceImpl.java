@@ -9,6 +9,17 @@ import java.util.List;
 public class CartaServiceImpl implements CartaService {
 
     @Override
+    public void actualizarStock(int idProducto, int nuevoStock) throws SQLException {
+        ProductoDAO.actualizarStock(idProducto, nuevoStock);
+    }
+
+    @Override
+    public int obtenerStock(int idProducto) throws SQLException {
+        return ProductoDAO.obtenerStock(idProducto);
+    }
+
+
+    @Override
     public List<Producto> listarTodos() throws SQLException {
         return ProductoDAO.listar();
     }
