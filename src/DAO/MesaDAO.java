@@ -139,5 +139,17 @@ public class MesaDAO
         }
         return null;
     }
+    //metodo para actualizar el estado de la mesa
+    public void actualizarEstado(int idMesa, String nuevoEstado) throws SQLException
+    {
+        String sql = "UPDATE mesa SET estado = ? WHERE idMesa = ?";
+        try (Connection cn = ConexionDB.getConnection();
+             PreparedStatement ps = cn.prepareStatement(sql))
+        {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, idMesa);
+            ps.executeUpdate();
+        }
+    }
 
 }

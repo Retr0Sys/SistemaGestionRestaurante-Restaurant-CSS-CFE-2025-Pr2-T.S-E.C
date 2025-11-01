@@ -746,8 +746,14 @@ public class FormMesa extends JFrame {
         }
     }
     //Se guarda las reservas en la BD
+    // Se guarda la reserva en la BD y actualiza el estado de la mesa
     private void guardarReserva() {
         try {
+            if (CBmesa4.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar una mesa válida.");
+                return;
+            }
+
             int idMesa = (int) CBmesa4.getSelectedItem();
             String nombre = txtNombre.getText().trim();
             String apellido = txtApellido.getText().trim();
@@ -814,6 +820,22 @@ public class FormMesa extends JFrame {
                 return;
             }
 
+            // Validar que la hora no sea anterior a la actual si la reserva es para hoy
+            if (fechaSinHora.equals(hoy)) {
+                java.util.Calendar ahora = java.util.Calendar.getInstance();
+                int horaActual = ahora.get(java.util.Calendar.HOUR_OF_DAY);
+                int minutoActual = ahora.get(java.util.Calendar.MINUTE);
+                if (hora < horaActual || (hora == horaActual && minuto <= minutoActual)) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "No se puede registrar una reserva en una hora pasada del día actual.",
+                            "Hora inválida",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    return;
+                }
+            }
+
             Date fechaSQL = new Date(fecha.getTime());
             Time horaSQL = Time.valueOf(String.format("%02d:%02d:00", hora, minuto));
 
@@ -846,7 +868,13 @@ public class FormMesa extends JFrame {
 
             reservaDAO.insertar(reserva);
 
+            // Actualizar estado de la mesa a "Reservada"
+            MesaDAO mesaDAO = new MesaDAO();
+            mesaDAO.actualizarEstado(idMesa, "Reservada");
+
             JOptionPane.showMessageDialog(this, "Reserva guardada correctamente.");
+
+            // Recargar tabla y limpiar campos
             cargarReservasEnTabla();
             limpiarCamposReserva();
 
@@ -856,6 +884,7 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage());
         }
     }
+
 
 
     // Eliminar reserva
@@ -884,8 +913,16 @@ public class FormMesa extends JFrame {
 
             if (confirmar != JOptionPane.YES_OPTION) return;
 
+            // Obtener el idReserva y el idMesa desde la tabla
             int idReserva = (int) TBReservas.getValueAt(filaSeleccionada, 0);
+            int idMesa = (int) TBReservas.getValueAt(filaSeleccionada, 1); // Asegúrate que la columna 1 sea la mesa
+
+            // Eliminar la reserva
             reservaDAO.eliminar(idReserva);
+
+            // Cambiar el estado de la mesa a "Disponible"
+            MesaDAO mesaDAO = new MesaDAO();
+            mesaDAO.actualizarEstado(idMesa, "Disponible");
 
             JOptionPane.showMessageDialog(this, "Reserva eliminada correctamente.");
             cargarReservasEnTabla();
@@ -896,6 +933,7 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage());
         }
     }
+
 
 
     //Metodo para cargar las reservas en la tabla correspondiente
