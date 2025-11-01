@@ -77,6 +77,7 @@ public class ProductoDAO {
                 double precio = rs.getDouble("precio");
                 String categoria = rs.getString("categoria");
                 int estado = rs.getInt("estado");
+                int stock = rs.getInt("stock"); // <-- AGREGADO
 
                 Producto p = null;
 
@@ -89,6 +90,7 @@ public class ProductoDAO {
                 }
 
                 if (p != null) {
+                    p.setStock(stock); // <-- AGREGADO
                     productos.add(p);
                 }
             }
@@ -96,6 +98,7 @@ public class ProductoDAO {
 
         return productos;
     }
+
     public static void actualizarStock(int idProducto, int nuevoStock) throws SQLException {
         String sql = "UPDATE CatalogoProducto SET stock=? WHERE IdCatalogoProducto=?";
         try (Connection con = ConexionDB.getConnection();

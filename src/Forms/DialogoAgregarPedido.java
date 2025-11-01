@@ -109,15 +109,29 @@ public class DialogoAgregarPedido extends JDialog {
 
 
     private void cargarProductosDesdeDB() {
-        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Precio"}, 0);
+        // Inicializar tabla
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Precio", "Stock"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // hacemos que ninguna celda sea editable
+            }
+        };
+
         try {
             List<Producto> productos = ProductoDAO.listarDisponibles();
             for (Producto p : productos) {
-                model.addRow(new Object[]{p.getId(), p.getNombre(), p.getPrecio()});
+                model.addRow(new Object[]{
+                        p.getId(),
+                        p.getNombre(),
+                        p.getPrecio(),
+                        p.getStock() // nuevo valor de stock
+                });
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error cargando productos: " + e.getMessage());
         }
+
         tblProductos.setModel(model);
     }
+
 }

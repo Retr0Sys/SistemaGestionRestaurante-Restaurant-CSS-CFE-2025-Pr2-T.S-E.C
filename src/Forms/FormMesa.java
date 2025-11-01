@@ -620,7 +620,7 @@ public class FormMesa extends JFrame {
             }
 
             // Pedidos con nombre y precio ya incluidos
-            List<Pedido> pedidos = pedidoDAO.listarPorCuentaConNombre(idCuenta);
+            List<Pedido> pedidos = pedidoDAO.listarPorCuenta(idCuenta);
 
             for (Pedido p : pedidos) {
                 model.addRow(new Object[]{
@@ -645,18 +645,6 @@ public class FormMesa extends JFrame {
             return;
         }
 
-        try {
-            int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(mesaSeleccionada);
-            if (idCuenta == -1) {
-                JOptionPane.showMessageDialog(this,
-                        "No se puede agregar productos: la mesa no tiene una cuenta abierta.");
-                return;
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al verificar la cuenta: " + e.getMessage());
-            return;
-        }
-
         DefaultTableModel model = mesaPedidosMap.get(mesaSeleccionada);
         if (model == null) {
             model = new DefaultTableModel(new String[]{"ID Producto", "Nombre", "Cantidad", "Subtotal"}, 0);
@@ -664,13 +652,13 @@ public class FormMesa extends JFrame {
             TBProductosMesa.setModel(model);
         }
 
-        // Abre el diálogo
+        // Aquí abrís tu diálogo de agregar pedido y agregás filas al model
         DialogoAgregarPedido dialog = new DialogoAgregarPedido(this, TBProductosMesa, txtSubtotal);
         dialog.setVisible(true);
 
-        // Actualiza subtotal después de cerrar el diálogo
         actualizarSubtotal(model);
     }
+
     // Metodo para enviar los pedidos a la BD
     private void enviarPedidos() {
         if (mesaSeleccionada == -1) {
@@ -678,7 +666,6 @@ public class FormMesa extends JFrame {
             return;
         }
 
-        // Obtener ID de cuenta abierta
         try {
             int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(mesaSeleccionada);
             if (idCuenta == -1) {
@@ -686,13 +673,12 @@ public class FormMesa extends JFrame {
                 return;
             }
 
-            DefaultTableModel model = (DefaultTableModel) TBProductosMesa.getModel();
+            DefaultTableModel model = mesaPedidosMap.get(mesaSeleccionada);
             if (model == null || model.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this, "No hay productos para enviar.");
                 return;
             }
 
-            // Enviar cada pedido a la BD
             for (int i = 0; i < model.getRowCount(); i++) {
                 int idProducto = Integer.parseInt(model.getValueAt(i, 0).toString());
                 int cantidad = Integer.parseInt(model.getValueAt(i, 2).toString());
@@ -700,15 +686,10 @@ public class FormMesa extends JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "Pedidos enviados correctamente.");
-
-            // Limpiar tabla de productos temporal
             model.setRowCount(0);
-            txtSubtotal.setText("0");
+            actualizarSubtotal(model);
 
-            // Recargar pedidos de la mesa desde BD
-            cargarPedidosMesa(mesaSeleccionada);
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al enviar los pedidos: " + e.getMessage());
         }
     }
@@ -987,13 +968,14 @@ public class FormMesa extends JFrame {
     private void actualizarSubtotal(DefaultTableModel model) {
         double total = 0.0;
         for (int i = 0; i < model.getRowCount(); i++) {
-            Object value = model.getValueAt(i, 3); // columna Subtotal
+            Object value = model.getValueAt(i, 3);
             if (value != null) {
                 total += Double.parseDouble(value.toString());
             }
         }
         txtSubtotal.setText(String.format("%.2f", total));
     }
+
     //Metodo para eliminar productos selecionados de la tabla
     private void eliminarProductoSeleccionado() {
         int filaSeleccionada = TBProductosMesa.getSelectedRow();
