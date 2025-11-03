@@ -9,7 +9,7 @@ import java.util.List;
 public class ReservaDAO
 {
 
-    // --- Sentencias SQL reutilizables ---
+    // --- Sentencias SQL ---
     private static final String SQL_INSERT =
             "INSERT INTO reserva (idMesa, nombre, apellido, fecha, hora) VALUES (?, ?, ?, ?, ?)";
 

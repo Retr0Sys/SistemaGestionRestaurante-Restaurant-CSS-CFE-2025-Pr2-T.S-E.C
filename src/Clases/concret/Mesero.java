@@ -1,17 +1,20 @@
 package Clases.concret;
 
+// Representa a un mesero del restaurante
 public class Mesero
 {
     private int idMesero;
     private String nombre;
     private String apellido;
     private String telefono;
-    private boolean activo;
+    private boolean activo; // Indica si el mesero está actualmente activo
 
+    // Constructor vacío
     public Mesero()
     {
     }
 
+    // Constructor con todos los atributos
     public Mesero(int idMesero, String nombre, String apellido, String telefono, boolean activo)
     {
         this.idMesero = idMesero;
@@ -71,6 +74,7 @@ public class Mesero
         this.activo = activo;
     }
 
+    // Devuelve el nombre completo del mesero
     @Override
     public String toString()
     {

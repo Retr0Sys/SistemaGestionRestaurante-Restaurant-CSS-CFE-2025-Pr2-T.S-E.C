@@ -1,14 +1,19 @@
 package Clases.concret;
 
+// Representa una mesa dentro del restaurante
 public class Mesa
 {
-    public String JPMesasIni;
+    public String JPMesasIni; // Referencia posible a un componente gráfico (puede eliminarse si no se usa)
     private int idMesa;
     private int capacidad;
-    private String estado;   // disponible, ocupada, reservada, limpieza...
+    private String estado; // disponible, ocupada, reservada, limpieza, etc.
 
-    public Mesa() {}
+    // Constructor vacío
+    public Mesa()
+    {
+    }
 
+    // Constructor con parámetros
     public Mesa(int idMesa, int capacidad, String estado)
     {
         this.idMesa = idMesa;
@@ -46,6 +51,7 @@ public class Mesa
         this.estado = estado;
     }
 
+    // Representación en texto del objeto Mesa
     @Override
     public String toString()
     {

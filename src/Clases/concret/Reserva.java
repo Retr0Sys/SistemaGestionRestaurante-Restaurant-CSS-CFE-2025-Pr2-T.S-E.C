@@ -3,7 +3,9 @@ package Clases.concret;
 import java.sql.Date;
 import java.sql.Time;
 
-public class Reserva {
+// Representa una reserva realizada para una mesa en una fecha y hora determinadas
+public class Reserva
+{
     private int idReserva;
     private int idMesa;
     private String nombre;
@@ -12,10 +14,13 @@ public class Reserva {
     private Time hora;
 
     // Constructor vacío
-    public Reserva() {}
+    public Reserva()
+    {
+    }
 
     // Constructor completo
-    public Reserva(int idReserva, int idMesa, String nombre, String apellido, Date fecha, Time hora) {
+    public Reserva(int idReserva, int idMesa, String nombre, String apellido, Date fecha, Time hora)
+    {
         this.idReserva = idReserva;
         this.idMesa = idMesa;
         this.nombre = nombre;
@@ -24,8 +29,9 @@ public class Reserva {
         this.hora = hora;
     }
 
-    // Constructor sin idReserva (para insertar)
-    public Reserva(int idMesa, String nombre, String apellido, Date fecha, Time hora) {
+    // Constructor sin idReserva (para inserciones)
+    public Reserva(int idMesa, String nombre, String apellido, Date fecha, Time hora)
+    {
         this.idMesa = idMesa;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -33,57 +39,69 @@ public class Reserva {
         this.hora = hora;
     }
 
-    // Getters y Setters
-    public int getIdReserva() {
+    public int getIdReserva()
+    {
         return idReserva;
     }
 
-    public void setIdReserva(int idReserva) {
+    public void setIdReserva(int idReserva)
+    {
         this.idReserva = idReserva;
     }
 
-    public int getIdMesa() {
+    public int getIdMesa()
+    {
         return idMesa;
     }
 
-    public void setIdMesa(int idMesa) {
+    public void setIdMesa(int idMesa)
+    {
         this.idMesa = idMesa;
     }
 
-    public String getNombre() {
+    public String getNombre()
+    {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    public void setNombre(String nombre)
+    {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
+    public String getApellido()
+    {
         return apellido;
     }
 
-    public void setApellido(String apellido) {
+    public void setApellido(String apellido)
+    {
         this.apellido = apellido;
     }
 
-    public Date getFecha() {
+    public Date getFecha()
+    {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(Date fecha)
+    {
         this.fecha = fecha;
     }
 
-    public Time getHora() {
+    public Time getHora()
+    {
         return hora;
     }
 
-    public void setHora(Time hora) {
+    public void setHora(Time hora)
+    {
         this.hora = hora;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Reserva{" +
                 "idReserva=" + idReserva +
                 ", idMesa=" + idMesa +

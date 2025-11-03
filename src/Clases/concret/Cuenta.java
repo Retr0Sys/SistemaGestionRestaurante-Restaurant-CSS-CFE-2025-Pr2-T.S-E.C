@@ -2,6 +2,7 @@ package Clases.concret;
 
 import java.sql.Timestamp;
 
+// Representa una cuenta asociada a una mesa en el restaurante
 public class Cuenta
 {
     private int idCuenta;
@@ -25,7 +26,7 @@ public class Cuenta
         this.estado = estado;
     }
 
-    // Constructor útil para inserciones (sin id y sin timestamps)
+    // Constructor usado al crear una nueva cuenta
     public Cuenta(int idMesa, int estado)
     {
         this.idMesa = idMesa;
@@ -82,6 +83,7 @@ public class Cuenta
         this.estado = estado;
     }
 
+    // Devuelve una representación en texto de la cuenta
     @Override
     public String toString()
     {
