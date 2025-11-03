@@ -8,6 +8,7 @@ import java.util.List;
 
 public class CuentaDAO
 {
+    // Sentencias SQL utilizadas en los distintos métodos
     private static final String SQL_INSERT =
             "INSERT INTO cuenta (idMesa, estado) VALUES (?, ?)";
 
@@ -26,16 +27,18 @@ public class CuentaDAO
     private static final String SQL_SELECT_ALL =
             "SELECT * FROM cuenta ORDER BY fechaApertura DESC";
 
-    // Inserta una nueva cuenta. Si quieres recuperar el id generado, se setea en el objeto Cuenta.
+    // Inserta una nueva cuenta asociada a una mesa (por lo general con estado = 1 para abierta)
+    // y asigna el ID generado al objeto Cuenta
     public void insertar(Cuenta c) throws SQLException
     {
         try (Connection cn = ConexionDB.getConnection();
              PreparedStatement ps = cn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS))
         {
             ps.setInt(1, c.getIdMesa());
-            ps.setInt(2, c.getEstado()); // normalmente 1 = abierta
+            ps.setInt(2, c.getEstado());
             ps.executeUpdate();
 
+            // Guarda el ID generado automáticamente
             try (ResultSet keys = ps.getGeneratedKeys())
             {
                 if (keys.next())
@@ -46,7 +49,7 @@ public class CuentaDAO
         }
     }
 
-    // Devuelve true si la mesa tiene una cuenta con estado = 1 (abierta)
+    // Verifica si una mesa tiene una cuenta abierta (estado = 1)
     public boolean tieneCuentaAbierta(int idMesa) throws SQLException
     {
         try (Connection cn = ConexionDB.getConnection();
@@ -64,7 +67,7 @@ public class CuentaDAO
         return false;
     }
 
-    // Devuelve el id de la cuenta abierta para una mesa, o -1 si no existe
+    // Devuelve el ID de la cuenta abierta para una mesa o -1 si no existe
     public int obtenerIdCuentaAbierta(int idMesa) throws SQLException
     {
         try (Connection cn = ConexionDB.getConnection();
@@ -82,18 +85,18 @@ public class CuentaDAO
         return -1;
     }
 
-    // Cierra la cuenta abierta de la mesa (pone estado = 0 y fechaCierre = NOW())
-    public void cerrarCuenta(int idMesa) throws SQLException {
-        String sql = "UPDATE cuenta SET estado = 0, fechaCierre = NOW() WHERE idMesa = ? AND estado = 1";
+    // Cierra la cuenta abierta de una mesa (cambia el estado y registra la fecha de cierre)
+    public void cerrarCuenta(int idMesa) throws SQLException
+    {
         try (Connection con = ConexionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(SQL_CERRAR_CUENTA))
+        {
             ps.setInt(1, idMesa);
             ps.executeUpdate();
         }
     }
 
-
-    // Lista todas las cuentas (historial)
+    // Devuelve una lista con todas las cuentas registradas (abiertas y cerradas)
     public List<Cuenta> listar() throws SQLException
     {
         List<Cuenta> lista = new ArrayList<>();

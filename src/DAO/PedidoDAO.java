@@ -6,22 +6,25 @@ import java.util.List;
 import Clases.concret.Pedido;
 import Exepciones.StockInsuficienteException;
 
-public class PedidoDAO {
-
+public class PedidoDAO
+{
     // =====================================
-    // Insertar un nuevo pedido
-    // Estado inicial: "Pendiente"
+    // Agrega un nuevo pedido y descuenta stock
     // =====================================
-    public static void agregarPedido(int idCuenta, int idProducto, int cantidad) throws SQLException {
+    public static void agregarPedido(int idCuenta, int idProducto, int cantidad) throws SQLException
+    {
         String sqlInsert = "INSERT INTO pedido (idCuenta, idProducto, cantidad, estado) VALUES (?, ?, ?, ?)";
         String sqlUpdateStock = "UPDATE CatalogoProducto SET stock = stock - ? WHERE IdCatalogoProducto = ? AND stock >= ?";
 
-        try (Connection con = ConexionDB.getConnection()) {
-            try {
+        try (Connection con = ConexionDB.getConnection())
+        {
+            try
+            {
                 con.setAutoCommit(false);
 
-                // Insertar pedido
-                try (PreparedStatement ps = con.prepareStatement(sqlInsert)) {
+                // Inserta el pedido como "Pendiente"
+                try (PreparedStatement ps = con.prepareStatement(sqlInsert))
+                {
                     ps.setInt(1, idCuenta);
                     ps.setInt(2, idProducto);
                     ps.setInt(3, cantidad);
@@ -29,32 +32,39 @@ public class PedidoDAO {
                     ps.executeUpdate();
                 }
 
-                // Descontar stock
-                try (PreparedStatement ps2 = con.prepareStatement(sqlUpdateStock)) {
+                // Actualiza el stock del producto
+                try (PreparedStatement ps2 = con.prepareStatement(sqlUpdateStock))
+                {
                     ps2.setInt(1, cantidad);
                     ps2.setInt(2, idProducto);
                     ps2.setInt(3, cantidad);
                     int filas = ps2.executeUpdate();
-                    if (filas == 0) {
+                    if (filas == 0)
+                    {
                         con.rollback();
                         throw new StockInsuficienteException();
                     }
                 }
 
                 con.commit();
-            } catch (SQLException e) {
+            }
+            catch (SQLException e)
+            {
                 con.rollback();
                 throw e;
-            } finally {
+            }
+            finally
+            {
                 con.setAutoCommit(true);
             }
         }
     }
 
     // =====================================
-    // Listar pedidos de una cuenta
+    // Lista los pedidos de una cuenta específica
     // =====================================
-    public static List<Pedido> listarPorCuenta(int idCuenta) throws SQLException {
+    public static List<Pedido> listarPorCuenta(int idCuenta) throws SQLException
+    {
         List<Pedido> lista = new ArrayList<>();
         String sql = """
             SELECT p.idPedido, p.idCuenta, p.idProducto, p.cantidad, p.fechaHora,
@@ -66,11 +76,13 @@ public class PedidoDAO {
         """;
 
         try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
             stmt.setInt(1, idCuenta);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+            try (ResultSet rs = stmt.executeQuery())
+            {
+                while (rs.next())
+                {
                     lista.add(new Pedido(
                             rs.getInt("idPedido"),
                             rs.getInt("idCuenta"),
@@ -87,9 +99,10 @@ public class PedidoDAO {
     }
 
     // =====================================
-    // Listar todos los pedidos
+    // Lista todos los pedidos del sistema
     // =====================================
-    public static List<Pedido> listar() throws SQLException {
+    public static List<Pedido> listar() throws SQLException
+    {
         List<Pedido> lista = new ArrayList<>();
         String sql = """
             SELECT p.idPedido, p.idCuenta, p.idProducto, p.cantidad, p.fechaHora,
@@ -101,9 +114,10 @@ public class PedidoDAO {
 
         try (Connection conn = ConexionDB.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
+             ResultSet rs = stmt.executeQuery(sql))
+        {
+            while (rs.next())
+            {
                 lista.add(new Pedido(
                         rs.getInt("idPedido"),
                         rs.getInt("idCuenta"),
@@ -119,9 +133,10 @@ public class PedidoDAO {
     }
 
     // =====================================
-    // Calcular total de una cuenta
+    // Calcula el total de una cuenta (precio × cantidad)
     // =====================================
-    public static double calcularTotalCuenta(int idCuenta) throws SQLException {
+    public static double calcularTotalCuenta(int idCuenta) throws SQLException
+    {
         String sql = """
             SELECT SUM(c.precio * p.cantidad) AS total
             FROM pedido p
@@ -130,11 +145,13 @@ public class PedidoDAO {
         """;
 
         try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
             stmt.setInt(1, idCuenta);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = stmt.executeQuery())
+            {
+                if (rs.next())
+                {
                     return rs.getDouble("total");
                 }
             }
@@ -143,9 +160,10 @@ public class PedidoDAO {
     }
 
     // =====================================
-    // Listar pedidos pendientes
+    // Lista pedidos pendientes (por fecha)
     // =====================================
-    public static List<Pedido> listarPendientes() throws SQLException {
+    public static List<Pedido> listarPendientes() throws SQLException
+    {
         List<Pedido> lista = new ArrayList<>();
         String sql = """
             SELECT p.idPedido, p.idCuenta, p.idProducto, p.cantidad, p.fechaHora,
@@ -158,9 +176,10 @@ public class PedidoDAO {
 
         try (Connection conn = ConexionDB.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
+             ResultSet rs = stmt.executeQuery(sql))
+        {
+            while (rs.next())
+            {
                 lista.add(new Pedido(
                         rs.getInt("idPedido"),
                         rs.getInt("idCuenta"),
@@ -176,72 +195,89 @@ public class PedidoDAO {
     }
 
     // =====================================
-    // Actualizar estado de un pedido
-    // Control completo de stock
+    // Actualiza el estado del pedido y ajusta stock
     // =====================================
-    public static void actualizarEstado(int idPedido, String nuevoEstado) throws SQLException {
+    public static void actualizarEstado(int idPedido, String nuevoEstado) throws SQLException
+    {
         String sqlGetPedido = "SELECT idProducto, cantidad, estado FROM pedido WHERE idPedido = ?";
         String sqlUpdateEstado = "UPDATE pedido SET estado = ? WHERE idPedido = ?";
         String sqlUpdateStock = "UPDATE CatalogoProducto SET stock = stock + ? WHERE IdCatalogoProducto = ?";
         String sqlUpdateStockRestar = "UPDATE CatalogoProducto SET stock = stock - ? WHERE IdCatalogoProducto = ? AND stock >= ?";
 
-        try (Connection con = ConexionDB.getConnection()) {
-            try {
+        try (Connection con = ConexionDB.getConnection())
+        {
+            try
+            {
                 con.setAutoCommit(false);
 
                 int idProducto = 0;
                 int cantidad = 0;
                 String estadoActual = "";
 
-                // Obtener datos del pedido
-                try (PreparedStatement ps = con.prepareStatement(sqlGetPedido)) {
+                // Obtiene los datos actuales del pedido
+                try (PreparedStatement ps = con.prepareStatement(sqlGetPedido))
+                {
                     ps.setInt(1, idPedido);
-                    try (ResultSet rs = ps.executeQuery()) {
-                        if (rs.next()) {
+                    try (ResultSet rs = ps.executeQuery())
+                    {
+                        if (rs.next())
+                        {
                             idProducto = rs.getInt("idProducto");
                             cantidad = rs.getInt("cantidad");
                             estadoActual = rs.getString("estado");
-                        } else {
+                        }
+                        else
+                        {
                             throw new SQLException("Pedido no encontrado");
                         }
                     }
                 }
 
-                // Si se cancela un pedido pendiente, devolver stock
-                if ("Cancelado".equalsIgnoreCase(nuevoEstado) && "Pendiente".equalsIgnoreCase(estadoActual)) {
-                    try (PreparedStatement ps = con.prepareStatement(sqlUpdateStock)) {
+                // Si se cancela, devuelve el stock
+                if ("Cancelado".equalsIgnoreCase(nuevoEstado) && "Pendiente".equalsIgnoreCase(estadoActual))
+                {
+                    try (PreparedStatement ps = con.prepareStatement(sqlUpdateStock))
+                    {
                         ps.setInt(1, cantidad);
                         ps.setInt(2, idProducto);
                         ps.executeUpdate();
                     }
                 }
 
-                // Si se pasa de Cancelado a Pendiente, descontar stock nuevamente
-                if ("Pendiente".equalsIgnoreCase(nuevoEstado) && "Cancelado".equalsIgnoreCase(estadoActual)) {
-                    try (PreparedStatement ps = con.prepareStatement(sqlUpdateStockRestar)) {
+                // Si se reactiva, descuenta stock
+                if ("Pendiente".equalsIgnoreCase(nuevoEstado) && "Cancelado".equalsIgnoreCase(estadoActual))
+                {
+                    try (PreparedStatement ps = con.prepareStatement(sqlUpdateStockRestar))
+                    {
                         ps.setInt(1, cantidad);
                         ps.setInt(2, idProducto);
                         ps.setInt(3, cantidad);
                         int filas = ps.executeUpdate();
-                        if (filas == 0) {
+                        if (filas == 0)
+                        {
                             con.rollback();
                             throw new StockInsuficienteException();
                         }
                     }
                 }
 
-                // Actualizar estado
-                try (PreparedStatement ps = con.prepareStatement(sqlUpdateEstado)) {
+                // Actualiza el estado del pedido
+                try (PreparedStatement ps = con.prepareStatement(sqlUpdateEstado))
+                {
                     ps.setString(1, nuevoEstado);
                     ps.setInt(2, idPedido);
                     ps.executeUpdate();
                 }
 
                 con.commit();
-            } catch (SQLException e) {
+            }
+            catch (SQLException e)
+            {
                 con.rollback();
                 throw e;
-            } finally {
+            }
+            finally
+            {
                 con.setAutoCommit(true);
             }
         }

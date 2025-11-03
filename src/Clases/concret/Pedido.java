@@ -71,10 +71,6 @@ public class Pedido {
         this.precioProducto = precioProducto;
     }
 
-    // ========================
-    // Métodos útiles
-    // ========================
-
     // Devuelve el subtotal de este pedido
     public double getSubtotal() {
         return precioProducto * cantidad;
