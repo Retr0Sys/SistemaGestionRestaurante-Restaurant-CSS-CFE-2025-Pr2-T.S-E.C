@@ -12,6 +12,7 @@ import DAO.PedidoDAO;
 import DAO.ConexionDB;
 import Clases.concret.Mesa;
 import Clases.concret.Pedido;
+import Exepciones.NoHayMesasValidasException;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -40,11 +41,10 @@ public class Facturacion extends JFrame {
     private static int contadorFactura = 1;
 
     public Facturacion() {
-
         // Obtener resolución de pantalla
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int anchoPantalla = screenSize.width;
-        int iconSize = (int) (anchoPantalla * 0.10); // 10% del ancho
+        int iconSize = (int) (anchoPantalla * 0.10);
 
         // Estética general
         Color fondo = new Color(245, 245, 245);
@@ -52,15 +52,15 @@ public class Facturacion extends JFrame {
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 22);
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 14);
 
-
         ventanaFact.setBackground(fondo);
         ventanaFact.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(acento, 3),
                 BorderFactory.createEmptyBorder(30, 30, 30, 30)
         ));
 
-        // Botón Atras
-        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+        // Botón atrás
+        ImageIcon imagen = new ImageIcon(new ImageIcon("imagenes/Atras.png")
+                .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         btnAtras.setIcon(imagen);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
@@ -69,8 +69,9 @@ public class Facturacion extends JFrame {
         btnAtras.setPreferredSize(new Dimension(iconSize, iconSize));
         btnAtras.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-// Botón Comprobante
-        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png").getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
+        // Botón comprobante
+        ImageIcon imagen2 = new ImageIcon(new ImageIcon("imagenes/Comprobante.png")
+                .getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH));
         btnComprobante.setIcon(imagen2);
         btnComprobante.setBorderPainted(false);
         btnComprobante.setContentAreaFilled(false);
@@ -78,7 +79,6 @@ public class Facturacion extends JFrame {
         btnComprobante.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnComprobante.setPreferredSize(new Dimension(iconSize, iconSize));
         btnComprobante.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
 
         // Título
         ImageIcon iconoFact = new ImageIcon(
@@ -108,10 +108,14 @@ public class Facturacion extends JFrame {
         cboxMetPago.setBorder(BorderFactory.createLineBorder(acento, 2));
 
         // Cargar mesas desde BD
-        cargarMesasDesdeBD();
+        try {
+            cargarMesasDesdeBD();
+        } catch (NoHayMesasValidasException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(),
+                    "Sin mesas disponibles", JOptionPane.WARNING_MESSAGE);
+        }
 
-
-        // Cargar propinas
+        // Cargar descuentos
         cboxDescuento.addItem("0%");
         cboxDescuento.addItem("5%");
         cboxDescuento.addItem("10%");
@@ -125,7 +129,7 @@ public class Facturacion extends JFrame {
 
         lblSubtotalNumero.setText("$ " + subtotal);
 
-        // Actualizar total cuando cambia la propina
+        // Actualizar total cuando cambia el descuento
         cboxDescuento.addActionListener(e -> actualizarTotal());
 
         // Cargar pedidos al seleccionar mesa
@@ -157,10 +161,8 @@ public class Facturacion extends JFrame {
                     "Factura generada",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            // Generar PDF
             crearPDF(mesa, descuento, metodoPago, total);
 
-            // Cerrar la cuenta en la base de datos
             try {
                 int idMesa = Integer.parseInt(mesa.replace("Mesa ", "").trim());
                 cerrarCuentaDeMesa(idMesa);
@@ -169,10 +171,13 @@ public class Facturacion extends JFrame {
                 ex.printStackTrace();
             }
 
-            // Refrescar combo de mesas disponibles
-            cargarMesasDesdeBD();
+            try {
+                cargarMesasDesdeBD();
+            } catch (NoHayMesasValidasException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(),
+                        "Sin mesas disponibles", JOptionPane.WARNING_MESSAGE);
+            }
         });
-
 
         // Botón atrás
         btnAtras.addActionListener(e -> {
@@ -190,26 +195,20 @@ public class Facturacion extends JFrame {
     }
 
     // ====================== Cargar mesas desde BD ======================
-    // ====================== Cargar mesas con cuenta activa y subtotal > 0 ======================
-    private void cargarMesasDesdeBD() {
+    private void cargarMesasDesdeBD() throws NoHayMesasValidasException {
         try {
             MesaDAO mesaDAO = new MesaDAO();
             CuentaDAO cuentaDAO = new CuentaDAO();
-            PedidoDAO pedidoDAO = new PedidoDAO();
 
-            cboxMesa.removeAllItems(); // Limpiar combo antes de recargar
+            cboxMesa.removeAllItems();
 
             List<Mesa> mesas = mesaDAO.listar();
             boolean hayMesasValidas = false;
 
             for (Mesa mesa : mesas) {
                 int idMesa = mesa.getIdMesa();
-
-                // Verificar si tiene una cuenta abierta
                 if (cuentaDAO.tieneCuentaAbierta(idMesa)) {
                     int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
-
-                    // Calcular subtotal real de los pedidos de la cuenta
                     double subtotalMesa = 0;
                     List<Pedido> pedidos = PedidoDAO.listarPorCuenta(idCuenta);
 
@@ -218,7 +217,6 @@ public class Facturacion extends JFrame {
                         subtotalMesa += precio * p.getCantidad();
                     }
 
-                    // Si el subtotal es válido (> 0), agregar al combo
                     if (subtotalMesa > 0) {
                         cboxMesa.addItem("Mesa " + idMesa);
                         hayMesasValidas = true;
@@ -226,20 +224,17 @@ public class Facturacion extends JFrame {
                 }
             }
 
-            // Si ninguna mesa cumple la condición
             if (!hayMesasValidas) {
-                JOptionPane.showMessageDialog(this,
-                        "⚠️ No hay mesas con cuentas activas o con consumo mayor a $0.",
-                        "Sin mesas disponibles",
-                        JOptionPane.WARNING_MESSAGE);
+                throw new NoHayMesasValidasException();
             }
 
+        } catch (NoHayMesasValidasException e) {
+            throw e;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error cargando mesas: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     // ====================== Cargar pedidos de la mesa seleccionada ======================
     private void cargarPedidosDeMesa() {
@@ -248,8 +243,6 @@ public class Facturacion extends JFrame {
             if (seleccion == null || seleccion.isEmpty()) return;
 
             int idMesa = Integer.parseInt(seleccion.replace("Mesa ", "").trim());
-
-            // Buscar cuenta activa de la mesa
             CuentaDAO cuentaDAO = new CuentaDAO();
             int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
 
@@ -261,12 +254,10 @@ public class Facturacion extends JFrame {
                 return;
             }
 
-            // Listar pedidos de esa cuenta
             List<Pedido> pedidos = PedidoDAO.listarPorCuenta(idCuenta);
-
             double nuevoSubtotal = 0;
             for (Pedido p : pedidos) {
-                double precio = obtenerPrecioProducto(p.getIdProducto()); // p.getIdProducto() = IdCatalogoProducto
+                double precio = obtenerPrecioProducto(p.getIdProducto());
                 nuevoSubtotal += precio * p.getCantidad();
             }
 
@@ -300,8 +291,7 @@ public class Facturacion extends JFrame {
         return precio;
     }
 
-    // ====================== Crear PDF ======================
-    // ====================== Crear PDF (versión corregida y robusta) ======================
+// ====================== Crear PDF ======================
     private void crearPDF(String mesa, String propina, String metodoPago, String total)
     {
         String ruta= "";
