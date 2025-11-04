@@ -144,6 +144,10 @@ El diagrama UML por su tamaño se encuentra alojado en el siguiente enlace de Go
 
 [**Acceder al diagrama**](https://drive.google.com/file/d/1ze_hoKHIy_gUFDDabduETDyWlQq7xwLY/view?usp=sharing)
 
+### Creación de la Base de Datos
+
+[**Acceder a la DB**](https://drive.google.com/file/d/1NVLJDSeiB4rlbm8uHFwToxmAuo_-abe3/view?usp=sharing).
+
 -----
 
 
