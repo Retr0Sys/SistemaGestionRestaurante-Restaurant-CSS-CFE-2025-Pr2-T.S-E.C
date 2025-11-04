@@ -19,12 +19,14 @@ public class BienvenidaMenuInicial extends JFrame {
     private JFrame ventanaPrincipal;
 
     public BienvenidaMenuInicial(JFrame frame) {
+        //Guarda el ancho y largo de la pantalla del sistema
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
 
         this.ventanaPrincipal = frame;
 
+        //Ajustes visuales
         JPBienvenida = new JPanel();
         JPBienvenida.setOpaque(false);
         JPBienvenida.setLayout(new BoxLayout(JPBienvenida, BoxLayout.Y_AXIS));
@@ -109,7 +111,7 @@ public class BienvenidaMenuInicial extends JFrame {
         JPBienvenida.add(Box.createRigidArea(new Dimension(0, 10)));
         JPBienvenida.add(BtnSalir);
     }
-
+    // Metodo que permite reproducir sonidos.
     private void reproducirSonido(String ruta) {
         try {
             File archivoSonido = new File(ruta);
