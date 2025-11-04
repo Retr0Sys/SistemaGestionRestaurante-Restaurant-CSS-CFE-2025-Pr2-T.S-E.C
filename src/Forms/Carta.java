@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Carta extends JFrame
 {
-    // ======= Componentes de la interfaz =======
+    // ======= Componentes de la interfaz ======
     public JPanel ventanaCarta;
     private JLabel lblTituloCarta;
     private JTable tblTablaCartaMenu;

@@ -36,7 +36,7 @@ public class Acerca extends JFrame
         lblVersion.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblVersion.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        lblCopy = new JLabel("<html><div style='text-align: center;'>Software bajo licencia de CopyRight<br>Todos los derechos reservados<br>El incumplimiento de estos puede ser penado con la muerte</div></html>");
+        lblCopy = new JLabel("<html><div style='text-align: center;'>Software bajo licencia de CopyRight<br>Todos los derechos reservados<br></div></html>");
         lblCopy.setFont(fuenteGeneral);
         lblCopy.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblCopy.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
