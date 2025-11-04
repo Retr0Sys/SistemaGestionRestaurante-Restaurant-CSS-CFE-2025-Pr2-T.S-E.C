@@ -13,7 +13,13 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Carta extends JFrame {
+/**
+ * Ventana principal de gestión de la carta del restaurante.
+ * Permite listar, modificar y crear productos (comidas, bebidas y postres).
+ */
+public class Carta extends JFrame
+{
+    // ======= Componentes de la interfaz =======
     public JPanel ventanaCarta;
     private JLabel lblTituloCarta;
     private JTable tblTablaCartaMenu;
@@ -31,10 +37,15 @@ public class Carta extends JFrame {
     private JLabel lblStockCrear;
     private DefaultTableModel modelo;
 
+    // Servicio que maneja la lógica de acceso a los productos
     private final CartaService cartaService = new CartaServiceImpl();
 
-    public Carta() {
-        // ===== Resolución y estilos =====
+    /**
+     * Constructor: configura la interfaz gráfica y carga los productos.
+     */
+    public Carta()
+    {
+        // ===== Estilo y diseño base =====
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int anchoPantalla = screenSize.width;
         int tamañoNormal = (int) (anchoPantalla * 0.10);
@@ -46,7 +57,7 @@ public class Carta extends JFrame {
         Font fuenteGeneral = new Font("Segoe UI", Font.PLAIN, 16);
         Font fuenteTitulo = new Font("Segoe UI", Font.BOLD, 18);
 
-        // ===== Ventana principal =====
+        // ===== Configuración de la ventana principal =====
         setTitle("Carta del Restaurante");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,17 +67,18 @@ public class Carta extends JFrame {
         ventanaCarta.setBackground(fondo);
         ventanaCarta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // ===== Botones con estilo =====
+        // ===== Botones =====
         btnModificar = crearBotonConEstilo("imagenes/Actualizar.png", tamañoNormal, tamañoZoom);
         btnCrear = crearBotonConEstilo("imagenes/Enviar.png", tamañoNormal, tamañoZoom);
         btnAtras = crearBotonConEstilo("imagenes/Atras.png", tamañoNormal, tamañoZoom);
 
-        // ===== TABS =====
+        // ===== Pestañas (tabs) =====
         TBCarta = new JTabbedPane();
         TBCarta.setFont(fuenteGeneral);
         TBCarta.setBackground(blanco);
         TBCarta.setBorder(BorderFactory.createLineBorder(acento, 2));
 
+        // Paneles para cada pestaña
         JPCarta = new JPanel(new BorderLayout());
         JPcambiarCarta = new JPanel();
         JPCrear = new JPanel();
@@ -75,19 +87,19 @@ public class Carta extends JFrame {
         JPcambiarCarta.setBackground(blanco);
         JPCrear.setBackground(blanco);
 
+        // Se agregan las pestañas
         TBCarta.addTab("Carta", JPCarta);
         TBCarta.addTab("Modificar Producto", JPcambiarCarta);
         TBCarta.addTab("Crear Producto", JPCrear);
-
         ventanaCarta.add(TBCarta, BorderLayout.CENTER);
 
-        // ===== Panel Atrás =====
+        // ===== Panel del botón "Atrás" =====
         panelBotonAtras = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelBotonAtras.setBackground(fondo);
         panelBotonAtras.add(btnAtras);
         ventanaCarta.add(panelBotonAtras, BorderLayout.SOUTH);
 
-        // ===== Tabla Carta =====
+        // ===== Tabla con la carta del restaurante =====
         String[] columnas = {"ID", "Nombre", "Precio", "Categoría", "Estado", "Stock"};
         modelo = new DefaultTableModel(columnas, 0);
         tblTablaCartaMenu = new JTable(modelo);
@@ -105,11 +117,12 @@ public class Carta extends JFrame {
         scroll.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JPCarta.add(scroll, BorderLayout.CENTER);
 
+        // Ocultar la columna ID
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMinWidth(0);
         tblTablaCartaMenu.getColumnModel().getColumn(0).setMaxWidth(0);
         tblTablaCartaMenu.getColumnModel().getColumn(0).setPreferredWidth(0);
 
-        // ===== Modificar Producto =====
+        // ===== Panel para modificar productos =====
         JPcambiarCarta.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Modificar Producto"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
@@ -123,17 +136,23 @@ public class Carta extends JFrame {
         CBDisponibilidad.addItem("Disponible");
         CBDisponibilidad.addItem("No Disponible");
 
-        JPcambiarCarta.add(new JLabel("Producto:")); JPcambiarCarta.add(CBProducto);
-        JPcambiarCarta.add(new JLabel("Nuevo Precio:")); JPcambiarCarta.add(txtPrecio);
-        JPcambiarCarta.add(new JLabel("Nuevo Stock:")); JPcambiarCarta.add(txtStockCambiar);
-        JPcambiarCarta.add(new JLabel("Disponibilidad:")); JPcambiarCarta.add(CBDisponibilidad);
+        // Campos del formulario
+        JPcambiarCarta.add(new JLabel("Producto:"));
+        JPcambiarCarta.add(CBProducto);
+        JPcambiarCarta.add(new JLabel("Nuevo Precio:"));
+        JPcambiarCarta.add(txtPrecio);
+        JPcambiarCarta.add(new JLabel("Nuevo Stock:"));
+        JPcambiarCarta.add(txtStockCambiar);
+        JPcambiarCarta.add(new JLabel("Disponibilidad:"));
+        JPcambiarCarta.add(CBDisponibilidad);
 
+        // Panel con el botón de modificar
         panelBotonModificar = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelBotonModificar.setBackground(blanco);
         panelBotonModificar.add(btnModificar);
         JPcambiarCarta.add(panelBotonModificar);
 
-        // ===== Crear Producto =====
+        // ===== Panel para crear un nuevo producto =====
         JPCrear.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(acento, 1), "Crear Nuevo Producto"),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
@@ -148,11 +167,17 @@ public class Carta extends JFrame {
         CBcategoria.addItem("bebida");
         CBcategoria.addItem("postre");
 
-        JPCrear.add(new JLabel("Nombre:")); JPCrear.add(txtNuevoProducto);
-        JPCrear.add(new JLabel("Precio:")); JPCrear.add(txtNuevoPrecio);
-        JPCrear.add(new JLabel("Stock:")); JPCrear.add(txtStockCrear);
-        JPCrear.add(new JLabel("Categoría:")); JPCrear.add(CBcategoria);
+        // Campos del formulario de creación
+        JPCrear.add(new JLabel("Nombre:"));
+        JPCrear.add(txtNuevoProducto);
+        JPCrear.add(new JLabel("Precio:"));
+        JPCrear.add(txtNuevoPrecio);
+        JPCrear.add(new JLabel("Stock:"));
+        JPCrear.add(txtStockCrear);
+        JPCrear.add(new JLabel("Categoría:"));
+        JPCrear.add(CBcategoria);
 
+        // Panel con el botón de crear
         panelBotonCrear = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelBotonCrear.setBackground(blanco);
         panelBotonCrear.add(btnCrear);
@@ -160,10 +185,15 @@ public class Carta extends JFrame {
 
         // ===== Eventos =====
         CBProducto.addActionListener(e -> cargarDatosProductoSeleccionado());
-        tblTablaCartaMenu.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+        // Permite seleccionar un producto haciendo clic en la tabla
+        tblTablaCartaMenu.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
                 int fila = tblTablaCartaMenu.getSelectedRow();
-                if (fila != -1) {
+                if (fila != -1)
+                {
                     CBProducto.setSelectedItem(tblTablaCartaMenu.getValueAt(fila, 1).toString());
                     cargarDatosProductoSeleccionado();
                 }
@@ -179,114 +209,163 @@ public class Carta extends JFrame {
         cargarComboProductos();
     }
 
-    private void cargarDatosProductoSeleccionado() {
+    /**
+     * Carga en los campos los datos del producto seleccionado para modificar.
+     */
+    private void cargarDatosProductoSeleccionado()
+    {
         String nombre = (String) CBProducto.getSelectedItem();
-        if (nombre != null) {
-            try {
+        if (nombre != null)
+        {
+            try
+            {
                 Producto p = cartaService.buscarPorNombre(nombre);
-                if (p != null) {
+                if (p != null)
+                {
                     txtPrecio.setText(String.valueOf(p.getPrecio()));
                     txtStockCambiar.setText(String.valueOf(cartaService.obtenerStock(p.getId())));
                     CBDisponibilidad.setSelectedItem(p.getEstado() == 1 ? "Disponible" : "No Disponible");
                 }
-            } catch (SQLException e) {
+            }
+            catch (SQLException e)
+            {
                 JOptionPane.showMessageDialog(this, "Error obteniendo datos: " + e.getMessage());
             }
         }
     }
 
-    private void cargarProductosDisponibles() {
+    /**
+     * Carga la lista completa de productos en la tabla.
+     */
+    private void cargarProductosDisponibles()
+    {
         modelo.setRowCount(0);
-        try {
+        try
+        {
             List<Producto> productos = cartaService.listarTodos();
-            for (Producto p : productos) {
+            for (Producto p : productos)
+            {
                 int stock = cartaService.obtenerStock(p.getId());
                 String estadoStr = (p.getEstado() == 1 && stock > 0) ? "Disponible" : "No Disponible";
 
-                modelo.addRow(new Object[]{
-                        p.getId(),
-                        p.getNombre(),
-                        p.getPrecio(),
-                        p.getClass().getSimpleName(),
-                        estadoStr,
-                        stock
-                });
+                modelo.addRow(new Object[]
+                        {
+                                p.getId(),
+                                p.getNombre(),
+                                p.getPrecio(),
+                                p.getClass().getSimpleName(),
+                                estadoStr,
+                                stock
+                        });
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             JOptionPane.showMessageDialog(this, "Error cargando productos: " + e.getMessage());
         }
     }
 
-
-    private void cargarComboProductos() {
+    /**
+     * Llena el combo de productos para el panel de modificación.
+     */
+    private void cargarComboProductos()
+    {
         CBProducto.removeAllItems();
-        try {
+        try
+        {
             List<Producto> productos = cartaService.listarTodos();
-            for (Producto p : productos) {
+            for (Producto p : productos)
+            {
                 CBProducto.addItem(p.getNombre());
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             JOptionPane.showMessageDialog(this, "Error cargando combo: " + e.getMessage());
         }
     }
 
-    private void modificarProducto() {
+    /**
+     * Permite modificar el precio, stock o estado de un producto existente.
+     */
+    private void modificarProducto()
+    {
         String nombre = (String) CBProducto.getSelectedItem();
         if (nombre == null) return;
 
-        try {
+        try
+        {
             String precioStr = txtPrecio.getText().trim();
             String stockStr = txtStockCambiar.getText().trim();
 
-            if (precioStr.isEmpty() || stockStr.isEmpty()) {
+            // Validaciones
+            if (precioStr.isEmpty() || stockStr.isEmpty())
+            {
                 JOptionPane.showMessageDialog(this, "Precio y stock son obligatorios.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             double precio = Double.parseDouble(precioStr);
-            if (precio <= 0) {
+            if (precio <= 0)
+            {
                 JOptionPane.showMessageDialog(this, "El precio debe ser mayor a 0.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             int stock = Integer.parseInt(stockStr);
-            if (stock < 0) {
+            if (stock < 0)
+            {
                 JOptionPane.showMessageDialog(this, "El stock no puede ser negativo.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (stock <= 5 && stock > 0) {
+            }
+            else if (stock <= 5 && stock > 0)
+            {
                 JOptionPane.showMessageDialog(this, "El stock es bajo (≤5).",
                         "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
 
-            int estado = (stock == 0) ? 0 : (CBDisponibilidad.getSelectedItem().equals("Disponible") ? 1 : 0);
+            int estado = (stock == 0)
+                    ? 0
+                    : (CBDisponibilidad.getSelectedItem().equals("Disponible") ? 1 : 0);
+
             Producto p = cartaService.buscarPorNombre(nombre);
-            if (p != null) {
+            if (p != null)
+            {
                 cartaService.actualizarProducto(p.getId(), precio, estado);
                 cartaService.actualizarStock(p.getId(), stock);
                 JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
                 cargarProductosDisponibles();
             }
-
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             JOptionPane.showMessageDialog(this, "Precio o stock inválido.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al actualizar producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, "Error al actualizar producto: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-
-    private void crearProducto() {
-        try {
+    /**
+     * Crea un nuevo producto en la base de datos según la categoría seleccionada.
+     */
+    private void crearProducto()
+    {
+        try
+        {
             String nombre = txtNuevoProducto.getText().trim();
             String categoria = (String) CBcategoria.getSelectedItem();
             String precioStr = txtNuevoPrecio.getText().trim();
             String stockStr = txtStockCrear.getText().trim();
 
             // Validaciones
-            if (nombre.isEmpty() || nombre.matches("\\d+")) {
+            if (nombre.isEmpty() || nombre.matches("\\d+"))
+            {
                 JOptionPane.showMessageDialog(this,
                         "El nombre del producto es obligatorio y no puede ser solo números.",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -294,30 +373,38 @@ public class Carta extends JFrame {
             }
 
             double precio = Double.parseDouble(precioStr);
-            if (precio <= 0) {
+            if (precio <= 0)
+            {
                 JOptionPane.showMessageDialog(this, "El precio debe ser mayor a 0.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             int stock = Integer.parseInt(stockStr);
-            if (stock < 0) {
+            if (stock < 0)
+            {
                 JOptionPane.showMessageDialog(this, "El stock no puede ser negativo.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (stock <= 5) {
+            }
+            else if (stock <= 5)
+            {
                 JOptionPane.showMessageDialog(this, "El stock es bajo (≤5).",
                         "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
 
-            int estado = (stock == 0) ? 0 : 1; // stock 0 → No Disponible
+            int estado = (stock == 0) ? 0 : 1;
+
             Producto nuevo;
-            switch (categoria.toLowerCase()) {
+            switch (categoria.toLowerCase())
+            {
                 case "comida" -> nuevo = new Comida(0, nombre, precio, estado);
                 case "bebida" -> nuevo = new Bebida(0, nombre, precio, estado);
                 case "postre" -> nuevo = new Postre(0, nombre, precio, estado);
-                default -> {
-                    JOptionPane.showMessageDialog(this, "Categoría inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+                default ->
+                {
+                    JOptionPane.showMessageDialog(this, "Categoría inválida.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
@@ -326,22 +413,30 @@ public class Carta extends JFrame {
             cartaService.actualizarStock(nuevo.getId(), stock);
             JOptionPane.showMessageDialog(this, "Producto creado correctamente.");
 
+            // Limpiar campos y recargar datos
             cargarProductosDisponibles();
             cargarComboProductos();
             txtNuevoProducto.setText("");
             txtNuevoPrecio.setText("");
             txtStockCrear.setText("");
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Precio o stock inválido.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al crear producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Precio o stock inválido.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (SQLException e)
+        {
+            JOptionPane.showMessageDialog(this, "Error al crear producto: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-
-
-    private void cerrarVentana() {
+    /**
+     * Cierra la ventana y regresa al menú principal.
+     */
+    private void cerrarVentana()
+    {
         dispose();
         MenuPuntoVenta menu = new MenuPuntoVenta();
         menu.setContentPane(menu.JPMenuPrinc);
@@ -350,32 +445,45 @@ public class Carta extends JFrame {
         menu.setVisible(true);
     }
 
-    private JButton crearBotonConEstilo(String rutaImagen, int tamañoNormal, int tamañoZoom) {
+    /**
+     * Crea un botón con estilo y efecto de zoom al pasar el mouse.
+     */
+    private JButton crearBotonConEstilo(String rutaImagen, int tamañoNormal, int tamañoZoom)
+    {
         JButton boton = new JButton();
-        ImageIcon icono = new ImageIcon(new ImageIcon(rutaImagen).getImage()
-                .getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH));
+        ImageIcon icono = new ImageIcon(
+                new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH)
+        );
         boton.setIcon(icono);
         boton.setContentAreaFilled(false);
         boton.setBorderPainted(false);
         boton.setFocusPainted(false);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        boton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage()
-                        .getScaledInstance(tamañoZoom, tamañoZoom, Image.SCALE_SMOOTH)));
+        // Efecto de zoom al pasar el mouse
+        boton.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseEntered(java.awt.event.MouseEvent evt)
+            {
+                boton.setIcon(new ImageIcon(
+                        new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoZoom, tamañoZoom, Image.SCALE_SMOOTH)
+                ));
             }
 
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setIcon(new ImageIcon(new ImageIcon(rutaImagen).getImage()
-                        .getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH)));
+            public void mouseExited(java.awt.event.MouseEvent evt)
+            {
+                boton.setIcon(new ImageIcon(
+                        new ImageIcon(rutaImagen).getImage().getScaledInstance(tamañoNormal, tamañoNormal, Image.SCALE_SMOOTH)
+                ));
             }
         });
         return boton;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+    public static void main(String[] args)
+    {
+        SwingUtilities.invokeLater(() ->
+        {
             Carta carta = new Carta();
             carta.setContentPane(carta.ventanaCarta);
             carta.setUndecorated(true);

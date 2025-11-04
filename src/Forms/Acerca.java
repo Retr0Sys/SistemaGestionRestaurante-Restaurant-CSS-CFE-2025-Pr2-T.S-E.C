@@ -3,14 +3,17 @@ package Forms;
 import javax.swing.*;
 import java.awt.*;
 
-public class Acerca extends JFrame {
+// Ventana que muestra información sobre los creadores y la versión del sistema
+public class Acerca extends JFrame
+{
     public JPanel JPacerca;
     private JLabel lblCreadores;
     private JLabel lblVersion;
     private JLabel lblCopy;
     private JButton btnAtras;
 
-    public Acerca() {
+    public Acerca()
+    {
         // Estética general
         Color fondo = new Color(245, 245, 245);
         Color acento = new Color(255, 159, 101);
@@ -22,7 +25,7 @@ public class Acerca extends JFrame {
         JPacerca.setLayout(new BoxLayout(JPacerca, BoxLayout.Y_AXIS));
         JPacerca.setBorder(BorderFactory.createEmptyBorder(60, 60, 60, 60));
 
-        //  Etiquetas
+        // Etiquetas
         lblCreadores = new JLabel("Creado por: Ezequiel Costa, Thiago Sosa", SwingConstants.CENTER);
         lblCreadores.setFont(fuenteGeneral);
         lblCreadores.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -38,9 +41,13 @@ public class Acerca extends JFrame {
         lblCopy.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblCopy.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
 
-        //  Botón Atrás
+        // Botón Atrás
         btnAtras = new JButton();
-        ImageIcon icono = new ImageIcon(new ImageIcon("imagenes/Atras.png").getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH));
+        ImageIcon icono = new ImageIcon(
+                new ImageIcon("imagenes/Atras.png")
+                        .getImage()
+                        .getScaledInstance(150, 150, Image.SCALE_SMOOTH)
+        );
         btnAtras.setIcon(icono);
         btnAtras.setBorderPainted(false);
         btnAtras.setContentAreaFilled(false);
@@ -48,17 +55,23 @@ public class Acerca extends JFrame {
         btnAtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAtras.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        btnAtras.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAtras.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100)));
+        btnAtras.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseEntered(java.awt.event.MouseEvent evt)
+            {
+                btnAtras.setBorder(
+                        BorderFactory.createMatteBorder(0, 0, 5, 0, new Color(100, 100, 100))
+                );
             }
 
-            public void mouseExited(java.awt.event.MouseEvent evt) {
+            public void mouseExited(java.awt.event.MouseEvent evt)
+            {
                 btnAtras.setBorder(BorderFactory.createEmptyBorder());
             }
         });
 
-        btnAtras.addActionListener(e -> {
+        btnAtras.addActionListener(e ->
+        {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(JPacerca);
             topFrame.dispose();
         });
@@ -78,7 +91,8 @@ public class Acerca extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         SwingUtilities.invokeLater(Acerca::new);
     }
 }

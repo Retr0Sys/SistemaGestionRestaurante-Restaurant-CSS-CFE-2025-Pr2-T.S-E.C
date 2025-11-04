@@ -36,9 +36,9 @@ public class Facturacion extends JFrame {
     private JLabel lblFact;
     private JLabel lblMesa;
     private JButton btnAtras;
-
     private double subtotal = 0;
     private static int contadorFactura = 1;
+
 
     public Facturacion() {
         // Obtener resolución de pantalla
@@ -658,19 +658,32 @@ public class Facturacion extends JFrame {
         }
         return nombre;
     }
-    // ====================== Cerrar cuenta en la BD ======================
-    // ====================== Cerrar cuenta en la BD ======================
+
     private void cerrarCuentaDeMesa(int idMesa) {
         try {
             CuentaDAO cuentaDAO = new CuentaDAO();
+            MesaDAO mesaDAO = new MesaDAO();
+
             int idCuenta = cuentaDAO.obtenerIdCuentaAbierta(idMesa);
 
             if (idCuenta != -1) {
-                // cambia estado = 0 (cerrada)
+                // Cierra la cuenta en la BD
                 cuentaDAO.cerrarCuenta(idMesa);
-                JOptionPane.showMessageDialog(this, "✅ Cuenta de la mesa " + idMesa + " cerrada correctamente.");
+
+                // Cambia el estado de la mesa a "Disponible"
+                Mesa mesa = mesaDAO.buscarPorId(idMesa);
+                if (mesa != null) {
+                    mesa.setEstado("Disponible");
+                    mesaDAO.actualizar(mesa);
+                    System.out.println("Mesa " + idMesa + " actualizada a estado: Disponible");
+                }
+
+                JOptionPane.showMessageDialog(this,
+                        "Cuenta de la mesa " + idMesa + " cerrada y mesa marcada como disponible.");
+
             } else {
-                JOptionPane.showMessageDialog(this, "⚠️ No se encontró una cuenta abierta para la mesa " + idMesa);
+                JOptionPane.showMessageDialog(this,
+                        "⚠️ No se encontró una cuenta abierta para la mesa " + idMesa);
             }
 
         } catch (Exception e) {
@@ -679,6 +692,8 @@ public class Facturacion extends JFrame {
         }
     }
 
+
+    // ====================== Cerrar cuenta en la BD ======================
 
 
 
