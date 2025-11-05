@@ -24,7 +24,6 @@ public class BienvenidaMenuInicial extends JFrame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
-
         this.ventanaPrincipal = frame;
 
         // --- Ajustes visuales del panel principal ---
