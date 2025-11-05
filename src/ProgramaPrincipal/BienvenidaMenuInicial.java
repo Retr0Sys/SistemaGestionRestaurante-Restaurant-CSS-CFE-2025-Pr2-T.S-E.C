@@ -78,7 +78,7 @@ public class BienvenidaMenuInicial extends JFrame
         // Acción al hacer clic en "Ingresar"
         BtnIngresar.addActionListener(e ->
         {
-            reproducirSonido("sonido/Tu-papa-Wachinanga-_meme_-Un-show-mas-plantilla.wav");
+            reproducirSonido("sonido/music.wav");
             ventanaPrincipal.dispose();
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
