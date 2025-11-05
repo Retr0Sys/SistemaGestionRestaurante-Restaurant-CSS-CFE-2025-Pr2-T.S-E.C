@@ -72,8 +72,6 @@ public class FormMesa extends JFrame {
     private JLabel lblMesa3;
     private JLabel lblOperacion;
     protected JTable TBProductosMesa;
-    private JLabel lblCantidad;
-    private JTextField txtCantidad;
     private JLabel lblSubtotal;
     JLabel txtSubtotal;
     private JButton BtnEnviar;
