@@ -8,8 +8,8 @@ import java.awt.event.*;
 import java.io.File;
 import javax.sound.sampled.*;
 
-public class BienvenidaMenuInicial extends JFrame {
-
+public class BienvenidaMenuInicial extends JFrame
+{
     public JPanel JPBienvenida;
     private JLabel lblBienvenida;
     private JLabel lblSubtitulo;
@@ -18,15 +18,15 @@ public class BienvenidaMenuInicial extends JFrame {
     private JLabel lblFoto;
     private JFrame ventanaPrincipal;
 
-    public BienvenidaMenuInicial(JFrame frame) {
-        //Guarda el ancho y largo de la pantalla del sistema
+    public BienvenidaMenuInicial(JFrame frame)
+    {
+        // Obtiene el tamaño de la pantalla del sistema
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
-
         this.ventanaPrincipal = frame;
 
-        //Ajustes visuales
+        // --- Ajustes visuales del panel principal ---
         JPBienvenida = new JPanel();
         JPBienvenida.setOpaque(false);
         JPBienvenida.setLayout(new BoxLayout(JPBienvenida, BoxLayout.Y_AXIS));
@@ -35,20 +35,23 @@ public class BienvenidaMenuInicial extends JFrame {
         Font fuenteTitulo = new Font("SansSerif", Font.BOLD, 30);
         Font fuenteSubtitulo = new Font("SansSerif", Font.PLAIN, 18);
 
+        // --- Título principal ---
         lblBienvenida = new JLabel("¡Bienvenido al Punto de Venta!");
         lblBienvenida.setFont(fuenteTitulo);
         lblBienvenida.setForeground(new Color(30, 30, 30));
         lblBienvenida.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblBienvenida.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
+        // --- Subtítulo ---
         lblSubtitulo = new JLabel("Sistema de gestión para restaurantes");
         lblSubtitulo.setFont(fuenteSubtitulo);
         lblSubtitulo.setForeground(new Color(100, 100, 100));
         lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblSubtitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
+        // --- Imagen/logo central ---
         lblFoto = new JLabel();
-        int logoSize = (int)(screenHeight * 0.3);
+        int logoSize = (int) (screenHeight * 0.3);
         ImageIcon iconoCSS = new ImageIcon(new ImageIcon("imagenes/CSSLogo.jpg").getImage().getScaledInstance(logoSize, logoSize, Image.SCALE_SMOOTH));
         lblFoto.setIcon(iconoCSS);
         lblFoto.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -57,8 +60,9 @@ public class BienvenidaMenuInicial extends JFrame {
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
+        // --- Botón de ingreso ---
         BtnIngresar = new JButton();
-        int btnSize = (int)(screenHeight * 0.25);
+        int btnSize = (int) (screenHeight * 0.25);
         ImageIcon iconoIngresar = new ImageIcon(new ImageIcon("imagenes/Ingresar.png").getImage().getScaledInstance(btnSize, btnSize, Image.SCALE_SMOOTH));
         BtnIngresar.setIcon(iconoIngresar);
         BtnIngresar.setPreferredSize(new Dimension(btnSize, btnSize));
@@ -70,8 +74,10 @@ public class BienvenidaMenuInicial extends JFrame {
         BtnIngresar.setAlignmentX(Component.CENTER_ALIGNMENT);
         BtnIngresar.setToolTipText("Haz clic para comenzar");
 
-        BtnIngresar.addActionListener(e -> {
-            reproducirSonido("sonido/Tu-papa-Wachinanga-_meme_-Un-show-mas-plantilla.wav");
+        // Acción al hacer clic en "Ingresar"
+        BtnIngresar.addActionListener(e ->
+        {
+            reproducirSonido("sonido/music.wav");
             ventanaPrincipal.dispose();
             MenuPuntoVenta menu = new MenuPuntoVenta();
             menu.setContentPane(menu.JPMenuPrinc);
@@ -81,16 +87,21 @@ public class BienvenidaMenuInicial extends JFrame {
             menu.setVisible(true);
         });
 
-        BtnIngresar.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent evt) {
+        // Efectos visuales al pasar el mouse sobre el botón
+        BtnIngresar.addMouseListener(new MouseAdapter()
+        {
+            public void mouseEntered(MouseEvent evt)
+            {
                 BtnIngresar.setBorder(BorderFactory.createLineBorder(new Color(255, 215, 0), 2));
             }
 
-            public void mouseExited(MouseEvent evt) {
+            public void mouseExited(MouseEvent evt)
+            {
                 BtnIngresar.setBorder(BorderFactory.createEmptyBorder());
             }
         });
 
+        // --- Botón de salida ---
         BtnSalir = new JButton("Salir");
         BtnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         BtnSalir.setForeground(Color.WHITE);
@@ -98,11 +109,15 @@ public class BienvenidaMenuInicial extends JFrame {
         BtnSalir.setFocusPainted(false);
         BtnSalir.setCursor(new Cursor(Cursor.HAND_CURSOR));
         BtnSalir.setPreferredSize(new Dimension(100, 35));
-        BtnSalir.addActionListener(e -> {
+
+        // Acción al hacer clic en "Salir"
+        BtnSalir.addActionListener(e ->
+        {
             reproducirSonido("sonido/button_09-190435.wav");
             System.exit(0);
         });
 
+        // --- Agrega los elementos al panel ---
         JPBienvenida.add(lblBienvenida);
         JPBienvenida.add(lblSubtitulo);
         JPBienvenida.add(lblFoto);
@@ -111,20 +126,27 @@ public class BienvenidaMenuInicial extends JFrame {
         JPBienvenida.add(Box.createRigidArea(new Dimension(0, 10)));
         JPBienvenida.add(BtnSalir);
     }
-    // Metodo que permite reproducir sonidos.
-    private void reproducirSonido(String ruta) {
-        try {
+
+    //Reproduccion de sonidos
+    private void reproducirSonido(String ruta)
+    {
+        try
+        {
             File archivoSonido = new File(ruta);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(archivoSonido);
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             clip.start();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             System.out.println("No se pudo reproducir el sonido: " + ex.getMessage());
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
+        // --- Configuración inicial de la ventana principal ---
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         JFrame frame = new JFrame();
         frame.setUndecorated(true);
@@ -134,37 +156,49 @@ public class BienvenidaMenuInicial extends JFrame {
 
         BienvenidaMenuInicial bienvenida = new BienvenidaMenuInicial(frame);
 
+        // --- Fondo con imagen ---
         JLabel fondo = new JLabel(new ImageIcon("imagenes/madera.jpg"));
         fondo.setLayout(new BorderLayout());
 
+        // --- Panel central ---
         JPanel panelCentral = new JPanel(new BorderLayout());
         panelCentral.setBackground(new Color(255, 255, 255, 200));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         panelCentral.add(bienvenida.JPBienvenida, BorderLayout.CENTER);
 
+        // --- Panel inferior con botón "Salir" ---
         JPanel panelSalir = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSalir.setOpaque(false);
         panelSalir.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 10));
         panelSalir.add(bienvenida.BtnSalir);
 
+        // --- Ensambla tod-o ---
         fondo.add(panelCentral, BorderLayout.CENTER);
         fondo.add(panelSalir, BorderLayout.SOUTH);
 
         frame.setContentPane(fondo);
         frame.setVisible(true);
 
-        SwingUtilities.invokeLater(() -> {
+        // --- Animación de entrada ---
+        SwingUtilities.invokeLater(() ->
+        {
             Point start = bienvenida.JPBienvenida.getLocation();
             bienvenida.JPBienvenida.setLocation(start.x, start.y + 100);
 
             Timer anim = new Timer(10, null);
-            anim.addActionListener(new ActionListener() {
+            anim.addActionListener(new ActionListener()
+            {
                 int y = start.y + 100;
-                public void actionPerformed(ActionEvent e) {
-                    if (y > start.y) {
+
+                public void actionPerformed(ActionEvent e)
+                {
+                    if (y > start.y)
+                    {
                         y -= 4;
                         bienvenida.JPBienvenida.setLocation(start.x, y);
-                    } else {
+                    }
+                    else
+                    {
                         bienvenida.JPBienvenida.setLocation(start.x, start.y);
                         anim.stop();
                     }
