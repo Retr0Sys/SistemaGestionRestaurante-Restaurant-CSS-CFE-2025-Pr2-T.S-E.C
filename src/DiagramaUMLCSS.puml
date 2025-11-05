@@ -56,34 +56,12 @@ class Comida {
         + String getCategoria()
 
 }
-class EstadoMesa {
-    - int idEstadoMesa
-    - String estado
 
-    + EstadoMesa()
-    + EstadoMesa(int idEstadoMesa, String estado)
-
-    + int getIdEstadoMesa()
-    + void setIdEstadoMesa(int idEstadoMesa)
-    + String getEstado()
-    + void setEstado(String estado)
-    + String toString()
-
-}
 class Factura {
         # Mesa mesa
         # Pedido pedido
     }
 
-class LineaPedido {
-        # String producto
-        # int cantidad
-        # double subTotal
-        # int linea
-
-        + LineaPedido(String producto, int cantidad, double subTotal)
-        + LineaPedido(int linea)
-    }
 class Mesa {
         + String JPMesasIni
         - int idMesa
@@ -199,53 +177,26 @@ class CartaServiceImpl {
         + void actualizarItem(String item, String nuevoItem)
     }
 
-interface CategoriaComida {
-        + String getNombre()
-    }
 
-interface MesaService {
-        + void asignarMesa(int numeroMesa, String cliente)
-        + void liberarMesa(int numeroMesa)
-        + String estadoMesa(int numeroMesa)
-        + void listarMesas()
-    }
 
-class MesaServiceImpl {
-        + void asignarMesa(int numeroMesa, String cliente)
-        + void liberarMesa(int numeroMesa)
-        + String estadoMesa(int numeroMesa)
-        + void listarMesas()
-    }
+interface  IPedidoService {
 
-interface PagoService {
-        + void procesarPago(double monto)
-        + void emitirRecibo(String detallesPago)
-        + boolean validarPago(String metodoPago, double monto)
-        + void registrarTransaccion(String detallesTransaccion)
-    }
-
-class PagoServiceImpl {
-        + void procesarPago(double monto)
-        + void emitirRecibo(String detallesPago)
-        + boolean validarPago(String metodoPago, double monto)
-        + void registrarTransaccion(String detallesTransaccion)
-    }
-
-interface PedidoService {
-        + String crearPedido(int mesaID) throws MesaNoDisponibleException
-        + void agregarItem(String nombre, String productoId, int cantidad) throws StockInsuficienteException
-        + void quitarItem(String pedidoId, String productoId)
+        + String crearPedido(int mesaID)
+        + void agregarItem(String nombre, String productoId, int cantidad)
         + double calcularTotal(String pedidoId)
         + void cerrarPedido(String pedidoId) throws IllegalStateException
     }
 
-class PedidoServiceImpl {
-        + String crearPedido(int mesaID) throws MesaNoDisponibleException
-        + void agregarItem(String pedidoID, String productoId, int cantidad) throws StockInsuficienteException
-        + void quitarItem(String pedidoId, String productoId)
-        + double calcularTotal(String pedidoId)
-        + void cerrarPedido(String pedidoId) throws IllegalStateException
-    }
+interface IPedidoDAO {
+
+    + void agregarPedido(int idCuenta, int idProducto, int cantidad)
+    + List<Pedido> listarPorCuenta(int idCuenta)
+    + List<Pedido> listar()
+    + double calcularTotalCuenta(int idCuenta)
+    + List<Pedido> listarPorCuentaConNombre(int idCuenta)
+    + List<Pedido> listarPendientes()
+    + void actualizarEstado(int idPedido, String nuevoEstado)
+
 }
 
 
@@ -255,9 +206,6 @@ Factura --> Mesa
 Factura --> Pedido
 Producto <|-- Postre
 CartaService <|.. CartaServiceImpl
-MesaService <|.. MesaServiceImpl
-PagoService <|.. PagoServiceImpl
-PedidoService <|.. PedidoServiceImpl
 
 
 
