@@ -27,8 +27,22 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Clase principal del formulario de gestión de mesas del sistema de restaurante.
+ *
+ * Permite gestionar:
+ * - Estados de las mesas (libre, ocupada, reservada, etc.).
+ * - Asignación y desasignación de meseros.
+ * - Apertura y cierre de cuentas.
+ * - Pedidos y consumo por mesa.
+ * - Registro y eliminación de reservas.
+ *
+ * Forma parte de la capa de presentación del sistema, conectándose con la capa DAO
+ * para realizar operaciones sobre la base de datos.
+ */
 public class FormMesa extends JFrame {
 
+    // Map que asocia cada mesa con el modelo de su tabla de pedidos
     private Map<Integer, DefaultTableModel> mesaPedidosMap = new HashMap<>();
     private int mesaSeleccionada = -1;
 
@@ -99,6 +113,11 @@ public class FormMesa extends JFrame {
     private CuentaDAO cuentaDAO = new CuentaDAO();
     private ReservaDAO reservaDAO = new ReservaDAO();
 
+    /**
+     * Constructor principal del formulario.
+     * Configura los componentes, estilos y eventos.
+     * Carga las mesas, meseros, pedidos y reservas desde la base de datos.
+     */
     public FormMesa()
     {
 
@@ -394,6 +413,10 @@ public class FormMesa extends JFrame {
         JPCalendario.repaint();
 
     }
+    /**
+     * Sobrecarga del constructor que permite abrir el formulario
+     * con una mesa específica seleccionada al iniciar.
+     */
     public FormMesa(int idMesaSeleccionada) {
         this(); // inicializa componentes y carga combos
 
@@ -410,8 +433,9 @@ public class FormMesa extends JFrame {
     }
 
 
-    // Método auxiliar para seleccionar la mesa correspondiente en un JComboBox.
-
+    /**
+     * Selecciona una mesa en un combo box según su ID.
+     */
     private void seleccionarMesaEnCombo(JComboBox<?> combo, int idMesa) {
         if (combo == null) return; // evita nullpointer si el combo no está en el form
 
@@ -466,7 +490,9 @@ public class FormMesa extends JFrame {
         btnDesasignar.setContentAreaFilled(false);
         btnDesasignar.setFocusPainted(false);
     }
-    //Se cargan los meseros de la BD
+    /**
+     * Carga la lista de meseros desde la base de datos para poder asignarlos.
+     */
     private void cargarMeseros()
     {
         CBMesero.removeAllItems();
@@ -489,7 +515,10 @@ public class FormMesa extends JFrame {
         }
     }
 
-    //Se cargan mesas de la BD
+    /**
+     * Carga las mesas disponibles desde la base de datos.
+     * Llena los distintos JComboBox con sus IDs.
+     */
     private void cargarMesas() {
         try {
             List<Mesa> mesas = mesaDAO.listar();
@@ -507,7 +536,9 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error cargando mesas: " + e.getMessage());
         }
     }
-    //Se cargan los estados (HardCodeados)
+    /**
+     * Carga los estados posibles de una mesa (por ejemplo: libre, ocupada, reservada).
+     */
     private void cargarEstados() {
         CBSelecEstado.addItem("Disponible");
         CBSelecEstado.addItem("Ocupada");
@@ -525,7 +556,10 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error mostrando datos: " + e.getMessage());
         }
     }
-    //Metodo para cambiar estados de las mesas
+    /**
+     * Cambia el estado de la mesa seleccionada según la opción del combo.
+     */
+
     private void cambiarEstadoMesa() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -552,6 +586,9 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al actualizar estado de la mesa: " + e.getMessage());
         }
     }
+    /**
+     * Abre una nueva cuenta para la mesa seleccionada.
+     */
     private void abrirCuenta() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -578,7 +615,9 @@ public class FormMesa extends JFrame {
         }
     }
 
-    //Metodo para cerrar cuentas
+    /**
+     * Cierra la cuenta activa de una mesa.
+     */
     private void cerrarCuenta() {
         try {
             int idMesa = (int) CBmesa.getSelectedItem();
@@ -745,7 +784,10 @@ public class FormMesa extends JFrame {
             add(spinnerMinuto, gbc);
         }
     }
-    //Se guarda las reservas en la BD
+    /**
+     * Guarda una nueva reserva para la mesa seleccionada.
+     * Valida los datos del formulario antes de insertarlos.
+     */
     private void guardarReserva() {
         try {
             if (CBmesa4.getSelectedItem() == null) {
@@ -883,10 +925,9 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage());
         }
     }
-
-
-
-    // Eliminar reserva
+    /**
+     * Elimina la reserva seleccionada en la tabla de reservas.
+     */
     private void eliminarReserva() {
         try {
             int filaSeleccionada = TBReservas.getSelectedRow();
