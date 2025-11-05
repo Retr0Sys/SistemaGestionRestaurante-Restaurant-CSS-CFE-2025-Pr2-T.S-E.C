@@ -128,7 +128,7 @@ public class BienvenidaMenuInicial extends JFrame
         JPBienvenida.add(BtnSalir);
     }
 
-    // Método que permite reproducir sonidos
+    //Reproduccion de sonidos
     private void reproducirSonido(String ruta)
     {
         try
@@ -173,7 +173,7 @@ public class BienvenidaMenuInicial extends JFrame
         panelSalir.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 10));
         panelSalir.add(bienvenida.BtnSalir);
 
-        // --- Ensambla todo ---
+        // --- Ensambla tod-o ---
         fondo.add(panelCentral, BorderLayout.CENTER);
         fondo.add(panelSalir, BorderLayout.SOUTH);
 
