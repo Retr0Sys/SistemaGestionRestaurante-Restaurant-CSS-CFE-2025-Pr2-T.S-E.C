@@ -972,8 +972,6 @@ public class FormMesa extends JFrame {
         }
     }
 
-
-
     //Metodo para cargar las reservas en la tabla correspondiente
     private void cargarReservasEnTabla() {
         try {

@@ -20,12 +20,12 @@ public class CartaServiceImpl implements CartaService {
         return ProductoDAO.obtenerStock(idProducto);
     }
 
-    // El método devuelve todos los productos
+    // Devuelve todos los productos
     @Override
     public List<Producto> listarTodos() throws SQLException {
         return ProductoDAO.listar();
     }
-    // El método lista todos los productos disponibles
+    // Lista todos los productos disponibles
     @Override
     public List<Producto> listarDisponibles() throws SQLException {
         return ProductoDAO.listarDisponibles();
@@ -37,7 +37,7 @@ public class CartaServiceImpl implements CartaService {
         ProductoDAO.actualizarProducto(idProducto, nuevoPrecio, estado);
     }
 
-    //Este método permite crear un nuevo producto con todos sus valores
+    //Crear un nuevo producto con todos sus valores
     @Override
     public void crearProducto(Producto producto) throws SQLException {
         ProductoDAO.crearProducto(producto);
