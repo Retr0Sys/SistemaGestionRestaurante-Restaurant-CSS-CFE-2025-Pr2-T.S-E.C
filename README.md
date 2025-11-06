@@ -1,4 +1,4 @@
-# 🍽️ Sistema de Gestión de Restaurantes (SGR) | CSS
+# 🍽️ Sistema de Gestión de Restaurantes (SGR) | Proyecto en Java
 
 <div align="center">
   
@@ -14,15 +14,18 @@
 
 ## ✨ Visión General del Proyecto
 
-El **Sistema de Gestión de Restaurantes (SGR)**, desarrollado en **Java**, es una plataforma robusta diseñada a medida para el restaurante **CSS**. Su objetivo es optimizar y automatizar la gestión diaria del establecimiento, abarcando desde la **toma de pedidos** y el **control de cocina** hasta la **facturación detallada** y la generación de informes.
+El **Sistema de Gestión de Restaurantes (SGR)**, desarrollado en **Java**, es una plataforma robusta diseñada a medida para el restaurante **CSS**.  
+Su objetivo es optimizar y automatizar la gestión diaria del establecimiento, abarcando desde la **toma de pedidos** y el **control de cocina** hasta la **facturación detallada** y la **generación de informes**.
 
 > **⚠️ Restricción de Uso:** Este sistema ha sido desarrollado exclusivamente para el restaurante CSS y su uso está limitado a este establecimiento.
+
+El SGR combina diseño modular, persistencia en base de datos y una interfaz gráfica intuitiva, demostrando la aplicación práctica de los principios de la **Ingeniería de Software** y la **Programación Orientada a Objetos**.
 
 ---
 
 ## 🚀 Características Principales
 
-Hemos implementado módulos clave para asegurar un flujo de trabajo eficiente:
+Módulos clave implementados para asegurar un flujo de trabajo eficiente:
 
 | Característica | Descripción |
 | :--- | :--- |
@@ -34,37 +37,63 @@ Hemos implementado módulos clave para asegurar un flujo de trabajo eficiente:
 
 ---
 
-## Organización de carpetas
+## 🗂️ Organización de Carpetas
+
+La estructura del proyecto sigue el **patrón multicapa (DAO – Lógica – Presentación)**, lo que garantiza un código más limpio, mantenible y escalable.
+
 <p align="center">
-<img width="403" height="686" alt="image" src="https://github.com/user-attachments/assets/f373ca8c-80b2-427b-b169-e5f80f9950d2" />
+<img width="403" height="686" alt="image" src="https://github.com/user-attachments/assets/df88a199-07a3-4331-ba50-15b5111e9270" />
 <br>
 </p>
 
-### 1. Capa de Datos y Persistencia
- * Objetos de Acceso a Datos (DAO - Data Access Objects): Los DAO son esenciales porque abstraen y centralizan toda la lógica de comunicación con la base de datos. Su propósito es aislar la capa de negocio (la lógica del restaurante) de los detalles técnicos de la persistencia (cómo se guardan los datos). Esto permite cambiar la tecnología de la base de datos (p. ej., de MySQL a PostgreSQL) sin modificar la lógica principal de la aplicación.
 
-### 2. Abstracciones y Estructuras (POO)
-* Clases Abstractas y Concretas:
+---
 
-  * Las Clases Abstractas definen estructuras comunes y métodos generales que deben seguir las entidades, sirviendo como plantillas obligatorias (p. ej., una clase Producto abstracta).
+### 1. **Capa de Datos y Persistencia**
+**DAO (Data Access Objects):**  
+Contiene las clases encargadas de comunicarse con la base de datos.  
+Aquí se gestionan las consultas SQL, inserciones, actualizaciones y eliminaciones.  
+Esta capa permite modificar el motor de base de datos (por ejemplo, de MariaDB a PostgreSQL) sin afectar la lógica del sistema.
 
-  * Las Clases Concretas implementan estas plantillas para crear objetos específicos y funcionales (p. ej., Mesa, Bebida).
+---
 
-* Interfaces: Se utilizan para establecer contratos de funcionalidad específica que varias clases deben cumplir. Esto centraliza la definición de métodos que se repiten (p. ej. MesaService) para asegurar una mejor organización y una alta cohesión del código.
+### 2. **Abstracciones y Estructuras (POO)**
+**Carpeta:** `Clases`  
+Contiene dos subcarpetas principales:
 
-### 3. Manejo de Errores
-* Excepciones: Las excepciones son el mecanismo primario para gestionar y reportar situaciones anómalas o errores inesperados durante la ejecución del programa (p. ej. StockInsuficienteException). Su propósito es interrumpir el flujo normal del programa de forma controlada, permitiendo al sistema recuperarse, informar al usuario del error y evitar que la aplicación se caiga o pierda datos.
+- **abstractas:** define estructuras comunes y métodos generales que deben implementar las clases concretas (por ejemplo, `Producto`).  
+- **concretas:** implementan la funcionalidad completa de las entidades del sistema (por ejemplo, `Mesa`, `Bebida`).
 
-### 4. Interfaz de Usuario (Capa de Presentación)
-* Formularios (Forms): La interfaz de usuario se construye a través de diferentes ventanas (Forms) que representan las distintas secciones de la aplicación (p. ej., Carta, Cocina, Acerca).
+---
 
-* Ventana Principal: Actúa como el dashboard central o punto de partida del programa, desde donde se accede y se coordina la navegación hacia todas las funcionalidades específicas del sistema de ventas.
+### 3. **Manejo de Errores**
+**Carpeta:** `Exepciones`  
+Incluye excepciones personalizadas que controlan errores específicos del sistema, como `StockInsuficienteException`, garantizando estabilidad y control en la ejecución.
+
+---
+
+### 4. **Interfaces (Contratos de Funcionalidad)**
+**Carpeta:** `Interfaces`  
+Define las interfaces que estandarizan la comunicación entre capas (por ejemplo, `CartaService`).  
+Esto mejora la organización y facilita futuras ampliaciones o refactorización del código.
+
+---
+
+### 5. **Capa de Presentación (Interfaz de Usuario)**
+**Carpeta:** `Forms`  
+Contiene las ventanas gráficas del sistema.  
+Cada formulario representa un módulo funcional (por ejemplo: `Carta`, `Cocina`, `Facturación`, `Acerca`).  
+La interfaz se construye con **Swing**, asegurando una experiencia visual clara y práctica.
+
+---
+
+### 6. **Punto de Entrada del Sistema**
+**Carpeta:** `ProgramaPrincipal`  
+Contiene la clase principal `BienvenidaMenuInicial.java`, que actúa como punto de inicio del programa y coordina la apertura del menú principal y los diferentes módulos del sistema.
 
 ---
 
 ## ⚙️ Requisitos del Sistema
-
-Asegúrese de cumplir con los siguientes requisitos antes de la ejecución:
 
 ### 💻 Entorno de Ejecución
 
@@ -72,98 +101,196 @@ Asegúrese de cumplir con los siguientes requisitos antes de la ejecución:
 
 ### 💾 Base de Datos
 
-* **Motor:** **MariaDB**
-* **Gestión:** Configurado a través de **HeidiSQL** (se requiere que la instancia de MariaDB esté activa y accesible).
+* **Motor:** MariaDB  
+* **Gestión:** HeidiSQL  
+* **Configuración:** el proyecto incluye un script SQL para crear la base de datos y sus tablas.  
+  Asegúrese de que la instancia de MariaDB esté activa y accesible antes de ejecutar el programa.
 
 ---
 
-## 👨‍💻 Guía de Ejecución
+## 🧩 Guía de Ejecución
 
-Siga estos pasos para iniciar la aplicación:
+Siga estos pasos para ejecutar el sistema correctamente:
 
-1.  **Verificación de JDK:** Confirme la instalación y correcta configuración del **JDK 24**.
-2.  **Abrir Proyecto:** Abra la carpeta del proyecto en su IDE preferido (se recomienda NetBeans o IntelliJ IDEA).
-3.  **Clase Principal:** Localice el archivo `BienvenidaMenuInicial.java`.
-4.  **Ejecutar:** Ejecute la clase `BienvenidaMenuInicial.java`.
------
+1. **Instalar JDK 24** o superior.  
+2. **Clonar o descargar** el proyecto desde GitHub.  
+3. **Configurar la base de datos** en MariaDB ejecutando el script incluido.  
+4. **Abrir el proyecto** en su IDE preferido (recomendado: NetBeans o IntelliJ IDEA).  
+5. Localizar la clase principal: `BienvenidaMenuInicial.java`.  
+6. **Ejecutar** el programa y comenzar a interactuar con el sistema.  
+
+---
+
+## 🧭 Flujo de Uso del Sistema
+
+El siguiente esquema describe los pasos que seguiría un usuario (mesero, cajero o encargado) para utilizar el sistema de manera normal y eficiente en el día a día del restaurante.
+
+---
+
+### 1. 🍽️ Carta
+- Permite **visualizar los productos actuales** del restaurante con la siguiente información:
+  - **Nombre del producto**
+  - **Precio**
+  - **Stock disponible**
+  - **Disponibilidad** (Disponible/N Disponible)
+  - **Categoría** (bebida, comida , postre)
+- Desde esta ventana también se pueden:
+  - **Modificar productos existentes** (actualizar precio, stock, categoría).
+  - **Crear nuevos productos** para ampliar la oferta gastronómica.
+- Mantener la carta actualizada es fundamental para evitar errores al registrar pedidos en las mesas.
+
+---
+
+### 2. 🪑 Mesas
+- Muestra las **12 mesas del restaurante**, cada una identificada visualmente según su estado:
+  - 🟥 **Rojo:** Ocupada  
+  - ⬜ **Blanco:** Disponible  
+  - 🟨 **Amarillo:** Reservada  
+  - 🟩 **Verde:** En limpieza  
+- Al seleccionar una mesa disponible:
+  1. Se **abre una cuenta** asociada a esa mesa.  
+  2. Se **asigna el mesero** que la atenderá.  
+  3. Se comienzan a **cargar los pedidos** solicitados por el cliente.  
+- Una vez completados los pedidos, se presiona **“Enviar”** para que sean enviados al módulo **Cocina**.
+
+---
+
+### 3. 👨‍🍳 Cocina
+- En este módulo se **reciben los pedidos enviados desde las mesas**.  
+- Funciona como una **comanda digital**, mostrando los productos pendientes de preparación y su respectivo orden.  
+- Cada pedido puede cambiar su **estado** a medida que avanza en el proceso:
+  - **Pendiente → En preparación → Servido**
+  - También puede marcarse como **Cancelado** si el pedido se anula antes de servirse.
+- Este módulo permite que los cocineros gestionen la secuencia de trabajo y los meseros verifiquen el progreso de los pedidos.
+
+---
+
+### 4. 💰 Facturación
+- Una vez que el cliente solicita pagar su cuenta:
+  1. Ingresar al módulo **Facturas**.  
+  2. **Seleccionar la mesa** correspondiente.  
+  3. Elegir el **método de pago** (efectivo, tarjeta, transferencia).  
+  4. Aplicar un **descuento del 5%, 10% o 15%** si corresponde.  
+  5. Generar el **comprobante de pago** para el cliente.  
+- Al cerrar la cuenta, la mesa vuelve automáticamente al estado **disponible**.
+
+---
+
+### 5. 📊 Resumen
+- Módulo destinado al **análisis y control general** del restaurante.  
+- Permite:
+  - Consultar los **pedidos realizados en el día**.  
+  - Ver los **pedidos por cada mesa**.  
+  - Identificar los **tres productos más vendidos** del día.  
+- Es una herramienta clave para el encargado o administrador al cierre de la jornada.
+
+---
+
+### ✅ Flujo General Resumido
+
+1. **Carta:** Configurar o actualizar productos.  
+2. **Mesas:** Seleccionar mesa, abrir cuenta y asignar mesero.  
+3. **Pedidos:** Registrar pedidos y enviarlos a cocina.  
+4. **Cocina:** Preparar los pedidos y actualizar su estado.  
+5. **Facturas:** Cobrar al cliente, aplicar descuentos y generar comprobante.  
+6. **Resumen:** Revisar pedidos del día y estadísticas generales.
+
+---
+
+> Este flujo refleja el funcionamiento real de un restaurante profesional, garantizando una gestión ordenada, fluida y eficiente desde la toma del pedido hasta la facturación final.
+
+---
 
 ## 🖥️ Módulos de la Interfaz (Screenshots)
 
+Las siguientes capturas muestran las principales pantallas del sistema, desde la bienvenida hasta la gestión de pedidos y facturación.
+
 <p align="center">
+  <i>Menú Principal del Sistema.</i>
+  <br>
   <img src="https://github.com/user-attachments/assets/3feba958-3e64-4ecf-87c3-c7199cdbfe05" alt="Vista del menú principal del SGR" width="600" />
-  <br>
-  <i>Ejemplo de la interfaz de usuario del Menú Principal.</i>
 </p>
 
 <p align="center">
+  <i>Ventana de Bienvenida Inicial.</i>
+  <br>
   <img src="https://github.com/user-attachments/assets/716df9df-1f92-4152-b494-d9972b6de7a5" alt="Menú de bienvenida inicial" width="600" />
-  <br>
-  <i>Ejemplo de la interfaz de usuario del Menú de bienvenida inicial.</i>
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/0b12d3a8-dd2e-4add-8ec5-b12338633b70" alt="Interfaz de usuario del módulo de Carta/Menú" width="600" />
+  <i>Módulo de Carta / Menú.</i>
   <br>
-  <i>Ejemplo de la interfaz de usuario del módulo de Carta.</i>
+  <img src="https://github.com/user-attachments/assets/d1af79fa-f5a1-4d8f-83de-3d208e3d8520" alt="Interfaz de usuario del módulo de Carta/Menú" width="600" />
 </p>
 
 <p align="center">
+  <i>Módulo de Cocina.</i>
+  <br>
   <img src="https://github.com/user-attachments/assets/44e09d64-044e-4f0e-87c9-3a219cf771ff" alt="Interfaz de usuario del módulo de Cocina" width="600" />
-  <br>
-  <i>Ejemplo de la interfaz de usuario del módulo de Cocina.</i>
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7e632070-421e-4e98-b3e6-85c310677b9c" alt="Interfaz de usuario del módulo de Facturación" width="600" />
+  <i>Módulo de Facturación.</i>
   <br>
-  <i>Ejemplo de la interfaz de usuario del módulo de Facturación.</i>
+  <img src="https://github.com/user-attachments/assets/b2919abe-b62e-4adc-8454-af841dc1c884" alt="Interfaz de usuario del módulo de Facturación" width="600" />  
 </p>
 
 <p align="center">
+  <i>Selección de Mesas.</i>
+  <br>
   <img src="https://github.com/user-attachments/assets/7cfe0c5b-5f73-4ed2-b965-65e84c4d725d" alt="Interfaz de usuario para la Selección de mesas" width="600" />
-  <br>
-  <i>Ejemplo de la interfaz de usuario para la Selección de mesas.</i>
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/99a9a2f3-a012-452f-934c-abae57056a5b" alt="Interfaz de usuario para el Manejo de mesas" width="600" />
+  <i>Gestión de Mesas.</i>
   <br>
-  <i>Ejemplo de la interfaz de usuario para el Manejo de mesas.</i>
+  <img src="https://github.com/user-attachments/assets/9c4a3910-c509-42c6-a8d8-1fbafdb30faa" alt="Interfaz de usuario para el Manejo de mesas" width="600" />
 </p>
 
 <p align="center">
+  <i>Resumen e Informes.</i>
+  <br>
   <img src="https://github.com/user-attachments/assets/92adf3c8-0588-4df6-938d-a37b50c94a24" alt="Interfaz de usuario del Resumen" width="600" />
-  <br>
-  <i>Ejemplo de la interfaz de usuario del Resumen.</i>
 </p>
 
+---
 
-### 📎 DiagramaUML
+## 📎 Recursos Externos
 
-El diagrama UML por su tamaño se encuentra alojado en el siguiente enlace de Google Drive.
+### 🔸 Diagrama UML
+El diagrama UML por su tamaño se encuentra alojado en el siguiente enlace:
 
-[**Acceder al diagrama**](https://drive.google.com/file/d/1ze_hoKHIy_gUFDDabduETDyWlQq7xwLY/view?usp=sharing)
+[**Acceder al diagrama UML**](https://drive.google.com/file/d/1ze_hoKHIy_gUFDDabduETDyWlQq7xwLY/view?usp=sharing)
 
-### Creación de la Base de Datos
+### 🔸 Creación de la Base de Datos
+La documentación completa de la base de datos está disponible en el siguiente enlace:
 
-[**Acceder a la DB**](https://drive.google.com/file/d/1NVLJDSeiB4rlbm8uHFwToxmAuo_-abe3/view?usp=sharing).
+[**Acceder a la Base de Datos (SQL)**](https://docs.google.com/document/d/1CbDZiO3eitz26q_SBT3Nu6D-5uoRq0OSP_CJCVtZcW0/edit?usp=sharing)
 
------
-
+---
 
 ## 🤝 Contribución y Desarrollo
 
 Este proyecto es el resultado del esfuerzo conjunto del equipo de desarrollo.
 
-  * **Reporte de Errores/Sugerencias:** Por favor, abra un **Issue** en este repositorio de GitHub detallando cualquier error encontrado o sugerencia de mejora.
-  * **Aportes de Código:** Las contribuciones mediante **Pull Requests** son bienvenidas para correcciones o nuevas funcionalidades.
+* **Reporte de Errores / Sugerencias:** Abra un **Issue** en este repositorio para reportar problemas o proponer mejoras.  
+* **Aportes de Código:** Las contribuciones mediante **Pull Requests** son bienvenidas para corregir o ampliar funcionalidades.
 
-### 👥 Equipo de Desarrollo
+---
 
-  * **Ezequiel Costa(Costa200513)**
-  * **Thiago Sosa(RetrOSys)**
+## 👥 Equipo de Desarrollo
 
-<img width="600" height="600" alt="Imagen" src="https://github.com/user-attachments/assets/f2b39efa-dca6-4503-99f5-c5b08e27d426" />
+| Nombre | Usuario de GitHub |
+| :--- | :--- |
+| **Ezequiel Costa** | [@Costa200513](https://github.com/Costa200513) |
+| **Thiago Sosa** | [@RetrOSys](https://github.com/RetrOSys) |
 
+<p align="center">
+  <img width="600" height="600" alt="Imagen del equipo" src="https://github.com/user-attachments/assets/f2b39efa-dca6-4503-99f5-c5b08e27d426" />
+</p>
 
+---
 
+<p align="center">
+  <i>© 2025 Sistema de Gestión de Restaurantes (SGR) - Proyecto académico del equipo CSS.</i>
+</p>
