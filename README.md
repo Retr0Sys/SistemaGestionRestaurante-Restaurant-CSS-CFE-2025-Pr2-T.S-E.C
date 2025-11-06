@@ -265,7 +265,7 @@ El diagrama UML por su tamaño se encuentra alojado en el siguiente enlace:
 ### 🔸 Creación de la Base de Datos
 La documentación completa de la base de datos está disponible en el siguiente enlace:
 
-[**Acceder a la Base de Datos (SQL)**](https://docs.google.com/document/d/1CbDZiO3eitz26q_SBT3Nu6D-5uoRq0OSP_CJCVtZcW0/edit?usp=drive_link)
+[**Acceder a la Base de Datos (SQL)**](https://docs.google.com/document/d/1CbDZiO3eitz26q_SBT3Nu6D-5uoRq0OSP_CJCVtZcW0/edit?usp=sharing)
 
 ---
 
