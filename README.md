@@ -132,10 +132,10 @@ El siguiente esquema describe los pasos que seguiría un usuario (mesero, cajero
   - **Nombre del producto**
   - **Precio**
   - **Stock disponible**
-  - **Disponibilidad** (activo/inactivo)
-  - **Categoría** (p. ej. bebida, plato principal, postre)
+  - **Disponibilidad** (Disponible/N Disponible)
+  - **Categoría** (bebida, comida , postre)
 - Desde esta ventana también se pueden:
-  - **Modificar productos existentes** (actualizar precio, stock, categoría, etc.).
+  - **Modificar productos existentes** (actualizar precio, stock, categoría).
   - **Crear nuevos productos** para ampliar la oferta gastronómica.
 - Mantener la carta actualizada es fundamental para evitar errores al registrar pedidos en las mesas.
 
@@ -169,7 +169,7 @@ El siguiente esquema describe los pasos que seguiría un usuario (mesero, cajero
 - Una vez que el cliente solicita pagar su cuenta:
   1. Ingresar al módulo **Facturas**.  
   2. **Seleccionar la mesa** correspondiente.  
-  3. Elegir el **método de pago** (efectivo, tarjeta, etc.).  
+  3. Elegir el **método de pago** (efectivo, tarjeta, transferencia).  
   4. Aplicar un **descuento del 5%, 10% o 15%** si corresponde.  
   5. Generar el **comprobante de pago** para el cliente.  
 - Al cerrar la cuenta, la mesa vuelve automáticamente al estado **disponible**.
