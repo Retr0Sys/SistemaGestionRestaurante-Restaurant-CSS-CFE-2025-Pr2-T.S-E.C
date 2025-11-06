@@ -971,7 +971,6 @@ public class FormMesa extends JFrame {
             JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage());
         }
     }
-
     //Metodo para cargar las reservas en la tabla correspondiente
     private void cargarReservasEnTabla() {
         try {
