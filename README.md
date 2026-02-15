@@ -292,5 +292,7 @@ Este proyecto es el resultado del esfuerzo conjunto del equipo de desarrollo.
 ---
 
 <p align="center">
-  <i>© 2025 Sistema de Gestión de Restaurantes (SGR) - Proyecto académico del equipo CSS.</i>
+  <i>
+    MIT License
+Copyright (c) 2026 Thiago Rafael Sosa Olivera, Ezequiel Mauricio Costa - Proyecto académico del equipo CSS.</i>
 </p>
