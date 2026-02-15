@@ -285,10 +285,6 @@ Este proyecto es el resultado del esfuerzo conjunto del equipo de desarrollo.
 | **Ezequiel Costa** | [@Costa200513](https://github.com/Costa200513) |
 | **Thiago Sosa** | [@RetrOSys](https://github.com/RetrOSys) |
 
-<p align="center">
-  <img width="600" height="600" alt="Imagen del equipo" src="https://github.com/user-attachments/assets/f2b39efa-dca6-4503-99f5-c5b08e27d426" />
-</p>
-
 ---
 
 <p align="center">
