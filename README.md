@@ -283,7 +283,7 @@ Este proyecto es el resultado del esfuerzo conjunto del equipo de desarrollo.
 | Nombre | Usuario de GitHub |
 | :--- | :--- |
 | **Ezequiel Costa** | [@Costa200513](https://github.com/Costa200513) |
-| **Thiago Sosa** | [@RetrOSys](https://github.com/RetrOSys) |
+| **Thiago Sosa** | [@RetrOSys](https://github.com/retr0Sys) |
 
 ---
 
